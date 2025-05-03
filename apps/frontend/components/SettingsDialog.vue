@@ -22,6 +22,19 @@ const topP = ref(1.0);
 const saving = ref(false);
 const successMessage = ref('');
 
+// Ensure numeric values are properly handled
+const handleTemperatureChange = (value) => {
+  temperature.value = parseFloat(value);
+};
+
+const handleMaxTokensChange = (value) => {
+  maxTokens.value = parseInt(value);
+};
+
+const handleTopPChange = (value) => {
+  topP.value = parseFloat(value);
+};
+
 // Computed property to mask API keys
 const maskedOpenaiKey = computed(() => {
   const key = settingsStore.openaiApiKey;
@@ -51,9 +64,9 @@ const saveSettings = async () => {
     settingsStore.openaiApiKey = openaiKey.value;
     settingsStore.defaultModelParams = {
       model: model.value,
-      temperature: parseFloat(temperature.value),
-      maxTokens: parseInt(maxTokens.value),
-      topP: parseFloat(topP.value)
+      temperature: Number(temperature.value),
+      maxTokens: Number(maxTokens.value),
+      topP: Number(topP.value)
     };
 
     // Save to backend
@@ -103,11 +116,15 @@ const closeDialog = () => {
         </div>
 
         <div class="field mb-3">
-          <label for="temperature" class="block mb-2">Temperature: {{ temperature }}</label>
-          <div class="p-inputgroup">
-            <span class="p-inputgroup-addon">0</span>
-            <InputText id="temperature" v-model="temperature" type="range" min="0" max="2" step="0.1" class="w-full" />
-            <span class="p-inputgroup-addon">2</span>
+          <label for="temperature" class="block mb-2">Temperature</label>
+          <div class="flex align-items-center gap-2">
+            <div class="flex-1">
+              <Slider v-model="temperature" :min="0" :max="2" :step="0.1" @change="handleTemperatureChange" />
+            </div>
+            <div class="w-4rem">
+              <InputNumber v-model="temperature" :min="0" :max="2" :step="0.1" inputClass="w-full"
+                @update:modelValue="handleTemperatureChange" />
+            </div>
           </div>
           <small class="block mt-1 text-color-secondary">Controls randomness (0 = deterministic, 2 = maximum
             creativity)</small>
@@ -115,16 +132,28 @@ const closeDialog = () => {
 
         <div class="field mb-3">
           <label for="max-tokens" class="block mb-2">Max Tokens</label>
-          <InputText id="max-tokens" v-model="maxTokens" type="number" min="1" max="4096" class="w-full" />
+          <div class="flex align-items-center gap-2">
+            <div class="flex-1">
+              <Slider v-model="maxTokens" :min="1" :max="4096" :step="1" @change="handleMaxTokensChange" />
+            </div>
+            <div class="w-5rem">
+              <InputNumber v-model="maxTokens" :min="1" :max="4096" :step="1" inputClass="w-full"
+                @update:modelValue="handleMaxTokensChange" />
+            </div>
+          </div>
           <small class="block mt-1 text-color-secondary">Maximum length of generated text</small>
         </div>
 
         <div class="field">
-          <label for="top-p" class="block mb-2">Top P: {{ topP }}</label>
-          <div class="p-inputgroup">
-            <span class="p-inputgroup-addon">0</span>
-            <InputText id="top-p" v-model="topP" type="range" min="0" max="1" step="0.05" class="w-full" />
-            <span class="p-inputgroup-addon">1</span>
+          <label for="top-p" class="block mb-2">Top P</label>
+          <div class="flex align-items-center gap-2">
+            <div class="flex-1">
+              <Slider v-model="topP" :min="0" :max="1" :step="0.05" @change="handleTopPChange" />
+            </div>
+            <div class="w-4rem">
+              <InputNumber v-model="topP" :min="0" :max="1" :step="0.05" inputClass="w-full"
+                @update:modelValue="handleTopPChange" />
+            </div>
           </div>
           <small class="block mt-1 text-color-secondary">Controls diversity via nucleus sampling</small>
         </div>

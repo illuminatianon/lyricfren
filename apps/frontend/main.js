@@ -18,6 +18,7 @@ import App from './App.vue'
 // PrimeVue components
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
 import Textarea from 'primevue/textarea'
 import Select from 'primevue/select'
 import Card from 'primevue/card'
@@ -25,6 +26,7 @@ import Dialog from 'primevue/dialog'
 import Menu from 'primevue/menu'
 import InputSwitch from 'primevue/inputswitch'
 import Divider from 'primevue/divider'
+import Slider from 'primevue/slider'
 
 
 // Create app instance
@@ -99,6 +101,7 @@ document.documentElement.classList.add('app-dark')
 // Register PrimeVue components
 app.component('Button', Button)
 app.component('InputText', InputText)
+app.component('InputNumber', InputNumber)
 app.component('Textarea', Textarea)
 app.component('Select', Select)
 app.component('Card', Card)
@@ -106,6 +109,7 @@ app.component('Dialog', Dialog)
 app.component('Menu', Menu)
 app.component('InputSwitch', InputSwitch)
 app.component('Divider', Divider)
+app.component('Slider', Slider)
 
 // Mount app
 app.mount('#app')
