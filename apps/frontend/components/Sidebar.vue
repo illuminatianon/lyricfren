@@ -1,17 +1,43 @@
 <script setup>
-	const props = defineProps({
-		sidebarVisible: Boolean,
-	});
+import { ref } from 'vue';
+import SettingsDialog from './SettingsDialog.vue';
 
-	const emit = defineEmits(['toggle-sidebar']);
-	const toggleSidebar = () => {
+const props = defineProps({
+	sidebarVisible: Boolean,
+});
+
+const emit = defineEmits(['toggle-sidebar']);
+const settingsDialogVisible = ref(false);
+
+const toggleSidebar = () => {
+	emit('toggle-sidebar');
+};
+
+const openSettings = () => {
+	settingsDialogVisible.value = true;
+	// Close sidebar on mobile after clicking a menu item
+	if (window.innerWidth < 768) {
 		emit('toggle-sidebar');
-	};
+	}
+};
 
-	const menuItems = [
-		{ label: 'Home', icon: 'pi pi-home', to: '/' },
-		{ label: 'Settings', icon: 'pi pi-cog', to: '/settings' },
-	];
+const menuItems = [
+	{
+		label: 'Home',
+		icon: 'pi pi-home',
+		command: () => {
+			// Close sidebar on mobile after clicking a menu item
+			if (window.innerWidth < 768) {
+				emit('toggle-sidebar');
+			}
+		}
+	},
+	{
+		label: 'Settings',
+		icon: 'pi pi-cog',
+		command: openSettings
+	},
+];
 </script>
 
 <template>
@@ -22,5 +48,8 @@
 			<Button icon="pi pi-times" text @click="toggleSidebar" />
 		</div>
 		<Menu :model="menuItems" class="w-full" />
+
+		<!-- Settings Dialog -->
+		<SettingsDialog v-model:visible="settingsDialogVisible" />
 	</aside>
 </template>
