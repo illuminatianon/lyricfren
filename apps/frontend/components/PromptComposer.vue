@@ -135,7 +135,6 @@ onMounted(() => {
         @click="generateLyrics"
         label="Generate"
         icon="pi pi-play"
-        severity="success"
         :loading="loading"
       />
 
