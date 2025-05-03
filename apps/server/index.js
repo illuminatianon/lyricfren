@@ -6,6 +6,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import stylesRoutes from './routes/styles.js';
 import configRoutes from './routes/config.js';
 import { loadConfig } from './config.js';
+import { initializeDataDirectory } from './utils/initData.js';
 
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
@@ -22,14 +23,22 @@ app.use(express.json());
 
 // Load configuration
 const config = loadConfig();
+console.log(`Using data directory: ${config.dataDir}`);
+
+// Initialize data directory with default files
+initializeDataDirectory();
 
 // API Routes
-app.use('/api/mvp/styles', stylesRoutes);
+app.use('/api/styles', stylesRoutes);
 app.use('/api/config', configRoutes);
 
 // Basic route for testing
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'LyricFren API is running' });
+  res.json({
+    status: 'ok',
+    message: 'LyricFren API is running',
+    dataDir: config.dataDir
+  });
 });
 
 // Handle frontend requests

@@ -3,11 +3,34 @@ import yaml from 'js-yaml';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { homedir } from 'os';
+import { mkdirSync } from 'fs';
 
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
+
+// User data directory in home folder
+const userDataDir = join(homedir(), '.lyricfren');
+const userConfigPath = join(userDataDir, 'config.yaml');
+const userDataPath = join(userDataDir, 'data');
+
+// Ensure user data directories exist
+if (!fs.existsSync(userDataDir)) {
+  mkdirSync(userDataDir, { recursive: true });
+}
+if (!fs.existsSync(userDataPath)) {
+  mkdirSync(userDataPath, { recursive: true });
+}
+
+/**
+ * Get path to a data file in the user data directory
+ * @param {string} filename - Name of the file
+ * @returns {string} Full path to the file
+ */
+export function getUserDataPath(filename) {
+  return join(userDataPath, filename);
+}
 
 /**
  * Load configuration from config.yaml or environment variables
@@ -25,7 +48,8 @@ export function loadConfig() {
     },
     vibeBriefThreshold: 100,
     gitSyncEnabled: false,
-    gitRepoPath: ''
+    gitRepoPath: '',
+    dataDir: userDataPath
   };
 
   // Try to load from project config
@@ -41,10 +65,13 @@ export function loadConfig() {
 
   // Try to load from user config (takes precedence)
   try {
-    const userConfigPath = join(homedir(), '.lyricfren', 'config.yaml');
     if (fs.existsSync(userConfigPath)) {
       const fileConfig = yaml.load(fs.readFileSync(userConfigPath, 'utf8'));
       config = { ...config, ...fileConfig };
+    } else {
+      // Create default user config if it doesn't exist
+      fs.writeFileSync(userConfigPath, yaml.dump(config), 'utf8');
+      console.log(`Created default config at ${userConfigPath}`);
     }
   } catch (error) {
     console.warn('Failed to load user config.yaml:', error.message);
@@ -70,10 +97,10 @@ export function saveConfig(config) {
   try {
     // Remove sensitive data before saving
     const configToSave = { ...config };
-    
-    // Save to project config
-    const projectConfigPath = join(rootDir, 'config.yaml');
-    fs.writeFileSync(projectConfigPath, yaml.dump(configToSave), 'utf8');
+
+    // Save to user config
+    fs.writeFileSync(userConfigPath, yaml.dump(configToSave), 'utf8');
+    console.log(`Configuration saved to ${userConfigPath}`);
     return true;
   } catch (error) {
     console.error('Failed to save config.yaml:', error.message);
@@ -88,16 +115,16 @@ export function saveConfig(config) {
  */
 export function getSafeConfig(config) {
   const safeConfig = { ...config };
-  
+
   // Mask sensitive data
   if (safeConfig.openaiApiKey) {
-    safeConfig.openaiApiKey = safeConfig.openaiApiKey.substring(0, 3) + '...' + 
+    safeConfig.openaiApiKey = safeConfig.openaiApiKey.substring(0, 3) + '...' +
       safeConfig.openaiApiKey.substring(safeConfig.openaiApiKey.length - 3);
   }
   if (safeConfig.sunoApiKey) {
-    safeConfig.sunoApiKey = safeConfig.sunoApiKey.substring(0, 3) + '...' + 
+    safeConfig.sunoApiKey = safeConfig.sunoApiKey.substring(0, 3) + '...' +
       safeConfig.sunoApiKey.substring(safeConfig.sunoApiKey.length - 3);
   }
-  
+
   return safeConfig;
 }
