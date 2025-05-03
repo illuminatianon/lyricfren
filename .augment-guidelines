@@ -1,0 +1,50 @@
+# LyricFren Project Guidelines
+
+## Tech Stack
+
+### Frontend
+- Vue 3 (with Composition API)
+- TailwindCSS v4
+- PrimeVue v4
+- OpenAPI JS client for AI integration
+
+### Backend
+- Express.js server
+- Local document-oriented database (options to discuss)
+  - Potential options: PouchDB, LowDB, SQLite with JSON support
+
+## Architecture
+
+- SPA frontend with RESTful API communication to backend
+- Component-based UI architecture
+- Local-first approach for data storage
+- AI integration via OpenAPI
+
+## Code Style & Conventions
+
+- Use Vue SFCs with `<script setup>` syntax
+- Follow Vue 3 Composition API patterns
+- Use PrimeVue components for complex UI elements
+- Implement responsive design with Tailwind utility classes
+
+## Project Structure
+
+- `/src` - Vue frontend code
+  - `/components` - Reusable Vue components
+  - `/views` - Page components
+  - `/services` - API clients and services
+  - `/stores` - State management
+  - `/types` - TypeScript type definitions
+- `/server` - Express backend
+  - `/routes` - API endpoints
+  - `/controllers` - Business logic
+  - `/models` - Data models
+  - `/db` - Database configuration
+
+## Database Considerations
+
+For local JSON document storage, consider:
+- PouchDB: Syncs with CouchDB, good for offline-first
+- LowDB: Simple JSON database with good performance
+- SQLite: More structured but with JSON column support
+- NeDB: MongoDB-like API but stores data locally
