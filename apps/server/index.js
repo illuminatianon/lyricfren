@@ -6,7 +6,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import stylesRoutes from './routes/styles.js';
 import configRoutes from './routes/config.js';
 import { loadConfig } from './config.js';
-import { initializeDataDirectory } from './utils/initData.js';
+import db from './services/db.js';
 
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
@@ -25,8 +25,8 @@ app.use(express.json());
 const config = loadConfig();
 console.log(`Using data directory: ${config.dataDir}`);
 
-// Initialize data directory with default files
-initializeDataDirectory();
+// Initialize database
+db.initialize();
 
 // API Routes
 app.use('/api/styles', stylesRoutes);

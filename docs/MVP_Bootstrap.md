@@ -29,8 +29,6 @@ This plan is for an LLM-driven coding agent. Keep a running **checklist** of com
 │   ├─ index.js          # Express server entrypoint
 │   ├─ /routes
 │   │   ├─ styles.js     # GET/PUT prompts, POST /generate
-│   ├─ /data
-│   │   └─ prompts.json  # current system‑prompt definitions
 │   └─ config.js         # load config.yaml / env
 ├─ /frontend
 │   ├─ App.vue           # main layout + router
@@ -41,8 +39,11 @@ This plan is for an LLM-driven coding agent. Keep a running **checklist** of com
 │   ├─ /stores
 │   │   └─ settings.js    # Pinia store for config
 │   └─ main.js            # Vue entrypoint
-├─ config.yaml           # default API keys + modelParams
 └─ README.md
+~/.lyricfren
+├─ /data
+│   └─ prompts.json      # current system‑prompt definitions
+└─ config.yaml           # default API keys + modelParams
 ```
 
 ## 4. Backend Tasks

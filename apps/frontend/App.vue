@@ -93,22 +93,5 @@ onMounted(() => {
 <style>
 /* Global styles moved to style.css */
 /* Custom styles for this component only */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background-color: #374151;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #4B5563;
-  border-radius: 0.25rem;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #6B7280;
-}
 </style>
 
