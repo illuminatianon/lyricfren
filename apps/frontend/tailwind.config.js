@@ -4,7 +4,8 @@ export default {
     './index.html',
     './**/*.{vue,js,ts,jsx,tsx}',
   ],
-  // We're not using Tailwind's dark mode feature since we're using explicit dark colors
+  darkMode: 'class', // or 'media' if you want to respect system preferences
+  // We're using explicit dark colors in our components
   theme: {
     extend: {
       colors: {
