@@ -138,6 +138,12 @@ PUT    /api/system-prompts/:id
   * `GenerationResult` (display + history panel)
   * `SystemPromptManager`
 
+* **Styling**:
+  * PrimeVue 4 for UI components with Nora theme preset
+  * PrimeFlex for layout utilities (grid, flexbox, spacing)
+  * PrimeIcons for iconography
+  * Custom CSS variables based on PrimeVue theming system
+
 * **Function Integration**: Use OpenAPI-generated client to call backend functions
 
 ## 6. Function Call Surfaces

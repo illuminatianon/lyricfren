@@ -31,14 +31,19 @@ This plan is for an LLM-driven coding agent. Keep a running **checklist** of com
 │   │   ├─ styles.js     # GET/PUT prompts, POST /generate
 │   └─ config.js         # load config.yaml / env
 ├─ /frontend
-│   ├─ App.vue           # main layout + router
+│   ├─ App.vue           # main layout with PrimeVue components
 │   ├─ /components
 │   │   ├─ StyleEditor.vue   # dropdown + text edit + save
 │   │   ├─ PromptComposer.vue# user prompt + generate button
 │   │   └─ ResultDisplay.vue # shows generated output
 │   ├─ /stores
 │   │   └─ settings.js    # Pinia store for config
-│   └─ main.js            # Vue entrypoint
+│   ├─ style.css         # Custom CSS and PrimeVue theme variables
+│   └─ main.js           # Vue entrypoint with PrimeVue configuration
+├─ /docs
+│   ├─ Architecture.md   # System architecture documentation
+│   ├─ TechStack.md      # Tech stack and styling documentation
+│   └─ MVP_Bootstrap.md  # This file
 └─ README.md
 ~/.lyricfren
 ├─ /data
@@ -66,7 +71,15 @@ This plan is for an LLM-driven coding agent. Keep a running **checklist** of com
 * [ ] **ResultDisplay Component**: show LLM output in scrollable box
 * [ ] **App.vue Layout**: place `StyleEditor`, `PromptComposer`, and `ResultDisplay` side by side or stacked
 
-## 6. Checklist & Documentation Checklist & Documentation
+## 6. Styling Approach
+
+* **UI Components**: Use PrimeVue 4 components for all UI elements
+* **Layout**: Use PrimeFlex utility classes for layout (not Tailwind CSS)
+* **Theming**: Use PrimeVue's theming system with Nora preset
+* **Icons**: Use PrimeIcons for all icons
+* **Custom Styles**: Define custom CSS variables in style.css based on PrimeVue theme
+
+## 7. Checklist & Documentation
 
 * 📌 **Before Coding**: review Express.js routing docs, Pinia store patterns, and OpenAI API reference
 * 📌 **Checklist**: add/remove items as tasks evolve; mark ✅ when done
