@@ -7,10 +7,11 @@
     "packages/*"
   ],
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "wait-on": "^8.0.3"
   },
   "scripts": {
-    "dev": "concurrently \"yarn workspace frontend dev\" \"yarn workspace server start\"",
+    "dev": "concurrently -k -n backend,frontend -c blue,green \"yarn workspace server dev\" \"yarn workspace frontend dev\"",
     "build": "yarn workspaces foreach --topological run build",
     "clean": "yarn workspaces foreach run clean"
   }
