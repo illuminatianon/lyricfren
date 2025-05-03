@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import api from '../services/api.js';
 
 export const useSettingsStore = defineStore('settings', () => {
   // State
@@ -18,14 +19,13 @@ export const useSettingsStore = defineStore('settings', () => {
   const fetchConfig = async () => {
     loading.value = true;
     error.value = '';
-    
+
     try {
-      const response = await fetch('http://localhost:3000/api/config');
-      const data = await response.json();
-      
+      const data = await api.get('/config');
+
       openaiApiKey.value = data.openaiApiKey || '';
       sunoApiKey.value = data.sunoApiKey || '';
-      
+
       if (data.defaultModelParams) {
         defaultModelParams.value = {
           ...defaultModelParams.value,
@@ -43,9 +43,9 @@ export const useSettingsStore = defineStore('settings', () => {
   const saveConfig = async () => {
     loading.value = true;
     error.value = '';
-    
+
     try {
-      const response = await fetch('http://localhost:3000/api/config', {
+      const response = await fetch(`${apiBaseUrl}/config`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ export const useSettingsStore = defineStore('settings', () => {
           defaultModelParams: defaultModelParams.value
         })
       });
-      
+
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || 'Failed to save configuration');
@@ -76,7 +76,7 @@ export const useSettingsStore = defineStore('settings', () => {
     defaultModelParams,
     loading,
     error,
-    
+
     // Actions
     fetchConfig,
     saveConfig

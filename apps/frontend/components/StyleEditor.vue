@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import api from '../services/api.js';
 
 const styles = ref([]);
 const selectedStyle = ref(null);
@@ -11,8 +12,7 @@ const message = ref('');
 const fetchStyles = async () => {
   loading.value = true;
   try {
-    const response = await fetch('http://localhost:3000/api/mvp/styles');
-    const data = await response.json();
+    const data = await api.get('/styles');
     styles.value = data;
     if (data.length > 0) {
       selectedStyle.value = data[0].id;
@@ -27,8 +27,8 @@ const fetchStyles = async () => {
 };
 
 // Handle style selection change
-const handleStyleChange = () => {
-  const style = styles.value.find(s => s.id === selectedStyle.value);
+const handleStyleChange = (e) => {
+  const style = styles.value.find(s => s.id === e.value);
   if (style) {
     systemPrompt.value = style.systemPrompt;
   }
@@ -36,32 +36,22 @@ const handleStyleChange = () => {
 
 // Save the current style
 const saveStyle = async () => {
-  if (!selectedStyle.value) return;
-  
+  if (!selectedStyle.value || !systemPrompt.value) {
+    message.value = 'Please select a style and enter a system prompt';
+    return;
+  }
+
   loading.value = true;
-  message.value = '';
-  
   try {
     const style = styles.value.find(s => s.id === selectedStyle.value);
-    const response = await fetch(`http://localhost:3000/api/mvp/styles/${selectedStyle.value}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: style.name,
-        systemPrompt: systemPrompt.value
-      })
+
+    await api.put(`/styles/${selectedStyle.value}`, {
+      name: style.name,
+      systemPrompt: systemPrompt.value
     });
-    
-    if (response.ok) {
-      message.value = 'Style saved successfully';
-      // Refresh styles
-      await fetchStyles();
-    } else {
-      const error = await response.json();
-      message.value = error.error || 'Failed to save style';
-    }
+
+    message.value = 'Style saved successfully';
+    await fetchStyles(); // Refresh styles
   } catch (error) {
     console.error('Error saving style:', error);
     message.value = 'Failed to save style';
@@ -70,56 +60,97 @@ const saveStyle = async () => {
   }
 };
 
+// Create a new style
+const createNewStyle = async () => {
+  const name = prompt('Enter a name for the new style:');
+  if (!name) return;
+
+  loading.value = true;
+  try {
+    await api.post('/styles', {
+      name,
+      systemPrompt: 'You are a helpful assistant that writes song lyrics.'
+    });
+
+    message.value = 'New style created';
+    await fetchStyles(); // Refresh styles
+  } catch (error) {
+    console.error('Error creating style:', error);
+    message.value = 'Failed to create style';
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Delete the current style
+const deleteStyle = async () => {
+  if (!selectedStyle.value) {
+    message.value = 'Please select a style to delete';
+    return;
+  }
+
+  if (!confirm('Are you sure you want to delete this style?')) {
+    return;
+  }
+
+  loading.value = true;
+  try {
+    await api.delete(`/styles/${selectedStyle.value}`);
+
+    message.value = 'Style deleted successfully';
+    await fetchStyles(); // Refresh styles
+  } catch (error) {
+    console.error('Error deleting style:', error);
+    message.value = 'Failed to delete style';
+  } finally {
+    loading.value = false;
+  }
+};
+
 // Load styles on component mount
-onMounted(fetchStyles);
+onMounted(() => {
+  fetchStyles();
+});
 </script>
 
 <template>
-  <div class="style-editor p-4 bg-slate-800 rounded-lg shadow-lg">
-    <h2 class="text-xl font-bold mb-4">Style Editor</h2>
-    
+  <div class="bg-slate-800 rounded-lg p-4 shadow-lg">
+    <h3 class="text-xl font-bold mb-4 text-blue-400">Style Editor</h3>
+
     <div v-if="loading" class="text-center py-4">
-      <i class="pi pi-spin pi-spinner text-2xl"></i>
+      <p>Loading...</p>
     </div>
-    
+
     <div v-else>
-      <div class="mb-4">
-        <label for="style-select" class="block mb-2">Select Style</label>
-        <select 
-          id="style-select" 
-          v-model="selectedStyle" 
+      <div class="mb-4 flex items-center gap-2">
+        <Dropdown
+          v-model="selectedStyle"
+          :options="styles"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Select a style"
+          class="w-full"
           @change="handleStyleChange"
-          class="w-full p-2 bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:ring focus:ring-blue-200"
-        >
-          <option v-for="style in styles" :key="style.id" :value="style.id">
-            {{ style.name }}
-          </option>
-        </select>
+        />
+        <Button icon="pi pi-plus" @click="createNewStyle" />
+        <Button icon="pi pi-trash" severity="danger" @click="deleteStyle" />
       </div>
-      
+
       <div class="mb-4">
-        <label for="system-prompt" class="block mb-2">System Prompt</label>
-        <textarea 
-          id="system-prompt" 
-          v-model="systemPrompt" 
+        <label class="block mb-2 text-sm font-medium">System Prompt</label>
+        <Textarea
+          v-model="systemPrompt"
           rows="8"
-          class="w-full p-2 bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:ring focus:ring-blue-200"
+          class="w-full"
           placeholder="Enter system prompt..."
-        ></textarea>
+        />
       </div>
-      
+
       <div class="flex justify-between items-center">
-        <button 
-          @click="saveStyle" 
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white"
-          :disabled="loading"
-        >
-          Save Prompt
-        </button>
-        
-        <span v-if="message" class="text-sm" :class="message.includes('success') ? 'text-green-400' : 'text-red-400'">
+        <p v-if="message" class="text-sm" :class="message.includes('Failed') ? 'text-red-400' : 'text-green-400'">
           {{ message }}
-        </span>
+        </p>
+        <Button @click="saveStyle" label="Save Prompt" icon="pi pi-save" />
       </div>
     </div>
   </div>

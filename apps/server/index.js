@@ -28,7 +28,7 @@ console.log(`Using data directory: ${config.dataDir}`);
 // Initialize database
 db.initialize();
 
-// API Routes
+// API Routes - all under /api prefix
 app.use('/api/styles', stylesRoutes);
 app.use('/api/config', configRoutes);
 
@@ -44,12 +44,21 @@ app.get('/api/health', (req, res) => {
 // Handle frontend requests
 if (isDevelopment) {
   // In development, proxy requests to Vite dev server
+  // BUT exclude /api routes from being proxied
   console.log('Running in development mode - proxying to Vite dev server');
-  app.use('/', createProxyMiddleware({
-    target: 'http://localhost:5173', // Default Vite dev server port
-    changeOrigin: true,
-    ws: true, // Support WebSocket
-  }));
+
+  // Only proxy non-API requests to the Vite dev server
+  app.use('/', (req, res, next) => {
+    if (req.url.startsWith('/api')) {
+      return next();
+    }
+
+    return createProxyMiddleware({
+      target: 'http://localhost:5173', // Default Vite dev server port
+      changeOrigin: true,
+      ws: true, // Support WebSocket
+    })(req, res, next);
+  });
 } else {
   // In production, serve static files from frontend build
   console.log('Running in production mode - serving static files');
@@ -57,10 +66,19 @@ if (isDevelopment) {
   app.use(express.static(frontendPath));
 
   // Catch-all route to serve index.html for SPA
-  app.get('*', (req, res) => {
+  // BUT exclude /api routes
+  app.get('*', (req, res, next) => {
+    if (req.url.startsWith('/api')) {
+      return next();
+    }
     res.sendFile(join(frontendPath, 'index.html'));
   });
 }
+
+// Handle 404 for API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: 'API endpoint not found' });
+});
 
 // Start server
 app.listen(PORT, () => {
