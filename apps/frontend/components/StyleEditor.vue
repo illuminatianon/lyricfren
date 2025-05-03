@@ -114,15 +114,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-slate-800 rounded-lg p-4 shadow-lg">
-    <h3 class="text-xl font-bold mb-4 text-blue-400">Style Editor</h3>
+  <div>
+    <h3 class="text-xl font-bold mb-4 text-primary">Style Editor</h3>
 
     <div v-if="loading" class="text-center py-4">
       <p>Loading...</p>
     </div>
 
     <div v-else>
-      <div class="mb-4 flex items-center gap-2">
+      <div class="mb-4 flex align-items-center gap-2">
         <Dropdown
           v-model="selectedStyle"
           :options="styles"
@@ -146,8 +146,8 @@ onMounted(() => {
         />
       </div>
 
-      <div class="flex justify-between items-center">
-        <p v-if="message" class="text-sm" :class="message.includes('Failed') ? 'text-red-400' : 'text-green-400'">
+      <div class="flex justify-content-between align-items-center">
+        <p v-if="message" class="text-sm" :class="message.includes('Failed') ? 'text-red' : 'text-green'">
           {{ message }}
         </p>
         <Button @click="saveStyle" label="Save Prompt" icon="pi pi-save" />

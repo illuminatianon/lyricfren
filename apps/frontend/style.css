@@ -1,34 +1,64 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Custom styles for LyricFren */
 
-@layer base {
-  :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-    /* Set color scheme to dark for browser elements */
-    color-scheme: dark;
+  /* Set color scheme to dark for browser elements */
+  color-scheme: dark;
 
-    /* Base text color for non-Tailwind elements */
-    color: rgba(255, 255, 255, 0.87);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+/* Custom variables for our app */
+.app-dark {
+  --app-bg-color: var(--p-surface-900);
+  --app-text-color: var(--p-surface-0);
+  --app-card-bg: var(--p-surface-800);
+  --app-sidebar-bg: var(--p-surface-800);
+  --app-header-bg: var(--p-surface-800);
+  --app-footer-bg: var(--p-surface-800);
+  --app-border-color: var(--p-surface-700);
+  --app-accent-color: var(--p-primary-color);
 }
 
 body {
   margin: 0;
-  display: flex;
-  min-width: 320px;
+  background-color: var(--app-bg-color);
+  color: var(--app-text-color);
   min-height: 100vh;
 }
 
 #app {
   width: 100%;
   margin: 0 auto;
+}
+
+/* Custom component styles */
+.app-card {
+  background-color: var(--app-card-bg);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+.app-header {
+  background-color: var(--app-header-bg);
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-sidebar {
+  background-color: var(--app-sidebar-bg);
+  padding: 1rem;
+}
+
+.app-footer {
+  background-color: var(--app-footer-bg);
+  padding: 0.75rem;
+  border-top: 1px solid var(--app-border-color);
 }

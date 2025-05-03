@@ -25,52 +25,62 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-gray-900 text-white">
+  <div class="flex flex-column min-h-screen">
     <!-- Header -->
-    <AppHeader @toggle-sidebar="toggleSidebar" />
+    <AppHeader @toggle-sidebar="toggleSidebar" class="app-header" />
 
     <div class="flex flex-1 relative">
       <!-- Sidebar -->
       <aside
-        class="bg-gray-800 text-white w-64 p-4 shadow-lg transition-all duration-300 ease-in-out fixed md:static top-0 bottom-0 left-0 z-10 h-full md:h-auto"
-        :class="{ '-translate-x-full md:translate-x-0': !sidebarVisible, 'translate-x-0': sidebarVisible }"
+        class="app-sidebar w-16rem shadow-2 transition-all transition-duration-300 fixed md:static top-0 bottom-0 left-0 z-1 h-full md:h-auto"
+        :class="{ '-translate-x-100 md:translate-x-0': !sidebarVisible, 'translate-x-0': sidebarVisible }"
       >
-        <div class="flex justify-end md:hidden">
-          <button @click="toggleSidebar" class="text-white hover:text-blue-300">
-            <i class="pi pi-times text-xl"></i>
-          </button>
+        <div class="flex justify-content-end md:hidden">
+          <Button icon="pi pi-times" text @click="toggleSidebar" />
         </div>
-        <nav class="mt-6">
-          <ul class="space-y-2">
-            <li><a href="#" class="block p-2 hover:bg-gray-700 rounded transition-colors">Home</a></li>
-            <li><a href="#" class="block p-2 hover:bg-gray-700 rounded transition-colors">Lyrics</a></li>
-            <li><a href="#" class="block p-2 hover:bg-gray-700 rounded transition-colors">Settings</a></li>
+        <nav class="mt-4">
+          <ul class="list-none p-0 m-0">
+            <li class="mb-2"><a href="#" class="no-underline p-2 flex align-items-center hover:surface-hover border-round transition-colors">Home</a></li>
+            <li class="mb-2"><a href="#" class="no-underline p-2 flex align-items-center hover:surface-hover border-round transition-colors">Lyrics</a></li>
+            <li class="mb-2"><a href="#" class="no-underline p-2 flex align-items-center hover:surface-hover border-round transition-colors">Settings</a></li>
           </ul>
         </nav>
       </aside>
 
       <!-- Main content -->
-      <main class="flex-1 p-4 md:p-6 lg:p-8">
-        <div class="container mx-auto max-w-7xl">
-          <div class="mb-8 text-center md:text-left">
-            <h2 class="text-3xl font-bold mb-2 text-blue-400">LyricFren - Style Prompting</h2>
-            <p class="text-gray-400 text-lg">Your friendly Suno companion</p>
+      <main class="flex-1 p-3 md:p-4 lg:p-5">
+        <div class="container mx-auto">
+          <div class="mb-5 text-center md:text-left">
+            <h2 class="text-3xl font-bold mb-2 text-primary">LyricFren - Style Prompting</h2>
+            <p class="text-lg text-color-secondary">Your friendly Suno companion</p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Style Editor -->
-            <div class="bg-gray-800 rounded-lg p-4 shadow-lg">
-              <StyleEditor class="h-full" />
+          <div class="grid">
+            <div class="col-12 md:col-6 lg:col-4 p-2">
+              <!-- Style Editor -->
+              <Card class="h-full">
+                <template #content>
+                  <StyleEditor />
+                </template>
+              </Card>
             </div>
 
-            <!-- Prompt Composer -->
-            <div class="bg-gray-800 rounded-lg p-4 shadow-lg">
-              <PromptComposer @result="handleResult" class="h-full" />
+            <div class="col-12 md:col-6 lg:col-4 p-2">
+              <!-- Prompt Composer -->
+              <Card class="h-full">
+                <template #content>
+                  <PromptComposer @result="handleResult" />
+                </template>
+              </Card>
             </div>
 
-            <!-- Result Display -->
-            <div class="bg-gray-800 rounded-lg p-4 shadow-lg">
-              <ResultDisplay :result="generatedResult" class="h-full" />
+            <div class="col-12 md:col-6 lg:col-4 p-2">
+              <!-- Result Display -->
+              <Card class="h-full">
+                <template #content>
+                  <ResultDisplay :result="generatedResult" />
+                </template>
+              </Card>
             </div>
           </div>
         </div>
@@ -78,11 +88,11 @@ onMounted(() => {
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white p-3 text-sm border-t border-gray-700">
-      <div class="container mx-auto flex justify-between items-center">
+    <footer class="app-footer text-sm">
+      <div class="container mx-auto flex justify-content-between align-items-center">
         <div>© 2024 LyricFren</div>
-        <div class="flex items-center">
-          <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+        <div class="flex align-items-center">
+          <span class="inline-block w-1rem h-1rem border-circle bg-green-500 mr-2"></span>
           <span>Status: Online</span>
         </div>
       </div>

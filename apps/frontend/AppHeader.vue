@@ -7,16 +7,16 @@ const toggleSidebar = () => {
 </script>
 
 <template>
-  <header class="bg-slate-800 text-white p-4 shadow-md">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center gap-4">
+  <header>
+    <div class="flex justify-content-between align-items-center">
+      <div class="flex align-items-center gap-3">
         <!-- Mobile menu button -->
-        <button
+        <Button
           @click="toggleSidebar"
-          class="md:hidden text-white focus:outline-none"
-        >
-          <i class="pi pi-bars text-xl"></i>
-        </button>
+          icon="pi pi-bars"
+          text
+          class="md:hidden"
+        />
 
         <!-- Logo/Title -->
         <div class="text-xl font-bold">LyricFren</div>
@@ -24,9 +24,7 @@ const toggleSidebar = () => {
 
       <!-- Right side actions -->
       <div>
-        <button class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm">
-          Settings
-        </button>
+        <Button label="Settings" size="small" />
       </div>
     </div>
   </header>

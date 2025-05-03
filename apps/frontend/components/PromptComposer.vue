@@ -103,46 +103,43 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="prompt-composer p-4 bg-slate-800 rounded-lg shadow-lg">
-    <h2 class="text-xl font-bold mb-4">Prompt Composer</h2>
+  <div>
+    <h2 class="text-xl font-bold mb-4 text-primary">Prompt Composer</h2>
 
     <div class="mb-4">
       <label for="style-select" class="block mb-2">Select Style</label>
-      <select
+      <Dropdown
         id="style-select"
         v-model="selectedStyle"
-        class="w-full p-2 bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:ring focus:ring-blue-200"
-      >
-        <option v-for="style in styles" :key="style.id" :value="style.id">
-          {{ style.name }}
-        </option>
-      </select>
+        :options="styles"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select a style"
+        class="w-full"
+      />
     </div>
 
     <div class="mb-4">
       <label for="user-prompt" class="block mb-2">Your Prompt</label>
-      <textarea
+      <Textarea
         id="user-prompt"
         v-model="userPrompt"
         rows="6"
-        class="w-full p-2 bg-slate-700 rounded border border-slate-600 focus:border-blue-500 focus:ring focus:ring-blue-200"
+        class="w-full"
         placeholder="Enter your prompt here..."
-      ></textarea>
+      />
     </div>
 
-    <div class="flex justify-between items-center">
-      <button
+    <div class="flex justify-content-between align-items-center">
+      <Button
         @click="generateLyrics"
-        class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded text-white"
-        :disabled="loading"
-      >
-        <span v-if="loading">
-          <i class="pi pi-spin pi-spinner mr-2"></i>Generating...
-        </span>
-        <span v-else>Generate</span>
-      </button>
+        label="Generate"
+        icon="pi pi-play"
+        severity="success"
+        :loading="loading"
+      />
 
-      <span v-if="error" class="text-sm text-red-400">
+      <span v-if="error" class="text-sm text-red">
         {{ error }}
       </span>
     </div>
