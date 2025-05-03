@@ -6,6 +6,9 @@
     "apps/*",
     "packages/*"
   ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
   "scripts": {
     "dev": "concurrently \"yarn workspace frontend dev\" \"yarn workspace server start\"",
     "build": "yarn workspaces foreach --topological run build",

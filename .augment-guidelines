@@ -10,8 +10,7 @@
 
 ### Backend
 - Express.js server
-- Local document-oriented database (options to discuss)
-  - Potential options: PouchDB, LowDB, SQLite with JSON support
+- Local document-oriented database (LowDB)
 
 ## Architecture
 
@@ -29,22 +28,18 @@
 
 ## Project Structure
 
-- `/src` - Vue frontend code
-  - `/components` - Reusable Vue components
-  - `/views` - Page components
-  - `/services` - API clients and services
-  - `/stores` - State management
-  - `/types` - TypeScript type definitions
-- `/server` - Express backend
-  - `/routes` - API endpoints
-  - `/controllers` - Business logic
-  - `/models` - Data models
-  - `/db` - Database configuration
+- `/apps` -
+  - `/frontend` - Vue frontend code
+    - `/components` - Reusable Vue components
+    - `/stores` - State management with Pinia
+    - `/services` - API clients and services
+  - `/server` - Express backend
+    - `/routes` - API endpoints
+    - `/config.js` - Configuration loading
+    - `/index.js` - Server entry point
+- `/docs` - Project documentation
 
 ## Database Considerations
 
-For local JSON document storage, consider:
-- PouchDB: Syncs with CouchDB, good for offline-first
+For local JSON document storage, we're using:
 - LowDB: Simple JSON database with good performance
-- SQLite: More structured but with JSON column support
-- NeDB: MongoDB-like API but stores data locally
