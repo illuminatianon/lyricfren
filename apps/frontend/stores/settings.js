@@ -45,22 +45,11 @@ export const useSettingsStore = defineStore('settings', () => {
     error.value = '';
 
     try {
-      const response = await fetch(`${apiBaseUrl}/config`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          openaiApiKey: openaiApiKey.value,
-          sunoApiKey: sunoApiKey.value,
-          defaultModelParams: defaultModelParams.value
-        })
+      await api.put('/config', {
+        openaiApiKey: openaiApiKey.value,
+        sunoApiKey: sunoApiKey.value,
+        defaultModelParams: defaultModelParams.value
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to save configuration');
-      }
     } catch (err) {
       console.error('Error saving config:', err);
       error.value = err.message || 'Failed to save configuration';
