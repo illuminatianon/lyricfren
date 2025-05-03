@@ -1,22 +1,37 @@
 <script setup>
-import {ref} from 'vue';
+import { ref, onMounted } from 'vue';
 import AppHeader from "./AppHeader.vue";
+import StyleEditor from "./components/StyleEditor.vue";
+import PromptComposer from "./components/PromptComposer.vue";
+import ResultDisplay from "./components/ResultDisplay.vue";
+import { useSettingsStore } from "./stores/settings";
 
 const sidebarVisible = ref(false);
+const generatedResult = ref('');
+const settingsStore = useSettingsStore();
 
 const toggleSidebar = () => {
   sidebarVisible.value = !sidebarVisible.value;
 };
+
+const handleResult = (result) => {
+  generatedResult.value = result;
+};
+
+// Load settings on app mount
+onMounted(() => {
+  settingsStore.fetchConfig();
+});
 </script>
 
 <template>
   <div class="flex flex-col min-h-screen">
     <!-- Header -->
-    <AppHeader/>
+    <AppHeader @toggle-sidebar="toggleSidebar" />
 
     <div class="flex flex-1 relative">
       <!-- Sidebar -->
-      <aside 
+      <aside
         class="bg-slate-700 text-white w-64 p-4 shadow-lg transition-all duration-300 ease-in-out fixed md:static top-0 bottom-0 left-0 z-10 h-full md:h-auto"
         :class="{ '-translate-x-full md:translate-x-0': !sidebarVisible, 'translate-x-0': sidebarVisible }"
       >
@@ -37,9 +52,19 @@ const toggleSidebar = () => {
       <!-- Main content -->
       <main class="flex-1 p-4">
         <div class="container mx-auto">
-          <!-- Your main content here -->
-          <h2 class="text-2xl font-bold mb-4">Welcome to LyricFren</h2>
-          <p>Your friendly Suno companion</p>
+          <h2 class="text-2xl font-bold mb-4">LyricFren - Style Prompting</h2>
+          <p class="mb-6">Your friendly Suno companion</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Style Editor -->
+            <StyleEditor />
+
+            <!-- Prompt Composer -->
+            <PromptComposer @result="handleResult" />
+
+            <!-- Result Display -->
+            <ResultDisplay :result="generatedResult" />
+          </div>
         </div>
       </main>
     </div>

@@ -1,0 +1,18 @@
+# LyricFren Configuration
+# This file contains default configuration settings for LyricFren
+
+# API Keys (replace with your actual keys or use environment variables)
+openaiApiKey: ""
+sunoApiKey: ""
+
+# Default Model Parameters
+defaultModelParams:
+  model: "gpt-4"
+  temperature: 0.7
+  maxTokens: 512
+  topP: 1.0
+
+# Application Settings
+vibeBriefThreshold: 100
+gitSyncEnabled: false
+gitRepoPath: ""
