@@ -39,7 +39,6 @@ export function getUserDataPath(filename) {
 export function loadConfig() {
   let config = {
     openaiApiKey: process.env.LYRICFREN_OPENAI_KEY || '',
-    sunoApiKey: process.env.LYRICFREN_SUNO_KEY || '',
     defaultModelParams: {
       model: 'gpt-4',
       temperature: 0.7,
@@ -81,9 +80,6 @@ export function loadConfig() {
   if (process.env.LYRICFREN_OPENAI_KEY) {
     config.openaiApiKey = process.env.LYRICFREN_OPENAI_KEY;
   }
-  if (process.env.LYRICFREN_SUNO_KEY) {
-    config.sunoApiKey = process.env.LYRICFREN_SUNO_KEY;
-  }
 
   return config;
 }
@@ -120,10 +116,6 @@ export function getSafeConfig(config) {
   if (safeConfig.openaiApiKey) {
     safeConfig.openaiApiKey = safeConfig.openaiApiKey.substring(0, 3) + '...' +
       safeConfig.openaiApiKey.substring(safeConfig.openaiApiKey.length - 3);
-  }
-  if (safeConfig.sunoApiKey) {
-    safeConfig.sunoApiKey = safeConfig.sunoApiKey.substring(0, 3) + '...' +
-      safeConfig.sunoApiKey.substring(safeConfig.sunoApiKey.length - 3);
   }
 
   return safeConfig;

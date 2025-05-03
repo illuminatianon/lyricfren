@@ -37,11 +37,10 @@ yarn dev
 
 ### Configuration
 
-Create a config file at `~/.lyricfren/config.yaml` with your API keys:
+Create a config file at `~/.lyricfren/config.yaml` with your API key:
 
 ```yaml
 openaiApiKey: "your-openai-api-key"
-sunoApiKey: "your-suno-api-key"
 ```
 
 ## Documentation

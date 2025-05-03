@@ -15,7 +15,6 @@ const settingsStore = useSettingsStore();
 
 // Local state for form values
 const openaiKey = ref('');
-const sunoKey = ref('');
 const model = ref('');
 const temperature = ref(0.7);
 const maxTokens = ref(512);
@@ -33,16 +32,9 @@ const maskedOpenaiKey = computed(() => {
   return key;
 });
 
-const maskedSunoKey = computed(() => {
-  const key = settingsStore.sunoApiKey;
-  if (!key) return '';
-  return `...${key.slice(-4)}`;
-});
-
 // Load settings when dialog is opened
 const onDialogShow = () => {
   openaiKey.value = settingsStore.openaiApiKey;
-  sunoKey.value = settingsStore.sunoApiKey;
   model.value = settingsStore.defaultModelParams.model;
   temperature.value = settingsStore.defaultModelParams.temperature;
   maxTokens.value = settingsStore.defaultModelParams.maxTokens;
@@ -57,7 +49,6 @@ const saveSettings = async () => {
   try {
     // Update store values
     settingsStore.openaiApiKey = openaiKey.value;
-    settingsStore.sunoApiKey = sunoKey.value;
     settingsStore.defaultModelParams = {
       model: model.value,
       temperature: parseFloat(temperature.value),
@@ -87,41 +78,16 @@ const closeDialog = () => {
 </script>
 
 <template>
-  <Dialog
-    v-model:visible="props.visible"
-    modal
-    header="Settings"
-    :style="{ width: '500px' }"
-    :closable="true"
-    @show="onDialogShow"
-    @update:visible="(val) => emit('update:visible', val)"
-  >
+  <Dialog v-model:visible="props.visible" modal header="Settings" :style="{ width: '500px' }" :closable="true"
+    @show="onDialogShow" @update:visible="(val) => emit('update:visible', val)">
     <div class="p-fluid">
       <div class="mb-4">
         <h3 class="text-xl mb-3">API Keys</h3>
 
         <div class="field mb-3">
           <label for="openai-key" class="block mb-2">OpenAI API Key</label>
-          <InputText
-            id="openai-key"
-            v-model="openaiKey"
-            placeholder="sk-..."
-            class="w-full"
-            type="password"
-          />
+          <InputText id="openai-key" v-model="openaiKey" placeholder="sk-..." class="w-full" type="password" />
           <small class="block mt-1 text-color-secondary">Current: {{ maskedOpenaiKey || 'Not set' }}</small>
-        </div>
-
-        <div class="field">
-          <label for="suno-key" class="block mb-2">Suno API Key</label>
-          <InputText
-            id="suno-key"
-            v-model="sunoKey"
-            placeholder="Your Suno API key"
-            class="w-full"
-            type="password"
-          />
-          <small class="block mt-1 text-color-secondary">Current: {{ maskedSunoKey || 'Not set' }}</small>
         </div>
       </div>
 
@@ -132,43 +98,24 @@ const closeDialog = () => {
 
         <div class="field mb-3">
           <label for="model" class="block mb-2">Model</label>
-          <Dropdown
-            id="model"
-            v-model="model"
-            :options="['gpt-4', 'gpt-3.5-turbo', 'gpt-4-turbo']"
-            placeholder="Select a model"
-            class="w-full"
-          />
+          <Dropdown id="model" v-model="model" :options="['gpt-4', 'gpt-3.5-turbo', 'gpt-4-turbo']"
+            placeholder="Select a model" class="w-full" />
         </div>
 
         <div class="field mb-3">
           <label for="temperature" class="block mb-2">Temperature: {{ temperature }}</label>
           <div class="p-inputgroup">
             <span class="p-inputgroup-addon">0</span>
-            <InputText
-              id="temperature"
-              v-model="temperature"
-              type="range"
-              min="0"
-              max="2"
-              step="0.1"
-              class="w-full"
-            />
+            <InputText id="temperature" v-model="temperature" type="range" min="0" max="2" step="0.1" class="w-full" />
             <span class="p-inputgroup-addon">2</span>
           </div>
-          <small class="block mt-1 text-color-secondary">Controls randomness (0 = deterministic, 2 = maximum creativity)</small>
+          <small class="block mt-1 text-color-secondary">Controls randomness (0 = deterministic, 2 = maximum
+            creativity)</small>
         </div>
 
         <div class="field mb-3">
           <label for="max-tokens" class="block mb-2">Max Tokens</label>
-          <InputText
-            id="max-tokens"
-            v-model="maxTokens"
-            type="number"
-            min="1"
-            max="4096"
-            class="w-full"
-          />
+          <InputText id="max-tokens" v-model="maxTokens" type="number" min="1" max="4096" class="w-full" />
           <small class="block mt-1 text-color-secondary">Maximum length of generated text</small>
         </div>
 
@@ -176,15 +123,7 @@ const closeDialog = () => {
           <label for="top-p" class="block mb-2">Top P: {{ topP }}</label>
           <div class="p-inputgroup">
             <span class="p-inputgroup-addon">0</span>
-            <InputText
-              id="top-p"
-              v-model="topP"
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              class="w-full"
-            />
+            <InputText id="top-p" v-model="topP" type="range" min="0" max="1" step="0.05" class="w-full" />
             <span class="p-inputgroup-addon">1</span>
           </div>
           <small class="block mt-1 text-color-secondary">Controls diversity via nucleus sampling</small>
@@ -201,18 +140,8 @@ const closeDialog = () => {
     </div>
 
     <template #footer>
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        text
-        @click="closeDialog"
-      />
-      <Button
-        label="Save"
-        icon="pi pi-check"
-        @click="saveSettings"
-        :loading="saving"
-      />
+      <Button label="Cancel" icon="pi pi-times" text @click="closeDialog" />
+      <Button label="Save" icon="pi pi-check" @click="saveSettings" :loading="saving" />
     </template>
   </Dialog>
 </template>

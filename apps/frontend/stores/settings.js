@@ -5,7 +5,6 @@ import api from '../services/api.js';
 export const useSettingsStore = defineStore('settings', () => {
   // State
   const openaiApiKey = ref('');
-  const sunoApiKey = ref('');
   const defaultModelParams = ref({
     model: 'gpt-4',
     temperature: 0.7,
@@ -24,7 +23,6 @@ export const useSettingsStore = defineStore('settings', () => {
       const data = await api.get('/config');
 
       openaiApiKey.value = data.openaiApiKey || '';
-      sunoApiKey.value = data.sunoApiKey || '';
 
       if (data.defaultModelParams) {
         defaultModelParams.value = {
@@ -47,7 +45,6 @@ export const useSettingsStore = defineStore('settings', () => {
     try {
       await api.put('/config', {
         openaiApiKey: openaiApiKey.value,
-        sunoApiKey: sunoApiKey.value,
         defaultModelParams: defaultModelParams.value
       });
     } catch (err) {
@@ -61,7 +58,6 @@ export const useSettingsStore = defineStore('settings', () => {
   return {
     // State
     openaiApiKey,
-    sunoApiKey,
     defaultModelParams,
     loading,
     error,
