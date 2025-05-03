@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import { PrimeVueResolver } from '@primevue/auto-import-resolver'
-import tailwind from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
 import { resolve } from 'path'
 
@@ -19,7 +18,6 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        tailwind(),
         autoprefixer()
       ],
     },

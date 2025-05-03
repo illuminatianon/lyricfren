@@ -4,6 +4,9 @@ import { definePreset } from '@primeuix/themes'
 import Nora from '@primeuix/themes/nora'
 import PrimeVue from 'primevue/config'
 
+// Import PrimeIcons
+import 'primeicons/primeicons.css'
+
 // Import PrimeFlex for layout utilities
 import 'primeflex/primeflex.css'
 
