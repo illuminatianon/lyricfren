@@ -5,10 +5,13 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Hard-code dark mode */
+  /* Set color scheme to dark for browser elements */
   color-scheme: dark;
+
+  /* Base text color for non-Tailwind elements */
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+
+  /* We don't set a background color here since we're using Tailwind's bg-gray-900 in the app */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

@@ -4,12 +4,11 @@ export default {
     './index.html',
     './**/*.{vue,js,ts,jsx,tsx}',
   ],
-  // Use media strategy for dark mode (always on in our case)
-  darkMode: 'media',
+  // We're not using Tailwind's dark mode feature since we're using explicit dark colors
   theme: {
     extend: {
       colors: {
-        // Defer to PrimeVue Nora theme colors
+        // Keep the default Tailwind colors since they're used throughout the app
       }
     },
   },
