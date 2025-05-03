@@ -1,35 +1,14 @@
 {
   "name": "lyricfren",
+  "private": true,
   "packageManager": "yarn@4.9.1",
-  "type": "module",
-  "dependencies": {
-    "@primeuix/styles": "^1.0.3",
-    "@primeuix/themes": "^1.0.3",
-    "@tailwindcss/vite": "^4.1.5",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "js-yaml": "^4.1.0",
-    "lowdb": "^6.1.1",
-    "openai": "^4.97.0",
-    "pinia": "^2.1.7",
-    "primevue": "^4.3.3",
-    "tailwindcss": "^4.1.5",
-    "uuid": "^9.0.1",
-    "vue": "^3.5.13"
-  },
-  "devDependencies": {
-    "@primevue/auto-import-resolver": "^4.3.3",
-    "@vitejs/plugin-vue": "^4.2.3",
-    "concurrently": "^8.2.2",
-    "nodemon": "^3.0.3",
-    "unplugin-vue-components": "^28.5.0",
-    "vite": "^4.4.9"
-  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "server": "node server/index.js",
-    "start": "concurrently \"npm run dev\" \"npm run server\""
+    "dev": "concurrently \"yarn workspace frontend dev\" \"yarn workspace server start\"",
+    "build": "yarn workspaces foreach --topological run build",
+    "clean": "yarn workspaces foreach run clean"
   }
 }
