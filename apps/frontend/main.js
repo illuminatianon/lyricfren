@@ -19,7 +19,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(PrimeVue, {
   theme: {
-    preset: Nora
+    preset: Nora,
+    dark: true // Hard-code enable dark mode
   }
 })
 

@@ -4,10 +4,12 @@ export default {
     './index.html',
     './**/*.{vue,js,ts,jsx,tsx}',
   ],
+  // Use media strategy for dark mode (always on in our case)
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
-        // You can add custom colors here if needed
+        // Defer to PrimeVue Nora theme colors
       }
     },
   },
