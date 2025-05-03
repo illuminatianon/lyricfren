@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
+import AppHeader from "./AppHeader.vue";
 
 const sidebarVisible = ref(false);
 
@@ -11,12 +12,7 @@ const toggleSidebar = () => {
 <template>
   <div class="flex flex-col min-h-screen">
     <!-- Header -->
-    <header class="bg-slate-800 text-white p-4 shadow-md">
-      <div class="flex justify-between items-center">
-        <div class="flex items-center gap-4">
-          </div>  
-      </div>
-    </header>
+    <AppHeader/>
 
     <div class="flex flex-1 relative">
       <!-- Sidebar -->
@@ -58,6 +54,3 @@ const toggleSidebar = () => {
   </div>
 </template>
 
-<style scoped>
-/* Additional custom styles can go here */
-</style>
