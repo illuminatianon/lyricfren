@@ -123,7 +123,7 @@ onMounted(() => {
 
     <div v-else>
       <div class="mb-4 flex align-items-center gap-2">
-        <Dropdown
+        <Select
           v-model="selectedStyle"
           :options="styles"
           optionLabel="name"

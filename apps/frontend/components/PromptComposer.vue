@@ -108,7 +108,7 @@ onMounted(() => {
 
     <div class="mb-4">
       <label for="style-select" class="block mb-2">Select Style</label>
-      <Dropdown
+      <Select
         id="style-select"
         v-model="selectedStyle"
         :options="styles"

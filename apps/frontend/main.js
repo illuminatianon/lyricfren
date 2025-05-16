@@ -19,7 +19,7 @@ import App from './App.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
-import Dropdown from 'primevue/dropdown'
+import Select from 'primevue/select'
 import Card from 'primevue/card'
 
 
@@ -55,7 +55,7 @@ document.documentElement.classList.add('app-dark')
 app.component('Button', Button)
 app.component('InputText', InputText)
 app.component('Textarea', Textarea)
-app.component('Dropdown', Dropdown)
+app.component('Select', Select)
 app.component('Card', Card)
 
 // Mount app
