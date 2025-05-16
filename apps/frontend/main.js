@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import { definePreset } from '@primeuix/themes'
 import Nora from '@primeuix/themes/nora'
 import PrimeVue from 'primevue/config'
+import router from './router/index.js'
 
 // Import PrimeIcons
 import 'primeicons/primeicons.css'
@@ -35,6 +36,7 @@ const LyricFrenPreset = definePreset(Nora, {
 
 // Use plugins
 app.use(createPinia())
+app.use(router)
 app.use(PrimeVue, {
   theme: {
     preset: LyricFrenPreset,

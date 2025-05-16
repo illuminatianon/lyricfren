@@ -24,7 +24,9 @@ const toggleSidebar = () => {
 
       <!-- Right side actions -->
       <div>
-        <Button label="Settings" size="small" />
+        <router-link to="/settings">
+          <Button label="Settings" icon="pi pi-cog" size="small" />
+        </router-link>
       </div>
     </div>
   </header>
