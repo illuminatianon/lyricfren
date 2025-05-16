@@ -38,7 +38,7 @@ const saveSettings = async () => {
                 <label for="openai-key" class="block mb-2">OpenAI API Key</label>
                 <InputText
                   id="openai-key"
-                  v-model="settingsStore.config.openaiApiKey"
+                  v-model="settingsStore.openaiApiKey"
                   type="password"
                   class="w-full"
                   placeholder="Enter your OpenAI API key"
@@ -49,7 +49,7 @@ const saveSettings = async () => {
                 <label for="suno-key" class="block mb-2">Suno API Key (Optional)</label>
                 <InputText
                   id="suno-key"
-                  v-model="settingsStore.config.sunoApiKey"
+                  v-model="settingsStore.sunoApiKey"
                   type="password"
                   class="w-full"
                   placeholder="Enter your Suno API key"
