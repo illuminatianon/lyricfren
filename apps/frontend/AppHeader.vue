@@ -1,4 +1,11 @@
 <script setup>
+const props = defineProps({
+  sidebarVisible: {
+    type: Boolean,
+    required: true
+  }
+});
+
 const emit = defineEmits(['toggle-sidebar']);
 
 const toggleSidebar = () => {
@@ -10,12 +17,12 @@ const toggleSidebar = () => {
   <header>
     <div class="flex justify-content-between align-items-center">
       <div class="flex align-items-center gap-3">
-        <!-- Mobile menu button -->
+        <!-- Hamburger menu button -->
         <Button
           @click="toggleSidebar"
-          icon="pi pi-bars"
+          :icon="sidebarVisible ? 'pi pi-times' : 'pi pi-bars'"
           text
-          class="md:hidden"
+          class="transition-all transition-duration-300"
         />
 
         <!-- Logo/Title -->
