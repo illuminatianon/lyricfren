@@ -21,6 +21,10 @@ export const useUIStore = defineStore('ui', () => {
     }
   };
 
+  const closeSidebar = () => {
+    sidebarVisible.value = false;
+  };
+
   const initializeUI = () => {
     // Set initial sidebar visibility based on screen size
     sidebarVisible.value = !isMobile.value;
@@ -38,13 +42,14 @@ export const useUIStore = defineStore('ui', () => {
     // State
     sidebarVisible,
     windowWidth,
-    
+
     // Computed
     isMobile,
-    
+
     // Actions
     toggleSidebar,
     closeSidebarOnMobile,
+    closeSidebar,
     initializeUI
   };
 });

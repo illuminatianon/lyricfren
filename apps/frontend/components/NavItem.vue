@@ -19,15 +19,15 @@ const props = defineProps({
 const uiStore = useUIStore();
 
 const handleClick = () => {
-  uiStore.closeSidebarOnMobile();
+  uiStore.closeSidebar();
 };
 </script>
 
 <template>
   <li class="mb-2">
-    <router-link 
-      :to="to" 
-      class="no-underline p-2 flex align-items-center hover:surface-hover border-round transition-colors" 
+    <router-link
+      :to="to"
+      class="no-underline p-2 flex align-items-center hover:surface-hover border-round transition-colors"
       @click="handleClick"
     >
       <i v-if="icon" :class="`pi ${icon} mr-2`"></i>
