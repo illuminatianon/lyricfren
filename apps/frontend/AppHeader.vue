@@ -1,20 +1,7 @@
 <script setup>
-const props = defineProps({
-  sidebarVisible: {
-    type: Boolean,
-    required: true
-  },
-  isMobile: {
-    type: Boolean,
-    required: true
-  }
-});
+import { useUIStore } from './stores/ui';
 
-const emit = defineEmits(['toggle-sidebar']);
-
-const toggleSidebar = () => {
-  emit('toggle-sidebar');
-};
+const uiStore = useUIStore();
 </script>
 
 <template>
@@ -23,8 +10,8 @@ const toggleSidebar = () => {
       <div class="flex align-items-center gap-3">
         <!-- Hamburger menu button -->
         <Button
-          @click="toggleSidebar"
-          :icon="sidebarVisible && !isMobile ? 'pi pi-times' : 'pi pi-bars'"
+          @click="uiStore.toggleSidebar"
+          :icon="uiStore.sidebarVisible && !uiStore.isMobile ? 'pi pi-times' : 'pi pi-bars'"
           text
           class="transition-all transition-duration-300"
           aria-label="Toggle sidebar"
