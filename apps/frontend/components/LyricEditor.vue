@@ -3,10 +3,8 @@ import { ref, watch, computed, onMounted } from 'vue';
 import { useMeterStore } from '../stores/meter.js';
 import debounce from 'lodash.debounce';
 import CodeMirror from 'vue-codemirror6';
-import { EditorView, gutter } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
-import { defaultKeymap } from '@codemirror/commands';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { gutter } from '@codemirror/view';
 
 const props = defineProps({
   modelValue: {
@@ -50,9 +48,7 @@ const syllableGutter = gutter({
 
 // CodeMirror extensions
 const extensions = computed(() => [
-  defaultKeymap,
   oneDark,
-  EditorView.lineWrapping,
   syllableGutter
 ]);
 
@@ -84,6 +80,7 @@ watch(() => meterStore.lineCounts.value, () => {
       @update:model-value="$emit('update:modelValue', $event)"
       :placeholder="placeholder"
       :extensions="extensions"
+      wrap
       class="editor-container"
     />
   </div>
@@ -102,21 +99,21 @@ watch(() => meterStore.lineCounts.value, () => {
   overflow: auto;
 }
 
-.syllable-gutter {
+:deep(.syllable-gutter) {
   width: 30px;
   color: var(--text-color-secondary);
   background-color: var(--surface-ground);
   border-right: 1px solid var(--surface-border);
 }
 
-.syllable-count {
+:deep(.syllable-count) {
   padding: 0 4px;
   text-align: center;
   font-size: 0.85em;
   line-height: 1.5em;
 }
 
-.syllable-count.has-syllables {
+:deep(.syllable-count.has-syllables) {
   color: var(--primary-color);
   font-weight: bold;
   background-color: var(--surface-hover);
