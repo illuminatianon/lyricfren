@@ -21,14 +21,9 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen flex flex-column">
-    <!-- Header -->
     <AppHeader class="app-header" />
-
     <div class="flex-1 flex">
-      <!-- Sidebar -->
       <AppSidebar />
-
-      <!-- Main content column -->
       <div
         class="flex-1 transition-all transition-duration-300"
         :class="{ 'md:pl-0': !uiStore.sidebarVisible || uiStore.isMobile }"
@@ -38,14 +33,10 @@ onMounted(() => {
         </main>
       </div>
     </div>
-
-    <!-- Footer -->
     <AppFooter />
   </div>
 </template>
 
 <style>
-/* Global styles moved to style.css */
-/* Custom styles for this component only */
 </style>
 
