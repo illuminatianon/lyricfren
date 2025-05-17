@@ -1,0 +1,10 @@
+# Add patterns to ignore here, one per line
+# Example:
+# *.log
+# tmp/
+data/cmudict-0.7b.json
+.editorconfig
+.gitattributes
+.augment-guidelines
+.yarnrc.yml
+repomix.*
