@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Path to the CMU dictionary
-const cmuDictPath = path.join(__dirname, '../../..', 'data', 'cmudict-0.7.json');
+const cmuDictPath = path.join(__dirname, '../', 'data', 'cmudict-0.7b.json');
 
 // Load the CMU dictionary
 let cmuDict = {};
@@ -31,12 +31,12 @@ try {
 function countSyllables(word) {
   // Clean the word - remove punctuation except apostrophes and dashes
   const cleanWord = word.replace(/[^\w'-]/g, '').toUpperCase();
-  
+
   // Check if the word is in the CMU dictionary
   if (cmuDict[cleanWord]) {
     return cmuDict[cleanWord];
   }
-  
+
   // If not found, try to estimate syllables (very basic)
   // This is a fallback and not very accurate
   return estimateSyllables(cleanWord);
@@ -53,7 +53,7 @@ function estimateSyllables(word) {
   const vowels = ['A', 'E', 'I', 'O', 'U', 'Y'];
   let count = 0;
   let prevIsVowel = false;
-  
+
   for (let i = 0; i < word.length; i++) {
     const isVowel = vowels.includes(word[i]);
     if (isVowel && !prevIsVowel) {
@@ -61,12 +61,12 @@ function estimateSyllables(word) {
     }
     prevIsVowel = isVowel;
   }
-  
+
   // Handle silent e at the end
   if (word.length > 2 && word.endsWith('E') && !vowels.includes(word[word.length - 2])) {
     count = Math.max(1, count - 1);
   }
-  
+
   return count || 1; // Ensure at least 1 syllable
 }
 
@@ -80,15 +80,15 @@ function countLineMetrics(line) {
   if (line.trim() === '' || (line.startsWith('[') && line.endsWith(']'))) {
     return 0;
   }
-  
+
   // Split the line into words and count syllables
   const words = line.split(/\s+/).filter(word => word.length > 0);
   let totalSyllables = 0;
-  
+
   for (const word of words) {
     totalSyllables += countSyllables(word);
   }
-  
+
   return totalSyllables;
 }
 
@@ -96,21 +96,21 @@ function countLineMetrics(line) {
 router.post('/count', (req, res) => {
   try {
     const { text } = req.body;
-    
+
     if (!text) {
       return res.status(400).json({ error: 'Text is required' });
     }
-    
+
     // Split the text into lines
     const lines = text.split('\n');
     const result = [];
-    
+
     // Process each line
     for (const line of lines) {
       const syllableCount = countLineMetrics(line);
       result.push([line, syllableCount]);
     }
-    
+
     res.json(result);
   } catch (error) {
     console.error('Error counting syllables:', error);
