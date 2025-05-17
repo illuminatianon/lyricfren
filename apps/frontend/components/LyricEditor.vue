@@ -5,6 +5,7 @@ import debounce from 'lodash.debounce';
 import CodeMirror from 'vue-codemirror6';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { gutter } from '@codemirror/view';
+import { defaultKeymap } from '@codemirror/commands';
 
 const props = defineProps({
   modelValue: {
@@ -49,7 +50,8 @@ const syllableGutter = gutter({
 // CodeMirror extensions
 const extensions = computed(() => [
   oneDark,
-  syllableGutter
+  syllableGutter,
+  defaultKeymap
 ]);
 
 // Watch for changes to modelValue
@@ -80,6 +82,7 @@ watch(() => meterStore.lineCounts.value, () => {
       @update:model-value="$emit('update:modelValue', $event)"
       :placeholder="placeholder"
       :extensions="extensions"
+      basic
       wrap
       class="editor-container"
     />
