@@ -17,16 +17,15 @@ const uiStore = useUIStore();
   <div
     class="transition-all transition-duration-300"
     :class="{
-      'hidden': !uiStore.sidebarVisible || uiStore.isMobile,
-      'w-16rem': uiStore.sidebarVisible && !uiStore.isMobile
+      'hidden': !uiStore.sidebarVisible,
+      'w-16rem': uiStore.sidebarVisible
     }"
   >
     <aside
       class="app-sidebar shadow-2 fixed md:static top-0 bottom-0 left-0 z-2 h-full w-16rem"
       :class="{
         '-translate-x-100': !uiStore.sidebarVisible,
-        'translate-x-0': uiStore.sidebarVisible,
-        'md:hidden': !uiStore.sidebarVisible
+        'translate-x-0': uiStore.sidebarVisible
       }"
     >
       <!-- Sidebar header space -->

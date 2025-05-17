@@ -23,6 +23,7 @@ export const useUIStore = defineStore('ui', () => {
 
   const closeSidebar = () => {
     sidebarVisible.value = false;
+    console.log('Sidebar closed:', sidebarVisible.value);
   };
 
   const initializeUI = () => {

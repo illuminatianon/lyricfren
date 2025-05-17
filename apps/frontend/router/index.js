@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PromptView from '../views/PromptView.vue'
 import SettingsView from '../views/SettingsView.vue'
+import { useUIStore } from '../stores/ui'
 
 const routes = [
   {
@@ -29,6 +30,20 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+// Use the UI store to close the sidebar on navigation
+
+// Add a global navigation guard to close the sidebar on every navigation
+router.beforeEach((_to, _from, next) => {
+  // Get the UI store
+  const uiStore = useUIStore()
+
+  // Close the sidebar
+  uiStore.closeSidebar()
+
+  // Continue with navigation
+  next()
 })
 
 export default router
