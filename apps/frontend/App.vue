@@ -24,13 +24,13 @@ onMounted(() => {
     <!-- Header -->
     <AppHeader class="app-header" />
 
-    <div class="flex-1 grid grid-nogutter">
+    <div class="flex-1 flex">
       <!-- Sidebar -->
       <AppSidebar />
 
       <!-- Main content column -->
       <div
-        class="col transition-all transition-duration-300"
+        class="flex-1 transition-all transition-duration-300"
         :class="{ 'md:pl-0': !uiStore.sidebarVisible || uiStore.isMobile }"
       >
         <main class="p-3 md:p-4 lg:p-5">
