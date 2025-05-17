@@ -32,7 +32,8 @@ const syllableGutter = lineNumbers({
   formatNumber: (lineNo, state) => {
     const idx = lineNo - 1;
     const info = meterStore.lineCounts[idx];
-    return info ? String(info[1]) : '';
+    // Return empty string for lines with no count or count of 0
+    return info && info[1] > 0 ? String(info[1]) : '';
   }
 });
 
