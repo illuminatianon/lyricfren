@@ -1,7 +1,11 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useMeterStore } from '../stores/meter.js';
 import debounce from 'lodash.debounce';
+import { EditorView, lineNumbers, gutter } from '@codemirror/view';
+import { EditorState } from '@codemirror/state';
+import { defaultKeymap } from '@codemirror/commands';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 const props = defineProps({
   modelValue: {
@@ -16,107 +20,159 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 const meterStore = useMeterStore();
+const editorRef = ref(null);
+let editorView = null;
 
 // Create a debounced version of the meter analysis function
 const debouncedAnalyzeMeter = debounce((text) => {
   meterStore.analyzeMeter(text);
 }, 500);
 
-// Handle text changes
-const handleInput = (event) => {
-  const value = event.target.value;
-  emit('update:modelValue', value);
-  debouncedAnalyzeMeter(value);
+// Create a custom gutter for syllable counts
+const syllableGutter = gutter({
+  class: "syllable-gutter",
+  renderElement: (view, line) => {
+    const lineNumber = view.state.doc.lineAt(line.from).number - 1; // 0-based index
+    const lineInfo = meterStore.lineCounts.value[lineNumber];
+    const syllableCount = lineInfo ? lineInfo[1] : 0;
+
+    const element = document.createElement("div");
+    element.className = "syllable-count";
+
+    if (syllableCount > 0) {
+      element.textContent = syllableCount;
+      element.classList.add("has-syllables");
+    }
+
+    return element;
+  }
+});
+
+// Initialize CodeMirror editor
+const initEditor = () => {
+  if (editorRef.value) {
+    // Create the editor state
+    const state = EditorState.create({
+      doc: props.modelValue,
+      extensions: [
+        defaultKeymap,
+        oneDark,
+        EditorView.lineWrapping,
+        EditorView.updateListener.of(update => {
+          if (update.docChanged) {
+            const value = update.state.doc.toString();
+            emit('update:modelValue', value);
+            debouncedAnalyzeMeter(value);
+          }
+        }),
+        syllableGutter
+      ]
+    });
+
+    // Create the editor view
+    editorView = new EditorView({
+      state,
+      parent: editorRef.value
+    });
+  }
 };
 
-// Calculate the position of each line with syllable count
-const calculateLinePosition = (lineCount, index) => {
-  // Find the original index of this line in the full array
-  const originalIndex = meterStore.lineCounts.findIndex(lc => lc === lineCount);
-  return (originalIndex * 1.5) + 0.75;
-};
-
-// Watch for external changes to modelValue
+// Update the editor when modelValue changes externally
 watch(() => props.modelValue, (newValue) => {
+  if (editorView && newValue !== editorView.state.doc.toString()) {
+    editorView.dispatch({
+      changes: {
+        from: 0,
+        to: editorView.state.doc.length,
+        insert: newValue || ''
+      }
+    });
+  }
+
   if (newValue && !newValue.trim()) {
     // If the value is cleared, also clear the meter results
     meterStore.lineCounts.value = [];
+  }
+});
+
+// Update the gutter when syllable counts change
+watch(() => meterStore.lineCounts.value, () => {
+  if (editorView) {
+    // Force a redraw of the gutter
+    editorView.dispatch({});
+  }
+});
+
+// Initialize the editor on mount
+onMounted(() => {
+  initEditor();
+});
+
+// Clean up on unmount
+onBeforeUnmount(() => {
+  if (editorView) {
+    editorView.destroy();
   }
 });
 </script>
 
 <template>
   <div class="lyric-editor">
-    <textarea
-      :value="modelValue"
-      @input="handleInput"
-      :placeholder="placeholder"
-      class="editor-textarea"
-      rows="15"
-    ></textarea>
-    <div class="meter-annotations">
-      <div
-        v-for="(lineCount, index) in meterStore.lineCounts.filter(lc => lc[1] > 0)"
-        :key="index"
-        class="meter-line"
-        :style="{ top: `${calculateLinePosition(lineCount, index)}em` }"
-      >
-        <span class="meter-count">{{ lineCount[1] }}</span>
-      </div>
-    </div>
+    <div ref="editorRef" class="editor-container"></div>
   </div>
 </template>
 
-<style scoped>
+<style>
 .lyric-editor {
   width: 100%;
   border: 1px solid var(--surface-border);
   border-radius: 4px;
   overflow: hidden;
-  position: relative;
 }
 
-.editor-textarea {
-  width: 100%;
-  padding: 8px 8px 8px 36px;
-  font-family: monospace;
-  font-size: 14px;
-  line-height: 1.5;
-  border: none;
-  resize: vertical;
+.editor-container {
+  height: 300px;
+  overflow: auto;
+}
+
+.syllable-gutter {
+  width: 30px;
+  color: var(--text-color-secondary);
   background-color: var(--surface-ground);
-  color: var(--text-color);
-  height: auto;
-  min-height: 200px;
+  border-right: 1px solid var(--surface-border);
 }
 
-.editor-textarea:focus {
-  outline: none;
-}
-
-.meter-annotations {
-  position: absolute;
-  left: 4px;
-  top: 8px;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.meter-line {
-  position: absolute;
-  left: 0;
-}
-
-.meter-count {
-  display: inline-block;
+.syllable-count {
   padding: 0 4px;
+  text-align: center;
   font-size: 0.85em;
+  line-height: 1.5em;
+}
+
+.syllable-count.has-syllables {
   color: var(--primary-color);
   font-weight: bold;
   background-color: var(--surface-hover);
   border-radius: 4px;
-  min-width: 20px;
-  text-align: center;
-  line-height: 1.5em;
+  margin: 2px 4px;
+}
+
+/* Override CodeMirror dark theme to match our app theme */
+.cm-editor {
+  height: 100%;
+}
+
+.cm-scroller {
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cm-content {
+  white-space: pre-wrap;
+}
+
+.cm-line {
+  padding: 0 4px;
 }
 </style>
