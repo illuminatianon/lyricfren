@@ -9,8 +9,8 @@ class CMUDictionaryService {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
 
-    // Path to the CMU dictionary
-    this.cmuDictPath = path.join(__dirname, '../..', 'data', 'cmudict-0.7.json');
+    // Path to the CMU dictionary (STOP CHANGING THIS)
+    this.cmuDictPath = path.join(__dirname, '..', 'data', 'cmudict-0.7b.json');
 
     // Load the dictionary
     this.loadDictionary();

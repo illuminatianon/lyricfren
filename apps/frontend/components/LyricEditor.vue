@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { useMeterStore } from '../stores/meter.js';
 import debounce from 'lodash.debounce';
-import { EditorView, lineNumbers, gutter } from '@codemirror/view';
+import CodeMirror from 'vue-codemirror6';
+import { EditorView, gutter } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { defaultKeymap } from '@codemirror/commands';
 import { oneDark } from '@codemirror/theme-one-dark';
@@ -21,7 +22,6 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 const meterStore = useMeterStore();
 const editorRef = ref(null);
-let editorView = null;
 
 // Create a debounced version of the meter analysis function
 const debouncedAnalyzeMeter = debounce((text) => {
@@ -48,46 +48,18 @@ const syllableGutter = gutter({
   }
 });
 
-// Initialize CodeMirror editor
-const initEditor = () => {
-  if (editorRef.value) {
-    // Create the editor state
-    const state = EditorState.create({
-      doc: props.modelValue,
-      extensions: [
-        defaultKeymap,
-        oneDark,
-        EditorView.lineWrapping,
-        EditorView.updateListener.of(update => {
-          if (update.docChanged) {
-            const value = update.state.doc.toString();
-            emit('update:modelValue', value);
-            debouncedAnalyzeMeter(value);
-          }
-        }),
-        syllableGutter
-      ]
-    });
+// CodeMirror extensions
+const extensions = computed(() => [
+  defaultKeymap,
+  oneDark,
+  EditorView.lineWrapping,
+  syllableGutter
+]);
 
-    // Create the editor view
-    editorView = new EditorView({
-      state,
-      parent: editorRef.value
-    });
-  }
-};
-
-// Update the editor when modelValue changes externally
+// Watch for changes to modelValue
 watch(() => props.modelValue, (newValue) => {
-  if (editorView && newValue !== editorView.state.doc.toString()) {
-    editorView.dispatch({
-      changes: {
-        from: 0,
-        to: editorView.state.doc.length,
-        insert: newValue || ''
-      }
-    });
-  }
+  // Analyze the meter when the value changes
+  debouncedAnalyzeMeter(newValue);
 
   if (newValue && !newValue.trim()) {
     // If the value is cleared, also clear the meter results
@@ -97,28 +69,23 @@ watch(() => props.modelValue, (newValue) => {
 
 // Update the gutter when syllable counts change
 watch(() => meterStore.lineCounts.value, () => {
-  if (editorView) {
-    // Force a redraw of the gutter
-    editorView.dispatch({});
-  }
-});
-
-// Initialize the editor on mount
-onMounted(() => {
-  initEditor();
-});
-
-// Clean up on unmount
-onBeforeUnmount(() => {
-  if (editorView) {
-    editorView.destroy();
+  if (editorRef.value?.view) {
+    // Force a redraw of the editor
+    editorRef.value.view.dispatch({});
   }
 });
 </script>
 
 <template>
   <div class="lyric-editor">
-    <div ref="editorRef" class="editor-container"></div>
+    <CodeMirror
+      ref="editorRef"
+      :model-value="modelValue"
+      @update:model-value="$emit('update:modelValue', $event)"
+      :placeholder="placeholder"
+      :extensions="extensions"
+      class="editor-container"
+    />
   </div>
 </template>
 
@@ -158,21 +125,21 @@ onBeforeUnmount(() => {
 }
 
 /* Override CodeMirror dark theme to match our app theme */
-.cm-editor {
+:deep(.cm-editor) {
   height: 100%;
 }
 
-.cm-scroller {
+:deep(.cm-scroller) {
   font-family: monospace;
   font-size: 14px;
   line-height: 1.5;
 }
 
-.cm-content {
+:deep(.cm-content) {
   white-space: pre-wrap;
 }
 
-.cm-line {
+:deep(.cm-line) {
   padding: 0 4px;
 }
 </style>
