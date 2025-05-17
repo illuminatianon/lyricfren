@@ -5,6 +5,7 @@ import { dirname, join } from 'path';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import stylesRoutes from './routes/styles.js';
 import configRoutes from './routes/config.js';
+import meterRoutes from './routes/meter.js';
 import { loadConfig } from './config.js';
 import db from './services/db.js';
 import http from 'http';
@@ -16,7 +17,7 @@ const __dirname = dirname(__filename);
 
 // Initialize express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Changed to 3001 to avoid conflicts
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Increase max listeners to avoid warnings
@@ -36,6 +37,7 @@ db.initialize();
 // API Routes - all under /api prefix
 app.use('/api/styles', stylesRoutes);
 app.use('/api/config', configRoutes);
+app.use('/api/meter', meterRoutes);
 
 // Basic route for testing
 app.get('/api/health', (req, res) => {

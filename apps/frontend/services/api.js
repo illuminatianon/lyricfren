@@ -22,12 +22,12 @@ class ApiService {
    */
   async get(endpoint) {
     const response = await fetch(this.getUrl(endpoint));
-    
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Unknown error' }));
       throw new Error(error.error || `Failed to fetch ${endpoint}`);
     }
-    
+
     return response.json();
   }
 
@@ -45,12 +45,12 @@ class ApiService {
       },
       body: JSON.stringify(data)
     });
-    
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Unknown error' }));
       throw new Error(error.error || `Failed to post to ${endpoint}`);
     }
-    
+
     return response.json();
   }
 
@@ -68,12 +68,12 @@ class ApiService {
       },
       body: JSON.stringify(data)
     });
-    
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Unknown error' }));
       throw new Error(error.error || `Failed to update ${endpoint}`);
     }
-    
+
     return response.json();
   }
 
@@ -86,12 +86,12 @@ class ApiService {
     const response = await fetch(this.getUrl(endpoint), {
       method: 'DELETE'
     });
-    
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Unknown error' }));
       throw new Error(error.error || `Failed to delete ${endpoint}`);
     }
-    
+
     return response.json();
   }
 }
