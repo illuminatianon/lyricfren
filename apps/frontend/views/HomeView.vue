@@ -1,5 +1,12 @@
 <script setup>
-// Home view component
+import { ref } from 'vue';
+import SettingsDialog from '../components/SettingsDialog.vue';
+
+const settingsDialogVisible = ref(false);
+
+const openSettings = () => {
+  settingsDialogVisible.value = true;
+};
 </script>
 
 <template>
@@ -18,13 +25,14 @@
               <router-link to="/prompt">
                 <Button label="Create Lyrics" icon="pi pi-pencil" class="mr-2" />
               </router-link>
-              <router-link to="/settings">
-                <Button label="Settings" icon="pi pi-cog" severity="secondary" />
-              </router-link>
+              <Button label="Settings" icon="pi pi-cog" severity="secondary" @click="openSettings" />
             </div>
           </template>
         </Card>
       </div>
     </div>
   </div>
+
+  <!-- Settings Dialog -->
+  <SettingsDialog v-model:visible="settingsDialogVisible" />
 </template>

@@ -32,11 +32,6 @@ const menuItems = [
 			}
 		}
 	},
-	{
-		label: 'Settings',
-		icon: 'pi pi-cog',
-		command: openSettings
-	},
 ];
 </script>
 

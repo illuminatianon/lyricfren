@@ -1,7 +1,14 @@
 <script setup>
+import { ref } from 'vue';
 import { useUIStore } from '../stores/ui';
+import SettingsDialog from './SettingsDialog.vue';
 
 const uiStore = useUIStore();
+const settingsDialogVisible = ref(false);
+
+const openSettings = () => {
+  settingsDialogVisible.value = true;
+};
 </script>
 
 <template>
@@ -23,10 +30,11 @@ const uiStore = useUIStore();
 
       <!-- Right side actions -->
       <div>
-        <router-link to="/settings">
-          <Button label="Settings" icon="pi pi-cog" size="small" />
-        </router-link>
+        <Button label="Settings" icon="pi pi-cog" size="small" @click="openSettings" />
       </div>
+
+      <!-- Settings Dialog -->
+      <SettingsDialog v-model:visible="settingsDialogVisible" />
     </div>
   </header>
 </template>

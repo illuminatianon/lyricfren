@@ -5,8 +5,7 @@ import NavItem from './NavItem.vue';
 const navItems = [
   { to: '/', label: 'Home', icon: 'pi-home' },
   { to: '/prompt', label: 'Prompt', icon: 'pi-pencil' },
-  {to: '/meter', label: 'Meter', icon: 'pi-music' },
-  { to: '/settings', label: 'Settings', icon: 'pi-cog' }
+  { to: '/meter', label: 'Meter', icon: 'pi-music' }
 ];
 </script>
 
