@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useMeterStore } from '../stores/meter.js';
 import debounce from 'lodash.debounce';
 
@@ -29,6 +29,13 @@ const handleInput = (event) => {
   debouncedAnalyzeMeter(value);
 };
 
+// Calculate the position of each line with syllable count
+const calculateLinePosition = (lineCount, index) => {
+  // Find the original index of this line in the full array
+  const originalIndex = meterStore.lineCounts.findIndex(lc => lc === lineCount);
+  return (originalIndex * 1.5) + 0.75;
+};
+
 // Watch for external changes to modelValue
 watch(() => props.modelValue, (newValue) => {
   if (newValue && !newValue.trim()) {
@@ -49,12 +56,12 @@ watch(() => props.modelValue, (newValue) => {
     ></textarea>
     <div class="meter-annotations">
       <div
-        v-for="(lineCount, index) in meterStore.lineCounts"
+        v-for="(lineCount, index) in meterStore.lineCounts.filter(lc => lc[1] > 0)"
         :key="index"
         class="meter-line"
-        :style="{ top: `${index * 1.5}em` }"
+        :style="{ top: `${calculateLinePosition(lineCount, index)}em` }"
       >
-        <span class="meter-count" v-if="lineCount[1] > 0">{{ lineCount[1] }}</span>
+        <span class="meter-count">{{ lineCount[1] }}</span>
       </div>
     </div>
   </div>
@@ -71,7 +78,7 @@ watch(() => props.modelValue, (newValue) => {
 
 .editor-textarea {
   width: 100%;
-  padding: 8px;
+  padding: 8px 8px 8px 36px;
   font-family: monospace;
   font-size: 14px;
   line-height: 1.5;
@@ -79,6 +86,8 @@ watch(() => props.modelValue, (newValue) => {
   resize: vertical;
   background-color: var(--surface-ground);
   color: var(--text-color);
+  height: auto;
+  min-height: 200px;
 }
 
 .editor-textarea:focus {
@@ -87,20 +96,27 @@ watch(() => props.modelValue, (newValue) => {
 
 .meter-annotations {
   position: absolute;
-  right: 8px;
+  left: 4px;
   top: 8px;
   pointer-events: none;
+  z-index: 10;
 }
 
 .meter-line {
   position: absolute;
-  right: 0;
+  left: 0;
 }
 
 .meter-count {
   display: inline-block;
   padding: 0 4px;
   font-size: 0.85em;
-  color: #888;
+  color: var(--primary-color);
+  font-weight: bold;
+  background-color: var(--surface-hover);
+  border-radius: 4px;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1.5em;
 }
 </style>
