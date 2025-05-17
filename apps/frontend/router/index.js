@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PromptView from '../views/PromptView.vue'
 import SettingsView from '../views/SettingsView.vue'
+import MeterView from '../views/MeterView.vue'
 import { useUIStore } from '../stores/ui'
 
 const routes = [
@@ -14,6 +15,11 @@ const routes = [
     path: '/prompt',
     name: 'prompt',
     component: PromptView
+  },
+  {
+    path: '/meter',
+    name: 'meter',
+    component: MeterView
   },
   {
     path: '/settings',
