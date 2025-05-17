@@ -3,6 +3,10 @@ const props = defineProps({
   sidebarVisible: {
     type: Boolean,
     required: true
+  },
+  isMobile: {
+    type: Boolean,
+    required: true
   }
 });
 
@@ -20,9 +24,10 @@ const toggleSidebar = () => {
         <!-- Hamburger menu button -->
         <Button
           @click="toggleSidebar"
-          :icon="sidebarVisible ? 'pi pi-times' : 'pi pi-bars'"
+          :icon="sidebarVisible && !isMobile ? 'pi pi-times' : 'pi pi-bars'"
           text
           class="transition-all transition-duration-300"
+          aria-label="Toggle sidebar"
         />
 
         <!-- Logo/Title -->
