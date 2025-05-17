@@ -5,33 +5,29 @@ import { PrimeVueResolver } from '@primevue/auto-import-resolver'
 import autoprefixer from 'autoprefixer'
 import { resolve } from 'path'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    Components({
-      resolvers: [
-        PrimeVueResolver()
-      ]
-    })
+    Components({ resolvers: [ PrimeVueResolver() ] })
   ],
-  css: {
-    postcss: {
-      plugins: [
-        autoprefixer()
-      ],
-    },
-  },
   resolve: {
     alias: {
       '@': resolve(__dirname, './')
-    }
+    },
+    // ✏️ force a single copy of CM6 modules
+    dedupe: [
+      '@codemirror/state',
+      '@codemirror/view',
+      '@codemirror/theme-one-dark',
+      '@codemirror/commands'
+    ]
+  },
+  css: {
+    postcss: { plugins: [autoprefixer] }
   },
   build: {
     outDir: 'dist',
     emptyOutDir: true
   },
-  server: {
-    port: 5173
-  }
+  server: { port: 5173 }
 })

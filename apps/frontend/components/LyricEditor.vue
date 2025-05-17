@@ -4,7 +4,7 @@ import { useMeterStore } from '../stores/meter.js';
 import debounce from 'lodash.debounce';
 import CodeMirror from 'vue-codemirror6';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { gutter } from '@codemirror/view';
+import { keymap, lineNumbers } from '@codemirror/view';
 import { defaultKeymap } from '@codemirror/commands';
 
 const props = defineProps({
@@ -27,23 +27,11 @@ const debouncedAnalyzeMeter = debounce((text) => {
   meterStore.analyzeMeter(text);
 }, 500);
 
-// Create a custom gutter for syllable counts
-const syllableGutter = gutter({
-  class: "syllable-gutter",
-  renderElement: (view, line) => {
-    const lineNumber = view.state.doc.lineAt(line.from).number - 1; // 0-based index
-    const lineInfo = meterStore.lineCounts.value[lineNumber];
-    const syllableCount = lineInfo ? lineInfo[1] : 0;
-
-    const element = document.createElement("div");
-    element.className = "syllable-count";
-
-    if (syllableCount > 0) {
-      element.textContent = syllableCount;
-      element.classList.add("has-syllables");
-    }
-
-    return element;
+const syllableGutter = lineNumbers({
+  formatNumber: (lineNo, state) => {
+    const idx = lineNo - 1;
+    const info = meterStore.lineCounts[idx];
+    return info ? String(info[1]) : '';
   }
 });
 
@@ -51,7 +39,7 @@ const syllableGutter = gutter({
 const extensions = computed(() => [
   oneDark,
   syllableGutter,
-  defaultKeymap
+  keymap.of(defaultKeymap)
 ]);
 
 // Watch for changes to modelValue
