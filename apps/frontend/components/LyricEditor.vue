@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useMeterStore } from '../stores/meter.js';
 import debounce from 'lodash.debounce';
 import CodeMirror from 'vue-codemirror6';
@@ -28,6 +28,7 @@ const debouncedAnalyzeMeter = debounce((text) => {
 }, 500);
 
 const syllableGutter = lineNumbers({
+  // noinspection JSUnusedLocalSymbols
   formatNumber: (lineNo, state) => {
     const idx = lineNo - 1;
     const info = meterStore.lineCounts[idx];
@@ -90,44 +91,17 @@ watch(() => meterStore.lineCounts.value, () => {
   overflow: auto;
 }
 
-:deep(.syllable-gutter) {
-  width: 30px;
-  color: var(--text-color-secondary);
-  background-color: var(--surface-ground);
+:deep(.cm-lineNumbers) {
+  width: 38px;
+  background: var(--surface-ground);
   border-right: 1px solid var(--surface-border);
-}
-
-:deep(.syllable-count) {
-  padding: 0 4px;
+  color: var(--text-color-secondary);
   text-align: center;
-  font-size: 0.85em;
-  line-height: 1.5em;
 }
 
-:deep(.syllable-count.has-syllables) {
+/* only cells that actually contain a number */
+:deep(.cm-lineNumbers span) {
+  font-weight: 600;
   color: var(--primary-color);
-  font-weight: bold;
-  background-color: var(--surface-hover);
-  border-radius: 4px;
-  margin: 2px 4px;
-}
-
-/* Override CodeMirror dark theme to match our app theme */
-:deep(.cm-editor) {
-  height: 100%;
-}
-
-:deep(.cm-scroller) {
-  font-family: monospace;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-:deep(.cm-content) {
-  white-space: pre-wrap;
-}
-
-:deep(.cm-line) {
-  padding: 0 4px;
 }
 </style>

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import api from '../services/api.js';
 
 export const useMeterStore = defineStore('meter', () => {
@@ -10,20 +10,19 @@ export const useMeterStore = defineStore('meter', () => {
   const totalSyllables = computed(() => {
     return lineCounts.value.reduce((sum, [_, count]) => sum + count, 0);
   });
-  
+
   // Actions
   const analyzeMeter = async (text) => {
     if (!text.trim()) {
       lineCounts.value = [];
       return;
     }
-    
+
     loading.value = true;
     error.value = '';
-    
+
     try {
-      const result = await api.post('/meter/count', { text });
-      lineCounts.value = result;
+      lineCounts.value = await api.post('/meter/count', { text });
     } catch (err) {
       console.error('Error analyzing meter:', err);
       error.value = 'Failed to analyze meter';
@@ -31,7 +30,7 @@ export const useMeterStore = defineStore('meter', () => {
       loading.value = false;
     }
   };
-  
+
   const analyzeLineMetrics = async (line) => {
     try {
       const result = await api.post('/meter/count-line', { line });
@@ -41,14 +40,14 @@ export const useMeterStore = defineStore('meter', () => {
       return 0;
     }
   };
-  
+
   return {
     // State
     lineCounts,
     loading,
     error,
     totalSyllables,
-    
+
     // Actions
     analyzeMeter,
     analyzeLineMetrics
