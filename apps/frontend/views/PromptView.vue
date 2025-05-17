@@ -13,11 +13,6 @@ const handleResult = (result) => {
 
 <template>
   <div class="container mx-auto">
-    <div class="mb-5 text-center md:text-left">
-      <h2 class="text-3xl font-bold mb-2 text-primary">LyricFren - Style Prompting</h2>
-      <p class="text-lg text-color-secondary">Your friendly Suno companion</p>
-    </div>
-
     <div class="grid">
       <div class="col-12 md:col-6 lg:col-4 p-2">
         <!-- Style Editor -->

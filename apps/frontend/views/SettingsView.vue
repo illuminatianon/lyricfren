@@ -24,11 +24,6 @@ const saveSettings = async () => {
 
 <template>
   <div class="container mx-auto">
-    <div class="mb-5 text-center md:text-left">
-      <h2 class="text-3xl font-bold mb-2 text-primary">Settings</h2>
-      <p class="text-lg text-color-secondary">Configure your LyricFren experience</p>
-    </div>
-
     <div class="grid">
       <div class="col-12 md:col-8 lg:col-6 mx-auto">
         <Card>
