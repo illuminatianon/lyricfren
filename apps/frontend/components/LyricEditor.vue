@@ -65,7 +65,7 @@ watch(() => meterStore.lineCounts.value, () => {
 </script>
 
 <template>
-  <div class="lyric-editor">
+  <div class="lyric-editor h-full flex flex-column">
     <CodeMirror
       ref="editorRef"
       :model-value="modelValue"
@@ -74,7 +74,7 @@ watch(() => meterStore.lineCounts.value, () => {
       :extensions="extensions"
       basic
       wrap
-      class="editor-container"
+      class="editor-container flex-1"
     />
   </div>
 </template>
@@ -82,13 +82,15 @@ watch(() => meterStore.lineCounts.value, () => {
 <style>
 .lyric-editor {
   width: 100%;
+  height: 100%;
   border: 1px solid var(--surface-border);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .editor-container {
-  height: 300px;
+  height: 100%;
+  min-height: 300px;
   overflow: auto;
 }
 
@@ -104,5 +106,14 @@ watch(() => meterStore.lineCounts.value, () => {
 :deep(.cm-lineNumbers span) {
   font-weight: 600;
   color: var(--primary-color);
+}
+
+/* Ensure CodeMirror editor fills the container */
+:deep(.cm-editor) {
+  height: 100%;
+}
+
+:deep(.cm-scroller) {
+  height: 100%;
 }
 </style>

@@ -32,27 +32,12 @@ watch(() => lyrics.value, (newValue) => {
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <div class="grid">
-      <div class="col-12 p-2">
-        <Card class="h-full">
-          <template #title>
-            <div class="flex justify-content-between align-items-center">
-              <span>Lyrics</span>
-              <Button icon="pi pi-trash" @click="clearForm" severity="secondary" text aria-label="Clear" tooltip="Clear" />
-            </div>
-          </template>
-          <template #content>
-            <div class="mb-3">
-              <LyricEditor
-                v-model="lyrics"
-                placeholder="Enter your lyrics here..."
-              />
-            </div>
-            <small v-if="error" class="p-error block mt-2">{{ error }}</small>
-          </template>
-        </Card>
-      </div>
-    </div>
+  <div class="h-full flex flex-column">
+    <LyricEditor
+      v-model="lyrics"
+      placeholder="Enter your lyrics here..."
+      class="flex-1"
+    />
+    <small v-if="error" class="p-error block mt-2">{{ error }}</small>
   </div>
 </template>

@@ -9,6 +9,11 @@ const routes = [
   {
     path: '/',
     name: 'home',
+    redirect: '/meter'
+  },
+  {
+    path: '/home',
+    name: 'homeView',
     component: HomeView
   },
   {
