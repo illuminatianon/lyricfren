@@ -27,6 +27,9 @@ import Menu from 'primevue/menu'
 import InputSwitch from 'primevue/inputswitch'
 import Divider from 'primevue/divider'
 import Slider from 'primevue/slider'
+import Badge from 'primevue/badge'
+import Chip from 'primevue/chip'
+import Tooltip from 'primevue/tooltip'
 
 
 // Create app instance
@@ -81,6 +84,16 @@ const LyricFrenPreset = definePreset(Nora, {
   }
 })
 
+// Import editor components for dynamic loading
+import LyricEditorInstance from './components/editors/LyricEditorInstance.vue'
+import PromptEditorInstance from './components/editors/PromptEditorInstance.vue'
+import StyleEditorInstance from './components/editors/StyleEditorInstance.vue'
+
+// Register editor components globally
+app.component('LyricEditorInstance', LyricEditorInstance)
+app.component('PromptEditorInstance', PromptEditorInstance)
+app.component('StyleEditorInstance', StyleEditorInstance)
+
 // Use plugins
 app.use(createPinia())
 app.use(router)
@@ -110,6 +123,11 @@ app.component('Menu', Menu)
 app.component('InputSwitch', InputSwitch)
 app.component('Divider', Divider)
 app.component('Slider', Slider)
+app.component('Badge', Badge)
+app.component('Chip', Chip)
+
+// Register directives
+app.directive('tooltip', Tooltip)
 
 // Mount app
 app.mount('#app')

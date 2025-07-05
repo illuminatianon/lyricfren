@@ -3,13 +3,19 @@ import HomeView from '../views/HomeView.vue'
 import PromptView from '../views/PromptView.vue'
 import SettingsView from '../views/SettingsView.vue'
 import MeterView from '../views/MeterView.vue'
+import WorkspaceView from '../views/WorkspaceView.vue'
 import { useUIStore } from '../stores/ui'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    redirect: '/meter'
+    redirect: '/workspace'
+  },
+  {
+    path: '/workspace',
+    name: 'workspace',
+    component: WorkspaceView
   },
   {
     path: '/home',

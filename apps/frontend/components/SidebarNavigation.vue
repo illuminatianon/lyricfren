@@ -3,9 +3,10 @@ import NavItem from './NavItem.vue';
 
 // Navigation items data
 const navItems = [
-  { to: '/', label: 'Home', icon: 'pi-home' },
+  { to: '/workspace', label: 'Workspace', icon: 'pi-th-large' },
+  { to: '/meter', label: 'Meter', icon: 'pi-music' },
   { to: '/prompt', label: 'Prompt', icon: 'pi-pencil' },
-  { to: '/meter', label: 'Meter', icon: 'pi-music' }
+  { to: '/home', label: 'Home', icon: 'pi-home' }
 ];
 </script>
 
