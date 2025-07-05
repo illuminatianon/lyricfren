@@ -2,6 +2,10 @@
 import { ref, watch, computed } from 'vue';
 import { useMeterStore } from '../../stores/meter.js';
 import debounce from 'lodash.debounce';
+import CodeMirror from 'vue-codemirror6';
+import { oneDark } from '@codemirror/theme-one-dark';
+import { keymap, lineNumbers } from '@codemirror/view';
+import { defaultKeymap } from '@codemirror/commands';
 
 const props = defineProps({
   panelData: {
@@ -20,25 +24,69 @@ const emit = defineEmits([
 ]);
 
 const meterStore = useMeterStore();
-const textareaRef = ref(null);
+const editorRef = ref(null);
 
 // Local content state
 const content = ref(props.panelData.content || '');
 
-// Debounced meter analysis
+// Debounced meter analysis (250ms)
 const debouncedAnalyzeMeter = debounce((text) => {
   meterStore.analyzeMeter(text);
 }, 250);
 
-// Watch for content changes
+// Perform analysis immediately if not done recently
+defineExpose({
+  forceAnalyze(text) {
+    meterStore.analyzeMeter(text);
+  }
+});
+
+const syllableGutter = lineNumbers({
+  // noinspection JSUnusedLocalSymbols
+  formatNumber: (lineNo, state) => {
+    const idx = lineNo - 1;
+    const info = meterStore.lineCounts[idx];
+    // Return empty string for lines with no count or count of 0
+    return info && info[1] > 0 ? String(info[1]) : '';
+  }
+});
+
+// CodeMirror extensions
+const extensions = computed(() => [
+  oneDark,
+  syllableGutter,
+  keymap.of(defaultKeymap)
+]);
+
+// Watch for content changes with advanced meter analysis
+let lastAnalyzeTime = 0;
+
 watch(content, (newContent) => {
   emit('content-change', newContent);
 
-  // Analyze meter if content exists
-  if (newContent.trim()) {
-    debouncedAnalyzeMeter(newContent);
+  const now = performance.now();
+  // If more than 1s (1000ms) since last analyze, run immediately
+  if (now - lastAnalyzeTime > 1000) {
+    meterStore.analyzeMeter(newContent);
+    lastAnalyzeTime = now;
   } else {
+    debouncedAnalyzeMeter(newContent);
+    // When the debounced function fires, update lastAnalyzeTime
+    debouncedAnalyzeMeter.flush && debouncedAnalyzeMeter.flush();
+    lastAnalyzeTime = performance.now();
+  }
+
+  if (newContent && !newContent.trim()) {
+    // If the value is cleared, also clear the meter results
     meterStore.lineCounts.value = [];
+  }
+});
+
+// Update the gutter when syllable counts change
+watch(() => meterStore.lineCounts.value, () => {
+  if (editorRef.value?.view) {
+    // Force a redraw of the editor
+    editorRef.value.view.dispatch({});
   }
 });
 
@@ -64,15 +112,10 @@ const totalSyllables = computed(() => {
 
 // Focus management
 watch(() => props.isActive, (isActive) => {
-  if (isActive && textareaRef.value) {
-    textareaRef.value.$el.focus();
+  if (isActive && editorRef.value) {
+    editorRef.value.focus();
   }
 });
-
-// Handle textarea input
-const handleInput = (event) => {
-  content.value = event.target.value;
-};
 
 // Handle title change
 const handleTitleChange = (newTitle) => {
@@ -83,16 +126,16 @@ const handleTitleChange = (newTitle) => {
 <template>
   <div class="lyric-editor-instance h-100 d-flex flex-column">
     <!-- Editor Content -->
-    <div class="editor-content flex-grow-1 pa-3">
-      <v-textarea
-        ref="textareaRef"
+    <div class="editor-content flex-grow-1">
+      <CodeMirror
+        ref="editorRef"
         :model-value="content"
         @update:model-value="content = $event"
         placeholder="Enter your lyrics here..."
-        class="w-100 h-100 lyric-textarea"
-        variant="plain"
-        no-resize
-        hide-details
+        :extensions="extensions"
+        basic
+        wrap
+        class="editor-container h-100"
       />
     </div>
 
@@ -133,20 +176,13 @@ const handleTitleChange = (newTitle) => {
 <style scoped>
 .editor-content {
   min-height: 0; /* Allow flex child to shrink */
+  overflow: hidden;
 }
 
-.lyric-textarea {
-  resize: none;
-  border: none;
-  background: transparent;
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.lyric-textarea:focus {
-  box-shadow: none;
-  border-color: transparent;
+.editor-container {
+  height: 100%;
+  min-height: 300px;
+  overflow: auto;
 }
 
 .editor-status-bar {
@@ -154,17 +190,30 @@ const handleTitleChange = (newTitle) => {
   flex-shrink: 0;
   font-size: 12px;
 }
+</style>
 
-/* Remove PrimeVue textarea default styling */
-:deep(.p-textarea) {
-  border: none;
-  padding: 16px;
-  background: transparent;
-  box-shadow: none;
+<style>
+/* CodeMirror styling - needs to be global */
+.lyric-editor-instance :deep(.cm-lineNumbers) {
+  width: 38px;
+  background: rgb(var(--v-theme-surface));
+  border-right: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  color: rgb(var(--v-theme-on-surface-variant));
+  text-align: center;
 }
 
-:deep(.p-textarea:focus) {
-  border-color: transparent;
-  box-shadow: none;
+/* only cells that actually contain a number */
+.lyric-editor-instance :deep(.cm-lineNumbers span) {
+  font-weight: 600;
+  color: rgb(var(--v-theme-primary));
+}
+
+/* Ensure CodeMirror editor fills the container */
+.lyric-editor-instance :deep(.cm-editor) {
+  height: 100%;
+}
+
+.lyric-editor-instance :deep(.cm-scroller) {
+  height: 100%;
 }
 </style>
