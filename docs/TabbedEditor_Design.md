@@ -43,6 +43,8 @@ The Multi-Panel Editor Workspace introduces a flexible, card-based interface for
 #### **WorkspaceManager** (Service)
 - **Role**: State management for workspace layout and panel operations
 - **Responsibilities**: Panel creation, closing, resizing, layout persistence, drag/drop reordering
+- **State Tracking**: Panel configurations, widths, order, sidebar states, workspace metadata
+- **Persistence Ready**: Prepared for backend integration with save/load workspace functionality
 
 #### **SidebarComponentRegistry** (Service)
 - **Role**: Registry for standardized sidebar components
@@ -342,6 +344,185 @@ interface SidebarComponentEvents {
 }
 ```
 
+## Workspace Persistence System
+
+### WorkspaceManager State Structure
+
+```typescript
+interface WorkspaceState {
+  // Workspace metadata
+  id: string;
+  name: string;
+  description?: string;
+  created: Date;
+  modified: Date;
+  version: string;
+
+  // Layout configuration
+  layout: {
+    panelOrder: string[];           // Array of panel IDs in display order
+    panelWidths: Record<string, number>;  // Manual width overrides
+    globalSidebarWidth: number;     // Default sidebar width
+    workspaceWidth: number;         // Total workspace width
+    resetToAuto: boolean;           // Whether to use auto-sizing
+  };
+
+  // Panel configurations
+  panels: Record<string, PanelState>;
+
+  // UI state
+  ui: {
+    activePanel?: string;           // Currently focused panel
+    workspaceToolbarVisible: boolean;
+    statusBarVisible: boolean;
+  };
+}
+
+interface PanelState {
+  id: string;
+  type: EditorType;               // 'lyric', 'prompt', 'style', etc.
+  title: string;
+
+  // Panel layout
+  width?: number;                 // Manual width override
+  sidebarOpen: boolean;
+  sidebarWidth?: number;
+
+  // Panel data
+  data: EditorDataModel;          // Full editor data including content
+
+  // Panel UI state
+  isDirty: boolean;
+  lastSaved?: Date;
+  scrollPosition?: number;
+  cursorPosition?: any;           // Editor-specific cursor state
+
+  // Sidebar configuration
+  sidebarConfig: {
+    activeTab?: string;           // If sidebar has tabs
+    collapsedSections: string[];  // Which sidebar sections are collapsed
+    componentStates: Record<string, any>; // Component-specific states
+  };
+}
+```
+
+### WorkspaceManager Methods
+
+```typescript
+class WorkspaceManager {
+  // State management
+  getCurrentWorkspace(): WorkspaceState;
+  updateWorkspaceMetadata(metadata: Partial<WorkspaceState>): void;
+
+  // Panel management
+  addPanel(type: EditorType, data?: any): string;  // Returns panel ID
+  removePanel(panelId: string): Promise<boolean>;
+  reorderPanels(newOrder: string[]): void;
+  duplicatePanel(panelId: string): string;
+
+  // Layout management
+  setPanelWidth(panelId: string, width: number): void;
+  resetPanelWidths(): void;                        // Clear manual widths
+  togglePanelSidebar(panelId: string): void;
+  setPanelSidebarWidth(panelId: string, width: number): void;
+
+  // State tracking
+  markPanelDirty(panelId: string, isDirty: boolean): void;
+  updatePanelData(panelId: string, data: Partial<EditorDataModel>): void;
+  savePanelState(panelId: string): Promise<void>;
+
+  // Persistence (prepared for backend)
+  saveWorkspace(name?: string): Promise<string>;   // Returns workspace ID
+  loadWorkspace(workspaceId: string): Promise<void>;
+  exportWorkspace(): WorkspaceExport;
+  importWorkspace(workspaceData: WorkspaceExport): Promise<void>;
+
+  // Workspace management
+  listWorkspaces(): Promise<WorkspaceSummary[]>;
+  deleteWorkspace(workspaceId: string): Promise<void>;
+  duplicateWorkspace(workspaceId: string, newName: string): Promise<string>;
+}
+```
+
+### Backend API Preparation (Stubbed)
+
+```typescript
+// Future API endpoints for workspace persistence
+interface WorkspaceAPI {
+  // Workspace CRUD
+  'GET /api/workspaces': () => Promise<WorkspaceSummary[]>;
+  'POST /api/workspaces': (workspace: WorkspaceState) => Promise<{ id: string }>;
+  'GET /api/workspaces/:id': (id: string) => Promise<WorkspaceState>;
+  'PUT /api/workspaces/:id': (id: string, workspace: WorkspaceState) => Promise<void>;
+  'DELETE /api/workspaces/:id': (id: string) => Promise<void>;
+
+  // Workspace operations
+  'POST /api/workspaces/:id/duplicate': (id: string, name: string) => Promise<{ id: string }>;
+  'POST /api/workspaces/import': (data: WorkspaceExport) => Promise<{ id: string }>;
+  'GET /api/workspaces/:id/export': (id: string) => Promise<WorkspaceExport>;
+}
+
+// Stub implementations for current development
+class WorkspaceAPIStub {
+  private workspaces: Map<string, WorkspaceState> = new Map();
+
+  async saveWorkspace(workspace: WorkspaceState): Promise<string> {
+    // TODO: Replace with actual API call
+    const id = workspace.id || generateId();
+    this.workspaces.set(id, { ...workspace, id });
+    console.log('STUB: Workspace saved locally', id);
+    return id;
+  }
+
+  async loadWorkspace(id: string): Promise<WorkspaceState> {
+    // TODO: Replace with actual API call
+    const workspace = this.workspaces.get(id);
+    if (!workspace) throw new Error(`Workspace ${id} not found`);
+    console.log('STUB: Workspace loaded locally', id);
+    return workspace;
+  }
+
+  async listWorkspaces(): Promise<WorkspaceSummary[]> {
+    // TODO: Replace with actual API call
+    console.log('STUB: Listing local workspaces');
+    return Array.from(this.workspaces.values()).map(ws => ({
+      id: ws.id,
+      name: ws.name,
+      description: ws.description,
+      modified: ws.modified,
+      panelCount: Object.keys(ws.panels).length
+    }));
+  }
+}
+```
+
+### Workspace Export/Import Format
+
+```typescript
+interface WorkspaceExport {
+  version: string;                    // Export format version
+  workspace: WorkspaceState;          // Full workspace state
+  metadata: {
+    exportedAt: Date;
+    exportedBy?: string;
+    lyricFrenVersion: string;
+    includesContent: boolean;         // Whether panel content is included
+  };
+
+  // Optional: Separate content for large workspaces
+  panelContent?: Record<string, any>;
+}
+
+interface WorkspaceSummary {
+  id: string;
+  name: string;
+  description?: string;
+  modified: Date;
+  panelCount: number;
+  tags?: string[];
+}
+```
+
 ## Workspace Features
 
 ### Panel Management
@@ -367,45 +548,76 @@ interface SidebarComponentEvents {
 6. **Destruction**: Panel removed with cleanup
 
 ### Workspace Actions
-- **Save All**: Save all dirty panels
-- **Close All**: Close all panels (with confirmation)
+
+#### **Panel Operations**
+- **Save All**: Save all dirty panels to their respective storage
+- **Close All**: Close all panels (with unsaved changes confirmation)
 - **Reset Layout**: Clear manual panel widths, return to automatic flexbox sizing
-- **Auto-Arrange**: Automatically distribute panels evenly
-- **Export Workspace**: Save entire workspace configuration (panels, layout, data)
-- **Import Workspace**: Load saved workspace layout and restore panels
-- **Settings**: Global editor preferences and default sidebar configurations
+- **Auto-Arrange**: Automatically distribute panels evenly across workspace
+
+#### **Workspace Persistence (UI Ready, Backend Stubbed)**
+- **Save Workspace**: Save current workspace state with name/description dialog
+- **Load Workspace**: Browse and load saved workspaces from list dialog
+- **New Workspace**: Create fresh workspace (with option to save current first)
+- **Duplicate Workspace**: Clone current workspace with new name
+- **Export Workspace**: Download workspace as JSON file
+- **Import Workspace**: Upload and restore workspace from JSON file
+- **Delete Workspace**: Remove saved workspace (with confirmation)
+
+#### **Workspace Management UI**
+- **Workspace Selector**: Dropdown in toolbar showing current workspace name
+- **Workspace Browser**: Dialog with list of saved workspaces, search, and metadata
+- **Save Dialog**: Name, description, tags for workspace saving
+- **Import/Export Dialogs**: File selection and format options
+
+#### **Global Settings**
+- **Editor Preferences**: Default sidebar configurations, auto-save settings
+- **Workspace Defaults**: Default panel types, layout preferences
+- **Persistence Settings**: Auto-save frequency, backup options (for future)
 
 ## Implementation Plan
 
 ### Phase 1: Core Infrastructure
 1. Create `EditorWorkspace` host component with flexbox layout
 2. Define `EditorPanel` base interface and card structure
-3. Implement `WorkspaceManager` service for layout state
+3. Implement `WorkspaceManager` service with full state tracking
 4. Create `PanelHeader` with action icons and overflow menu
+5. Set up workspace state structure and persistence interfaces
 
 ### Phase 2: Panel & Sidebar System
 1. Create `BaseEditorPanel` with two-column layout
 2. Implement `PanelSidebar` collapsible component
-3. Add resize handles and panel width management
-4. Create sidebar toggle animations and responsive behavior
+3. Implement `SidebarComponentRegistry` and standard widgets
+4. Add resize handles and panel width management
+5. Create sidebar toggle animations and responsive behavior
 
 ### Phase 3: Editor Migration
 1. Extract common functionality from `LyricEditor`
-2. Create `LyricEditorPanel` with sidebar for metadata/tools
-3. Refactor `LyricEditor` to fit new panel structure
-4. Implement panel lifecycle methods and state management
+2. Create `LyricEditorPanel` with sidebar configuration
+3. Implement standard sidebar widgets (MetadataWidget, TagsWidget, etc.)
+4. Refactor `LyricEditor` to fit new panel structure
+5. Implement panel lifecycle methods and state management
 
 ### Phase 4: Additional Editors
 1. Create `PromptEditorPanel` (replacing PromptComposer)
 2. Create `StyleEditorPanel` (enhancing StyleEditor)
-3. Implement editor-specific sidebar content
+3. Implement editor-specific sidebar widgets
 4. Add panel type registration system
+5. Create drag/drop panel reordering
 
-### Phase 5: Advanced Features
+### Phase 5: Workspace Management UI
+1. Create workspace persistence UI components (save/load dialogs)
+2. Implement workspace browser and management interface
+3. Add workspace selector to toolbar
+4. Create export/import functionality with JSON format
+5. Implement API stub service for development
+
+### Phase 6: Advanced Features
 1. Panel resizing with drag handles
-2. Layout persistence and restoration
-3. Workspace import/export functionality
+2. Auto-arrange and reset layout functionality
+3. Workspace duplication and deletion
 4. Global actions and bulk operations
+5. Prepare for backend integration (API endpoints defined)
 
 ## Technical Considerations
 
