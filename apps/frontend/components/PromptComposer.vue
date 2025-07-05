@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { OpenAI } from 'openai';
+// import { OpenAI } from 'openai';
 import api from '../services/api.js';
 
 const userPrompt = ref('');
@@ -57,42 +57,42 @@ const generateLyrics = async () => {
   loading.value = true;
   error.value = '';
 
-  try {
-    // Get the selected style's system prompt
-    const style = styles.value.find(s => s.id === selectedStyle.value);
-    if (!style) {
-      throw new Error('Selected style not found');
-    }
-
-    // Initialize OpenAI client
-    const openai = new OpenAI({
-      apiKey: apiKey.value,
-      dangerouslyAllowBrowser: true // For demo purposes only
-    });
-
-    // Call the API
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        { role: 'system', content: style.systemPrompt },
-        { role: 'user', content: userPrompt.value }
-      ],
-      temperature: 0.7,
-      max_tokens: 512
-    });
-
-    // Emit the result
-    if (response.choices && response.choices.length > 0) {
-      emit('result', response.choices[0].message.content);
-    } else {
-      throw new Error('No response from API');
-    }
-  } catch (err) {
-    console.error('Error generating lyrics:', err);
-    error.value = err.message || 'Failed to generate lyrics';
-  } finally {
-    loading.value = false;
-  }
+  // try {
+  //   // Get the selected style's system prompt
+  //   const style = styles.value.find(s => s.id === selectedStyle.value);
+  //   if (!style) {
+  //     throw new Error('Selected style not found');
+  //   }
+  //
+  //   // Initialize OpenAI client
+  //   const openai = new OpenAI({
+  //     apiKey: apiKey.value,
+  //     dangerouslyAllowBrowser: true // For demo purposes only
+  //   });
+  //
+  //   // Call the API
+  //   const response = await openai.chat.completions.create({
+  //     model: 'gpt-4',
+  //     messages: [
+  //       { role: 'system', content: style.systemPrompt },
+  //       { role: 'user', content: userPrompt.value }
+  //     ],
+  //     temperature: 0.7,
+  //     max_tokens: 512
+  //   });
+  //
+  //   // Emit the result
+  //   if (response.choices && response.choices.length > 0) {
+  //     emit('result', response.choices[0].message.content);
+  //   } else {
+  //     throw new Error('No response from API');
+  //   }
+  // } catch (err) {
+  //   console.error('Error generating lyrics:', err);
+  //   error.value = err.message || 'Failed to generate lyrics';
+  // } finally {
+  //   loading.value = false;
+  // }
 };
 
 // Load data on component mount
