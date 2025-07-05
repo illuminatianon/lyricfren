@@ -30,6 +30,7 @@ import Slider from 'primevue/slider'
 import Badge from 'primevue/badge'
 import Chip from 'primevue/chip'
 import Tooltip from 'primevue/tooltip'
+import SplitButton from 'primevue/splitbutton'
 
 
 // Create app instance
@@ -125,6 +126,7 @@ app.component('Divider', Divider)
 app.component('Slider', Slider)
 app.component('Badge', Badge)
 app.component('Chip', Chip)
+app.component('SplitButton', SplitButton)
 
 // Register directives
 app.directive('tooltip', Tooltip)

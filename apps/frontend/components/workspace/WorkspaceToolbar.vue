@@ -12,7 +12,6 @@ const emit = defineEmits([
 const workspaceManager = useWorkspaceManager();
 
 // Component state
-const showNewPanelMenu = ref(false);
 const showWorkspaceMenu = ref(false);
 
 // Computed properties
@@ -30,7 +29,6 @@ const panelTypes = [
 // Actions
 const handleNewPanel = (type) => {
   emit('new-panel', type);
-  showNewPanelMenu.value = false;
 };
 
 const handleResetLayout = () => {
@@ -89,28 +87,17 @@ const handleImportWorkspace = () => {
     <!-- Left Section: Panel Actions -->
     <div class="flex align-items-center gap-2">
       <!-- New Panel Button -->
-      <div class="relative">
-        <Button
-          icon="pi pi-plus"
-          label="New"
-          size="small"
-          @click="showNewPanelMenu = !showNewPanelMenu"
-          aria-haspopup="true"
-          aria-controls="new-panel-menu"
-        />
-
-        <Menu
-          id="new-panel-menu"
-          ref="newPanelMenu"
-          :model="panelTypes.map(type => ({
-            label: type.label,
-            icon: type.icon,
-            command: () => handleNewPanel(type.value)
-          }))"
-          :popup="true"
-          v-model:visible="showNewPanelMenu"
-        />
-      </div>
+      <SplitButton
+        icon="pi pi-plus"
+        label="New"
+        size="small"
+        :model="panelTypes.map(type => ({
+          label: type.label,
+          icon: type.icon,
+          command: () => handleNewPanel(type.value)
+        }))"
+        @click="handleNewPanel('lyric')"
+      />
 
       <!-- Layout Actions -->
       <Button
