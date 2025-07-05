@@ -13,7 +13,7 @@ const currentWorkspace = computed(() => workspaceManager.currentWorkspace);
 
 // Panel width calculations
 const getPanelStyle = (panel) => {
-  const manualWidth = currentWorkspace.layout.panelWidths[panel.id];
+  const manualWidth = currentWorkspace.value.layout.panelWidths[panel.id];
 
   if (manualWidth) {
     return {
@@ -55,7 +55,7 @@ const handleDrop = (event, targetPanelId) => {
 
   const sourcePanelId = draggedPanel.value;
   if (sourcePanelId && sourcePanelId !== targetPanelId) {
-    const currentOrder = [...currentWorkspace.layout.panelOrder];
+    const currentOrder = [...currentWorkspace.value.layout.panelOrder];
     const sourceIndex = currentOrder.indexOf(sourcePanelId);
     const targetIndex = currentOrder.indexOf(targetPanelId);
 
@@ -87,8 +87,8 @@ const startResize = (event, panelId) => {
   resizingPanel.value = panelId;
   resizeStartX.value = event.clientX;
 
-  const panel = currentWorkspace.panels[panelId];
-  const currentWidth = currentWorkspace.layout.panelWidths[panelId];
+  const panel = currentWorkspace.value.panels[panelId];
+  const currentWidth = currentWorkspace.value.layout.panelWidths[panelId];
 
   if (currentWidth) {
     resizeStartWidth.value = currentWidth;
@@ -129,8 +129,8 @@ const handleKeydown = (event) => {
   // Ctrl/Cmd + W: Close active panel
   if ((event.ctrlKey || event.metaKey) && event.key === 'w') {
     event.preventDefault();
-    if (currentWorkspace.ui.activePanel) {
-      workspaceManager.removePanel(currentWorkspace.ui.activePanel);
+    if (currentWorkspace.value.ui.activePanel) {
+      workspaceManager.removePanel(currentWorkspace.value.ui.activePanel);
     }
   }
 };
@@ -164,7 +164,16 @@ const handlePanelFocus = (panelId) => {
 };
 
 const handleNewPanel = (type = 'lyric') => {
-  workspaceManager.addPanel(type);
+  console.log('🔥 handleNewPanel called with type:', type);
+  console.log('🔥 Current panels before:', activePanels.value.length);
+  console.log('🔥 Panel order before:', currentWorkspace.value.layout.panelOrder);
+
+  const panelId = workspaceManager.addPanel(type);
+
+  console.log('🔥 Created panel ID:', panelId);
+  console.log('🔥 Current panels after:', activePanels.value.length);
+  console.log('🔥 Panel order after:', currentWorkspace.value.layout.panelOrder);
+  console.log('🔥 All panels:', Object.keys(currentWorkspace.value.panels));
 };
 </script>
 

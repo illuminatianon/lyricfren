@@ -4,7 +4,7 @@ import { useWorkspaceManager } from '../../stores/workspaceManager.js';
 
 const emit = defineEmits([
   'new-panel',
-  'reset-layout', 
+  'reset-layout',
   'save-all',
   'close-all'
 ]);
@@ -60,18 +60,18 @@ const handleExportWorkspace = () => {
   try {
     const exportData = workspaceManager.exportWorkspace();
     const filename = `${currentWorkspace.value.name.replace(/[^a-z0-9]/gi, '_')}_workspace.json`;
-    
+
     // Use helper function to download
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Export failed:', error);
@@ -98,7 +98,7 @@ const handleImportWorkspace = () => {
           aria-haspopup="true"
           aria-controls="new-panel-menu"
         />
-        
+
         <Menu
           id="new-panel-menu"
           ref="newPanelMenu"
@@ -111,7 +111,7 @@ const handleImportWorkspace = () => {
           v-model:visible="showNewPanelMenu"
         />
       </div>
-      
+
       <!-- Layout Actions -->
       <Button
         icon="pi pi-refresh"
@@ -121,9 +121,9 @@ const handleImportWorkspace = () => {
         @click="handleResetLayout"
         v-tooltip="'Reset all panel widths to auto-size'"
       />
-      
+
       <Divider layout="vertical" />
-      
+
       <!-- Save Actions -->
       <Button
         icon="pi pi-save"
@@ -133,7 +133,7 @@ const handleImportWorkspace = () => {
         :disabled="!hasDirtyPanels"
         @click="handleSaveAll"
       />
-      
+
       <Button
         icon="pi pi-times"
         label="Close All"
@@ -143,19 +143,19 @@ const handleImportWorkspace = () => {
         @click="handleCloseAll"
       />
     </div>
-    
+
     <!-- Center Section: Workspace Name -->
     <div class="flex align-items-center gap-2">
       <i class="pi pi-folder text-color-secondary"></i>
       <span class="font-medium">{{ currentWorkspace.name }}</span>
-      <Badge 
+      <Badge
         v-if="hasDirtyPanels"
         :value="dirtyCount"
         severity="warning"
         size="small"
       />
     </div>
-    
+
     <!-- Right Section: Workspace Actions -->
     <div class="flex align-items-center gap-2">
       <!-- Workspace Menu -->
@@ -169,7 +169,7 @@ const handleImportWorkspace = () => {
           aria-haspopup="true"
           aria-controls="workspace-menu"
         />
-        
+
         <Menu
           id="workspace-menu"
           ref="workspaceMenu"
