@@ -13,7 +13,7 @@ const currentWorkspace = computed(() => workspaceManager.currentWorkspace);
 
 // Panel width calculations
 const getPanelStyle = (panel) => {
-  const manualWidth = currentWorkspace.value.layout.panelWidths[panel.id];
+  const manualWidth = currentWorkspace.layout.panelWidths[panel.id];
 
   if (manualWidth) {
     return {
@@ -55,7 +55,7 @@ const handleDrop = (event, targetPanelId) => {
 
   const sourcePanelId = draggedPanel.value;
   if (sourcePanelId && sourcePanelId !== targetPanelId) {
-    const currentOrder = [...currentWorkspace.value.layout.panelOrder];
+    const currentOrder = [...currentWorkspace.layout.panelOrder];
     const sourceIndex = currentOrder.indexOf(sourcePanelId);
     const targetIndex = currentOrder.indexOf(targetPanelId);
 
@@ -87,8 +87,8 @@ const startResize = (event, panelId) => {
   resizingPanel.value = panelId;
   resizeStartX.value = event.clientX;
 
-  const panel = currentWorkspace.value.panels[panelId];
-  const currentWidth = currentWorkspace.value.layout.panelWidths[panelId];
+  const panel = currentWorkspace.panels[panelId];
+  const currentWidth = currentWorkspace.layout.panelWidths[panelId];
 
   if (currentWidth) {
     resizeStartWidth.value = currentWidth;
@@ -129,8 +129,8 @@ const handleKeydown = (event) => {
   // Ctrl/Cmd + W: Close active panel
   if ((event.ctrlKey || event.metaKey) && event.key === 'w') {
     event.preventDefault();
-    if (currentWorkspace.value.ui.activePanel) {
-      workspaceManager.removePanel(currentWorkspace.value.ui.activePanel);
+    if (currentWorkspace.ui.activePanel) {
+      workspaceManager.removePanel(currentWorkspace.ui.activePanel);
     }
   }
 };
@@ -201,6 +201,8 @@ const handleNewPanel = (type = 'lyric') => {
 
       <!-- Active Panels -->
       <template v-else>
+
+
         <div
           v-for="(panel, index) in activePanels"
           :key="panel.id"
