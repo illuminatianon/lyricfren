@@ -1,7 +1,6 @@
 {
   "name": "lyricfren",
   "private": true,
-  "packageManager": "yarn@4.9.1",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -11,8 +10,17 @@
     "wait-on": "^8.0.3"
   },
   "scripts": {
-    "dev": "concurrently -k -n backend,frontend -c blue,green \"yarn workspace server dev\" \"yarn workspace frontend dev\"",
-    "build": "yarn workspaces foreach --topological run build",
-    "clean": "yarn workspaces foreach run clean"
+    "dev": "concurrently -k -n backend,frontend -c blue,green \"pnpm --filter server dev\" \"pnpm --filter frontend dev\"",
+    "build": "pnpm recursive --parallel --sort run build --no-bail",
+    "clean": "pnpm recursive --parallel run clean"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {}
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "vue-demi"
+    ]
   }
 }
