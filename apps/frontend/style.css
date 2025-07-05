@@ -15,15 +15,15 @@
 }
 
 /* Custom variables for our app */
-.app-dark {
-  --app-bg-color: var(--p-surface-900);
-  --app-text-color: var(--p-surface-0);
-  --app-card-bg: var(--p-surface-800);
-  --app-sidebar-bg: var(--p-surface-800);
-  --app-header-bg: var(--p-surface-800);
-  --app-footer-bg: var(--p-surface-800);
-  --app-border-color: var(--p-surface-700);
-  --app-accent-color: var(--p-primary-color);
+:root {
+  --app-bg-color: rgb(var(--v-theme-background));
+  --app-text-color: rgb(var(--v-theme-on-background));
+  --app-card-bg: rgb(var(--v-theme-surface));
+  --app-sidebar-bg: rgb(var(--v-theme-surface));
+  --app-header-bg: rgb(var(--v-theme-surface));
+  --app-footer-bg: rgb(var(--v-theme-surface));
+  --app-border-color: rgb(var(--v-theme-surface-variant));
+  --app-accent-color: rgb(var(--v-theme-primary));
 }
 
 body {

@@ -19,6 +19,7 @@
       "allowedVersions": {}
     },
     "onlyBuiltDependencies": [
+      "@parcel/watcher",
       "esbuild",
       "vue-demi"
     ]

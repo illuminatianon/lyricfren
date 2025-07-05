@@ -1,14 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import Components from 'unplugin-vue-components/vite'
-import { PrimeVueResolver } from '@primevue/auto-import-resolver'
+import vuetify from 'vite-plugin-vuetify'
 import autoprefixer from 'autoprefixer'
 import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [
     vue(),
-    Components({ resolvers: [ PrimeVueResolver() ] })
+    vuetify({ autoImport: true })
   ],
   resolve: {
     alias: {
