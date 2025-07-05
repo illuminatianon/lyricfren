@@ -6,31 +6,13 @@ const uiStore = useUIStore();
 </script>
 
 <template>
-  <!-- Mobile overlay -->
-  <div
-    v-if="uiStore.sidebarVisible && uiStore.isMobile"
-    class="fixed top-0 left-0 w-full h-full bg-black-alpha-50 z-1"
-    @click="uiStore.toggleSidebar"
-  ></div>
-
-  <!-- Sidebar column -->
-  <div
-    class="transition-all transition-duration-300"
-    :class="{
-      'hidden': !uiStore.sidebarVisible,
-      'w-16rem': uiStore.sidebarVisible
-    }"
+  <v-navigation-drawer
+    v-model="uiStore.sidebarVisible"
+    :temporary="uiStore.isMobile"
+    :permanent="!uiStore.isMobile"
+    width="256"
+    color="surface"
   >
-    <aside
-      class="app-sidebar shadow-2 fixed md:static top-0 bottom-0 left-0 z-2 h-full w-16rem"
-      :class="{
-        '-translate-x-100': !uiStore.sidebarVisible,
-        'translate-x-0': uiStore.sidebarVisible
-      }"
-    >
-      <!-- Sidebar header space -->
-      <div class="h-2rem"></div>
-      <SidebarNavigation />
-    </aside>
-  </div>
+    <SidebarNavigation />
+  </v-navigation-drawer>
 </template>

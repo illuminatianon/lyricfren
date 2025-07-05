@@ -12,34 +12,34 @@ const handleResult = (result) => {
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <div class="grid">
-      <div class="col-12 md:col-6 lg:col-4 p-2">
+  <v-container>
+    <v-row>
+      <v-col cols="12" md="6" lg="4">
         <!-- Style Editor -->
-        <Card class="h-full">
-          <template #content>
+        <v-card class="h-100">
+          <v-card-text>
             <StyleEditor />
-          </template>
-        </Card>
-      </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
 
-      <div class="col-12 md:col-6 lg:col-4 p-2">
+      <v-col cols="12" md="6" lg="4">
         <!-- Prompt Composer -->
-        <Card class="h-full">
-          <template #content>
+        <v-card class="h-100">
+          <v-card-text>
             <PromptComposer @result="handleResult" />
-          </template>
-        </Card>
-      </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
 
-      <div class="col-12 md:col-6 lg:col-4 p-2">
+      <v-col cols="12" md="6" lg="4">
         <!-- Result Display -->
-        <Card class="h-full">
-          <template #content>
+        <v-card class="h-100">
+          <v-card-text>
             <ResultDisplay :result="generatedResult" />
-          </template>
-        </Card>
-      </div>
-    </div>
-  </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>

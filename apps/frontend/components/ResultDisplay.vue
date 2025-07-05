@@ -22,21 +22,25 @@ watch(() => props.result, (newResult) => {
 
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-4 text-primary">Generated Result</h2>
+    <h2 class="text-h5 font-weight-bold mb-4 text-primary">Generated Result</h2>
 
-    <div
+    <v-card
       v-if="result"
-      class="result-content p-4 surface-card border-1 border-round text-left overflow-auto max-h-30rem"
-      v-html="formattedResult"
-    ></div>
-
-    <div
-      v-else
-      class="empty-state p-5 text-center text-color-secondary surface-card border-1 border-round"
+      class="result-content pa-4 text-left overflow-auto"
+      style="max-height: 480px"
+      variant="outlined"
     >
-      <i class="pi pi-file-o text-4xl mb-2"></i>
-      <p>Generated content will appear here</p>
-    </div>
+      <div v-html="formattedResult"></div>
+    </v-card>
+
+    <v-card
+      v-else
+      class="empty-state pa-8 text-center"
+      variant="outlined"
+    >
+      <v-icon icon="mdi-file-document-outline" size="64" color="medium-emphasis" class="mb-2" />
+      <p class="text-medium-emphasis">Generated content will appear here</p>
+    </v-card>
   </div>
 </template>
 

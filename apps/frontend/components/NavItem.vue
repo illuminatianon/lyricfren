@@ -24,14 +24,10 @@ const handleClick = () => {
 </script>
 
 <template>
-  <li class="mb-2">
-    <router-link
-      :to="to"
-      class="no-underline p-2 flex align-items-center hover:surface-hover border-round transition-colors"
-      @click="handleClick"
-    >
-      <i v-if="icon" :class="`pi ${icon} mr-2`"></i>
-      {{ label }}
-    </router-link>
-  </li>
+  <v-list-item
+    :to="to"
+    :prepend-icon="icon"
+    :title="label"
+    @click="handleClick"
+  />
 </template>

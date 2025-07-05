@@ -115,42 +115,55 @@ onMounted(() => {
 
 <template>
   <div>
-    <h3 class="text-xl font-bold mb-4 text-primary">Style Editor</h3>
+    <h3 class="text-h5 font-weight-bold mb-4 text-primary">Style Editor</h3>
 
     <div v-if="loading" class="text-center py-4">
-      <p>Loading...</p>
+      <v-progress-circular indeterminate />
+      <p class="mt-2">Loading...</p>
     </div>
 
     <div v-else>
-      <div class="mb-4 flex align-items-center gap-2">
-        <Select
+      <div class="mb-4 d-flex align-center ga-2">
+        <v-select
           v-model="selectedStyle"
-          :options="styles"
-          optionLabel="name"
-          optionValue="id"
-          placeholder="Select a style"
-          class="w-full"
-          @change="handleStyleChange"
+          :items="styles"
+          item-title="name"
+          item-value="id"
+          label="Select a style"
+          variant="outlined"
+          class="flex-grow-1"
+          @update:model-value="handleStyleChange"
         />
-        <Button icon="pi pi-plus" @click="createNewStyle" />
-        <Button icon="pi pi-trash" severity="danger" @click="deleteStyle" />
+        <v-btn icon="mdi-plus" @click="createNewStyle" />
+        <v-btn icon="mdi-delete" color="error" @click="deleteStyle" />
       </div>
 
       <div class="mb-4">
-        <label class="block mb-2 text-sm font-medium">System Prompt</label>
-        <Textarea
+        <v-textarea
           v-model="systemPrompt"
+          label="System Prompt"
           rows="8"
-          class="w-full"
+          variant="outlined"
           placeholder="Enter system prompt..."
         />
       </div>
 
-      <div class="flex justify-content-between align-items-center">
-        <p v-if="message" class="text-sm" :class="message.includes('Failed') ? 'text-red' : 'text-green'">
+      <div class="d-flex justify-space-between align-center">
+        <v-alert
+          v-if="message"
+          :type="message.includes('Failed') ? 'error' : 'success'"
+          variant="text"
+          density="compact"
+        >
           {{ message }}
-        </p>
-        <Button @click="saveStyle" label="Save Prompt" icon="pi pi-save" />
+        </v-alert>
+        <v-btn
+          @click="saveStyle"
+          prepend-icon="mdi-content-save"
+          color="primary"
+        >
+          Save Prompt
+        </v-btn>
       </div>
     </div>
   </div>

@@ -8,9 +8,9 @@ LyricFren is a desktop application that helps you create and manage AI-generated
 
 ## Tech Stack
 
-- **Frontend**: Vue 3, PrimeVue 4, PrimeFlex
+- **Frontend**: Vue 3, Vuetify 3, Material Design Icons
 - **Backend**: Express.js, LowDB
-- **Styling**: PrimeVue theming system with Nora preset
+- **Styling**: Vuetify theming system with custom dark/light themes
 
 For detailed information about our tech stack and styling approach, see [Tech Stack Documentation](docs/TechStack.md).
 

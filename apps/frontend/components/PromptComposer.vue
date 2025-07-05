@@ -104,43 +104,47 @@ onMounted(() => {
 
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-4 text-primary">Prompt Composer</h2>
+    <h2 class="text-h5 font-weight-bold mb-4 text-primary">Prompt Composer</h2>
 
     <div class="mb-4">
-      <label for="style-select" class="block mb-2">Select Style</label>
-      <Select
-        id="style-select"
+      <v-select
         v-model="selectedStyle"
-        :options="styles"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="Select a style"
-        class="w-full"
+        :items="styles"
+        item-title="name"
+        item-value="id"
+        label="Select Style"
+        variant="outlined"
       />
     </div>
 
     <div class="mb-4">
-      <label for="user-prompt" class="block mb-2">Your Prompt</label>
-      <Textarea
-        id="user-prompt"
+      <v-textarea
         v-model="userPrompt"
+        label="Your Prompt"
         rows="6"
-        class="w-full"
+        variant="outlined"
         placeholder="Enter your prompt here..."
       />
     </div>
 
-    <div class="flex justify-content-between align-items-center">
-      <Button
+    <div class="d-flex justify-space-between align-center">
+      <v-btn
         @click="generateLyrics"
-        label="Generate"
-        icon="pi pi-play"
+        prepend-icon="mdi-play"
+        color="primary"
         :loading="loading"
-      />
+      >
+        Generate
+      </v-btn>
 
-      <span v-if="error" class="text-sm text-red">
+      <v-alert
+        v-if="error"
+        type="error"
+        variant="text"
+        density="compact"
+      >
         {{ error }}
-      </span>
+      </v-alert>
     </div>
   </div>
 </template>

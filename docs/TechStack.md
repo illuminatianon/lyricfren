@@ -94,11 +94,11 @@ These classes use CSS variables that are defined based on the PrimeVue theme:
 ### Component Styling
 
 When styling components:
-1. Use PrimeVue components when available
-2. Use PrimeFlex utility classes for layout
+1. Use Vuetify components when available
+2. Use Vuetify utility classes for layout
 3. Use semantic classes like `text-primary` for text colors
 4. Use custom CSS classes for common patterns
 
 ### Dark Mode
 
-Dark mode is enabled by default using the `.app-dark` class on the root HTML element. The theme automatically adjusts colors based on this class.
+Dark mode is enabled by default in the Vuetify theme configuration. The theme automatically adjusts colors based on the selected theme variant.

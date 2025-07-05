@@ -4,8 +4,8 @@
 
 ### Frontend
 - Vue 3 (with Composition API)
-- TailwindCSS v4
-- PrimeVue v4
+- Vuetify 3
+- Material Design Icons (MDI)
 - OpenAPI JS client for AI integration
 
 ### Backend
@@ -23,8 +23,8 @@
 
 - Use Vue SFCs with `<script setup>` syntax
 - Follow Vue 3 Composition API patterns
-- Use PrimeVue components for complex UI elements
-- Implement responsive design with Tailwind utility classes
+- Use Vuetify components for complex UI elements
+- Implement responsive design with Vuetify utility classes
 
 ## Project Structure
 

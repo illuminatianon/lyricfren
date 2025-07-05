@@ -3,13 +3,13 @@
 </script>
 
 <template>
-  <footer class="app-footer text-sm">
-    <div class="container mx-auto flex justify-content-between align-items-center">
+  <v-footer class="app-footer text-caption" >
+    <div class="w-100 d-flex justify-space-between align-center px-4">
       <div>© 2024 LyricFren</div>
-      <div class="flex align-items-center">
-        <span class="inline-block w-1rem h-1rem border-circle bg-green-500 mr-2"></span>
+      <div class="d-flex align-center">
+        <v-icon icon="mdi-circle" color="success" size="12" class="mr-2" />
         <span>Status: Online</span>
       </div>
     </div>
-  </footer>
+  </v-footer>
 </template>

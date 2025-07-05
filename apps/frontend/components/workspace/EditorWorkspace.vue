@@ -169,7 +169,7 @@ const handleNewPanel = (type = 'lyric') => {
 </script>
 
 <template>
-  <div class="editor-workspace h-full flex flex-column">
+  <div class="editor-workspace h-100 d-flex flex-column">
     <!-- Workspace Toolbar -->
     <WorkspaceToolbar
       @new-panel="handleNewPanel"
@@ -181,22 +181,24 @@ const handleNewPanel = (type = 'lyric') => {
     <!-- Panel Container -->
     <div
       ref="workspaceContainer"
-      class="panel-container flex-1 flex"
+      class="panel-container flex-grow-1 d-flex"
       :class="{ 'no-panels': activePanels.length === 0 }"
     >
       <!-- Empty State -->
       <div
         v-if="activePanels.length === 0"
-        class="empty-workspace flex align-items-center justify-content-center flex-column"
+        class="empty-workspace d-flex align-center justify-center flex-column w-100"
       >
-        <i class="pi pi-file-o text-6xl text-color-secondary mb-4"></i>
-        <h3 class="text-color-secondary mb-2">No panels open</h3>
-        <p class="text-color-secondary mb-4">Create a new panel to get started</p>
-        <Button
-          label="New Lyric Editor"
-          icon="pi pi-plus"
+        <v-icon icon="mdi-file-document-outline" size="96" color="medium-emphasis" class="mb-4" />
+        <h3 class="text-medium-emphasis mb-2">No panels open</h3>
+        <p class="text-medium-emphasis mb-4">Create a new panel to get started</p>
+        <v-btn
+          prepend-icon="mdi-plus"
+          color="primary"
           @click="handleNewPanel('lyric')"
-        />
+        >
+          New Lyric Editor
+        </v-btn>
       </div>
 
       <!-- Active Panels -->
@@ -240,10 +242,10 @@ const handleNewPanel = (type = 'lyric') => {
     <!-- Status Bar (optional) -->
     <div
       v-if="currentWorkspace.ui.statusBarVisible"
-      class="workspace-status-bar flex align-items-center justify-content-between px-3 py-2 surface-ground border-top-1 border-surface"
+      class="workspace-status-bar d-flex align-center justify-space-between px-3 py-2 bg-surface border-t"
     >
-      <div class="flex align-items-center gap-2">
-        <span class="text-sm text-color-secondary">
+      <div class="d-flex align-center ga-2">
+        <span class="text-caption text-medium-emphasis">
           {{ activePanels.length }} panel{{ activePanels.length !== 1 ? 's' : '' }}
         </span>
         <span
