@@ -61,79 +61,74 @@ const renderComponent = (componentConfig) => {
     :style="{ width: `${sidebarWidth}px` }"
   >
     <!-- Sidebar Header -->
-    <div class="sidebar-header flex align-items-center justify-content-between px-3 py-2 border-bottom-1 border-surface">
-      <h4 class="text-base font-medium m-0">Panel Tools</h4>
-      <Button
-        icon="pi pi-times"
+    <div class="sidebar-header d-flex align-center justify-space-between px-3 py-2 border-b">
+      <h4 class="text-h6 font-weight-medium ma-0">Panel Tools</h4>
+      <v-btn
+        icon="mdi-close"
         size="small"
-        text
+        variant="text"
         @click="handleClose"
-        v-tooltip="'Close sidebar'"
-      />
+      >
+        <v-tooltip activator="parent" location="bottom">
+          Close sidebar
+        </v-tooltip>
+      </v-btn>
     </div>
 
     <!-- Sidebar Content -->
-    <div class="sidebar-content p-3 overflow-y-auto">
+    <div class="sidebar-content pa-3 overflow-y-auto">
       <!-- Component Placeholders -->
       <div
         v-for="componentConfig in allComponents"
         :key="componentConfig.component"
         class="sidebar-widget mb-4"
       >
-        <Card>
-          <template #header>
-            <div class="px-3 py-2">
-              <h5 class="text-sm font-medium m-0">{{ renderComponent(componentConfig) }}</h5>
-            </div>
-          </template>
+        <v-card>
+          <v-card-title class="px-3 py-2">
+            <h5 class="text-subtitle-2 font-weight-medium ma-0">{{ renderComponent(componentConfig) }}</h5>
+          </v-card-title>
 
-          <template #content>
-            <div class="px-3 pb-3">
-              <!-- Metadata Widget Placeholder -->
-              <div v-if="componentConfig.component === 'MetadataWidget'" class="flex flex-column gap-3">
-                <div class="field">
-                  <label class="block text-sm font-medium mb-1">Title</label>
-                  <InputText
-                    :model-value="panel.data.metadata.title"
-                    @update:model-value="handleDataChange('metadata.title', $event)"
-                    class="w-full"
-                    size="small"
-                  />
-                </div>
-                <div class="field">
-                  <label class="block text-sm font-medium mb-1">Description</label>
-                  <Textarea
-                    :model-value="panel.data.metadata.description"
-                    @update:model-value="handleDataChange('metadata.description', $event)"
-                    class="w-full"
-                    rows="3"
-                    size="small"
-                  />
-                </div>
-                <div class="field">
-                  <small class="text-color-secondary">
-                    Created: {{ new Date(panel.data.metadata.created).toLocaleDateString() }}
-                  </small>
-                </div>
+          <v-card-text class="px-3 pb-3">
+            <!-- Metadata Widget Placeholder -->
+            <div v-if="componentConfig.component === 'MetadataWidget'" class="d-flex flex-column ga-3">
+              <v-text-field
+                label="Title"
+                :model-value="panel.data.metadata.title"
+                @update:model-value="handleDataChange('metadata.title', $event)"
+                variant="outlined"
+                density="compact"
+              />
+              <v-textarea
+                label="Description"
+                :model-value="panel.data.metadata.description"
+                @update:model-value="handleDataChange('metadata.description', $event)"
+                variant="outlined"
+                density="compact"
+                rows="3"
+              />
+              <div class="text-caption text-medium-emphasis">
+                Created: {{ new Date(panel.data.metadata.created).toLocaleDateString() }}
               </div>
+            </div>
 
               <!-- Tags Widget Placeholder -->
-              <div v-else-if="componentConfig.component === 'TagsWidget'" class="flex flex-column gap-2">
-                <div class="field">
-                  <label class="block text-sm font-medium mb-1">Tags</label>
-                  <div class="flex flex-wrap gap-1 mb-2">
-                    <Chip
+              <div v-else-if="componentConfig.component === 'TagsWidget'" class="d-flex flex-column ga-2">
+                <div>
+                  <label class="text-subtitle-2 font-weight-medium mb-1 d-block">Tags</label>
+                  <div class="d-flex flex-wrap ga-1 mb-2">
+                    <v-chip
                       v-for="tag in panel.data.tags"
                       :key="tag"
-                      :label="tag"
-                      removable
-                      @remove="handleDataChange('tags', panel.data.tags.filter(t => t !== tag))"
+                      :text="tag"
+                      closable
+                      size="small"
+                      @click:close="handleDataChange('tags', panel.data.tags.filter(t => t !== tag))"
                     />
                   </div>
-                  <InputText
+                  <v-text-field
                     placeholder="Add tag..."
-                    class="w-full"
-                    size="small"
+                    variant="outlined"
+                    density="compact"
                     @keyup.enter="(e) => {
                       if (e.target.value.trim()) {
                         handleDataChange('tags', [...panel.data.tags, e.target.value.trim()]);
@@ -146,20 +141,19 @@ const renderComponent = (componentConfig) => {
 
               <!-- Generic Placeholder for other widgets -->
               <div v-else class="text-center py-4">
-                <i class="pi pi-cog text-2xl text-color-secondary mb-2"></i>
-                <p class="text-sm text-color-secondary m-0">
+                <v-icon icon="mdi-cog" size="32" color="medium-emphasis" class="mb-2" />
+                <p class="text-caption text-medium-emphasis ma-0">
                   {{ renderComponent(componentConfig) }} widget not yet implemented
                 </p>
               </div>
-            </div>
-          </template>
-        </Card>
+          </v-card-text>
+        </v-card>
       </div>
 
       <!-- Empty State -->
       <div v-if="allComponents.length === 0" class="text-center py-6">
-        <i class="pi pi-inbox text-3xl text-color-secondary mb-3"></i>
-        <p class="text-color-secondary m-0">No sidebar tools configured</p>
+        <v-icon icon="mdi-inbox" size="48" color="medium-emphasis" class="mb-3" />
+        <p class="text-medium-emphasis ma-0">No sidebar tools configured</p>
       </div>
     </div>
   </div>

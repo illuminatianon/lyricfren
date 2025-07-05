@@ -3,11 +3,11 @@
 ## Frontend
 
 - **Framework**: Vue 3 with Composition API
-- **UI Components**: PrimeVue 4
-- **Styling**: 
-  - PrimeFlex for layout utilities
-  - PrimeIcons for icons
-  - Custom CSS variables based on PrimeVue theming system
+- **UI Components**: Vuetify 3
+- **Styling**:
+  - Vuetify utility classes for layout
+  - Material Design Icons (MDI) for icons
+  - Custom CSS variables based on Vuetify theming system
 - **State Management**: Pinia
 - **API Client**: Custom services for backend communication
 
@@ -21,45 +21,50 @@
 
 - **Build Tool**: Vite
 - **Package Manager**: Yarn
-- **Component Auto-Import**: unplugin-vue-components with PrimeVueResolver
+- **Component Auto-Import**: Vuetify auto-import via vite-plugin-vuetify
 
 ## Styling Guidelines
 
-### PrimeVue Theming
+### Vuetify Theming
 
-LyricFren uses PrimeVue's theming system with a custom preset based on the Nora theme. The theme is configured in `main.js` and uses CSS variables for consistent styling across the application.
+LyricFren uses Vuetify's theming system with custom dark and light themes. The theme is configured in `main.js` and uses CSS variables for consistent styling across the application.
 
 ```javascript
 // Example theme configuration in main.js
-const LyricFrenPreset = definePreset(Nora, {
-  semantic: {
-    // Custom theme tokens can be defined here
-  }
-});
-
-app.use(PrimeVue, {
+const vuetify = createVuetify({
   theme: {
-    preset: LyricFrenPreset,
-    options: {
-      darkModeSelector: '.app-dark',
-    }
+    defaultTheme: 'dark',
+    themes: {
+      dark: {
+        colors: {
+          primary: '#38bdf8',
+          secondary: '#64748b',
+          // ... other colors
+        },
+      },
+      light: {
+        colors: {
+          primary: '#0ea5e9',
+          secondary: '#64748b',
+          // ... other colors
+        },
+      },
+    },
   },
-  ripple: true,
-  unstyled: false
 });
 ```
 
-### Layout with PrimeFlex
+### Layout with Vuetify Utilities
 
-We use PrimeFlex for layout utilities instead of Tailwind CSS. PrimeFlex provides a set of utility classes that work seamlessly with PrimeVue components.
+We use Vuetify's utility classes for layout and styling. Vuetify provides a comprehensive set of utility classes based on Material Design principles.
 
-Common PrimeFlex classes:
-- `flex`, `inline-flex` - Display utilities
+Common Vuetify utility classes:
+- `d-flex`, `d-inline-flex` - Display utilities
 - `flex-column`, `flex-row` - Flex direction
-- `justify-content-between`, `justify-content-center` - Justify content
-- `align-items-center`, `align-items-start` - Align items
-- `w-full`, `h-full` - Width and height utilities
-- `m-2`, `p-3` - Margin and padding utilities
+- `justify-space-between`, `justify-center` - Justify content
+- `align-center`, `align-start` - Align items
+- `w-100`, `h-100` - Width and height utilities
+- `ma-2`, `pa-3` - Margin and padding utilities
 - `text-center`, `text-left` - Text alignment
 
 ### Custom CSS Classes

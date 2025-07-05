@@ -81,46 +81,48 @@ const handleTitleChange = (newTitle) => {
 </script>
 
 <template>
-  <div class="lyric-editor-instance h-full flex flex-column">
+  <div class="lyric-editor-instance h-100 d-flex flex-column">
     <!-- Editor Content -->
-    <div class="editor-content flex-1 p-3">
-      <Textarea
+    <div class="editor-content flex-grow-1 pa-3">
+      <v-textarea
         ref="textareaRef"
         :model-value="content"
         @update:model-value="content = $event"
         placeholder="Enter your lyrics here..."
-        class="w-full h-full lyric-textarea"
-        :auto-resize="false"
+        class="w-100 h-100 lyric-textarea"
+        variant="plain"
+        no-resize
+        hide-details
       />
     </div>
 
     <!-- Status Bar -->
-    <div class="editor-status-bar flex align-items-center justify-content-between px-3 py-2 surface-section border-top-1 border-surface">
-      <div class="flex align-items-center gap-4">
-        <span class="text-sm text-color-secondary">
+    <div class="editor-status-bar d-flex align-center justify-space-between px-3 py-2 bg-surface border-t">
+      <div class="d-flex align-center ga-4">
+        <span class="text-caption text-medium-emphasis">
           Lines: {{ lineCount }}
         </span>
-        <span class="text-sm text-color-secondary">
+        <span class="text-caption text-medium-emphasis">
           Words: {{ wordCount }}
         </span>
-        <span class="text-sm text-color-secondary">
+        <span class="text-caption text-medium-emphasis">
           Syllables: {{ totalSyllables }}
         </span>
       </div>
 
-      <div class="flex align-items-center gap-2">
+      <div class="d-flex align-center ga-2">
         <span
           v-if="meterStore.loading"
-          class="text-sm text-color-secondary"
+          class="text-caption text-medium-emphasis"
         >
-          <i class="pi pi-spin pi-spinner mr-1"></i>
+          <v-progress-circular indeterminate size="16" width="2" class="mr-1" />
           Analyzing...
         </span>
         <span
           v-else-if="meterStore.error"
-          class="text-sm text-red-500"
+          class="text-caption text-error"
         >
-          <i class="pi pi-exclamation-triangle mr-1"></i>
+          <v-icon icon="mdi-alert-circle" size="16" class="mr-1" />
           {{ meterStore.error }}
         </span>
       </div>
