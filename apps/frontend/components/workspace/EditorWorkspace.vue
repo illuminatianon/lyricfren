@@ -82,6 +82,8 @@ const handleDragEnd = () => {
 const resizingPanel = ref(null);
 const resizeStartX = ref(0);
 const resizeStartWidth = ref(0);
+const currentResizeWidth = ref(0);
+let resizeAnimationFrame = null;
 
 const startResize = (event, panelId) => {
   resizingPanel.value = panelId;
@@ -94,11 +96,17 @@ const startResize = (event, panelId) => {
     resizeStartWidth.value = currentWidth;
   } else {
     // Calculate current auto width
-    const panelElement = event.target.closest('.editor-panel');
+    const panelElement = event.target.closest('.editor-panel-container');
     resizeStartWidth.value = panelElement ? panelElement.offsetWidth : 400;
   }
 
-  document.addEventListener('mousemove', handleResize);
+  currentResizeWidth.value = resizeStartWidth.value;
+
+  // Add visual feedback class
+  document.body.style.cursor = 'col-resize';
+  document.body.style.userSelect = 'none';
+
+  document.addEventListener('mousemove', handleResize, { passive: true });
   document.addEventListener('mouseup', stopResize);
   event.preventDefault();
 };
@@ -106,14 +114,45 @@ const startResize = (event, panelId) => {
 const handleResize = (event) => {
   if (!resizingPanel.value) return;
 
-  const deltaX = event.clientX - resizeStartX.value;
-  const newWidth = Math.max(250, resizeStartWidth.value + deltaX); // Min width 250px
+  // Cancel previous animation frame
+  if (resizeAnimationFrame) {
+    cancelAnimationFrame(resizeAnimationFrame);
+  }
 
-  workspaceManager.setPanelWidth(resizingPanel.value, newWidth);
+  // Use requestAnimationFrame to throttle updates
+  resizeAnimationFrame = requestAnimationFrame(() => {
+    const deltaX = event.clientX - resizeStartX.value;
+    const newWidth = Math.max(250, resizeStartWidth.value + deltaX); // Min width 250px
+
+    currentResizeWidth.value = newWidth;
+
+    // Update the DOM directly for immediate visual feedback
+    const panelElement = document.querySelector(`[data-panel-id="${resizingPanel.value}"]`);
+    if (panelElement) {
+      panelElement.style.width = `${newWidth}px`;
+      panelElement.style.flexShrink = '0';
+      panelElement.style.flexGrow = '0';
+    }
+  });
 };
 
 const stopResize = () => {
+  if (resizeAnimationFrame) {
+    cancelAnimationFrame(resizeAnimationFrame);
+    resizeAnimationFrame = null;
+  }
+
+  // Update the workspace manager with final width
+  if (resizingPanel.value && currentResizeWidth.value) {
+    workspaceManager.setPanelWidth(resizingPanel.value, currentResizeWidth.value);
+  }
+
   resizingPanel.value = null;
+
+  // Reset cursor and selection
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+
   document.removeEventListener('mousemove', handleResize);
   document.removeEventListener('mouseup', stopResize);
 };
@@ -152,6 +191,15 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);
   document.removeEventListener('mousemove', handleResize);
   document.removeEventListener('mouseup', stopResize);
+
+  // Clean up any pending animation frames
+  if (resizeAnimationFrame) {
+    cancelAnimationFrame(resizeAnimationFrame);
+  }
+
+  // Reset cursor and selection
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
 });
 
 // Panel actions
@@ -208,6 +256,7 @@ const handleNewPanel = (type = 'lyric') => {
         <div
           v-for="(panel, index) in activePanels"
           :key="panel.id"
+          :data-panel-id="panel.id"
           class="editor-panel-container"
           :style="getPanelStyle(panel)"
           :class="{
