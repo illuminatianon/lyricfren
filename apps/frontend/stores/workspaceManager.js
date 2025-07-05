@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { generateId } from '../utils/helpers.js';
 
 export const useWorkspaceManager = defineStore('workspaceManager', () => {
@@ -45,7 +45,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   // Panel management
   const addPanel = (type, data = {}) => {
     const panelId = generateId();
-    const panel = {
+    currentWorkspace.panels[panelId] = {
       id: panelId,
       type,
       title: data.title || `New ${type}`,
@@ -76,8 +76,6 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
         componentStates: {}
       }
     };
-
-    currentWorkspace.panels[panelId] = panel;
     currentWorkspace.layout.panelOrder.push(panelId);
     currentWorkspace.ui.activePanel = panelId;
     updateWorkspaceModified();
@@ -125,7 +123,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     if (!originalPanel) return null;
 
     const newPanelId = generateId();
-    const duplicatedPanel = {
+    currentWorkspace.panels[newPanelId] = {
       ...JSON.parse(JSON.stringify(originalPanel)), // Deep clone
       id: newPanelId,
       title: `${originalPanel.title} (Copy)`,
@@ -142,12 +140,10 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
       lastSaved: null
     };
 
-    currentWorkspace.panels[newPanelId] = duplicatedPanel;
-
     // Insert after original panel
     const originalIndex = currentWorkspace.layout.panelOrder.indexOf(panelId);
     currentWorkspace.layout.panelOrder.splice(originalIndex + 1, 0, newPanelId);
-    
+
     updateWorkspaceModified();
     return newPanelId;
   };
@@ -251,17 +247,17 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   const loadWorkspace = async (workspaceId) => {
     // TODO: Replace with actual API call
     console.log('STUB: Loading workspace', workspaceId);
-    
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // For now, just create a new workspace
     // In real implementation, this would load from backend
     throw new Error('Workspace loading not yet implemented');
   };
 
   const exportWorkspace = () => {
-    const exportData = {
+    return {
       version: '1.0.0',
       workspace: currentWorkspace,
       metadata: {
@@ -271,8 +267,6 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
         includesContent: true
       }
     };
-
-    return exportData;
   };
 
   const importWorkspace = async (workspaceData) => {
@@ -319,11 +313,11 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   // Bulk operations
   const saveAllPanels = async () => {
     const dirtyPanelIds = dirtyPanels.value.map(panel => panel.id);
-    
+
     for (const panelId of dirtyPanelIds) {
       await savePanelState(panelId);
     }
-    
+
     console.log(`Saved ${dirtyPanelIds.length} panels`);
   };
 
@@ -348,25 +342,25 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     activePanels,
     dirtyPanels,
     hasDirtyPanels,
-    
+
     // Panel management
     addPanel,
     removePanel,
     reorderPanels,
     duplicatePanel,
-    
+
     // Layout management
     setPanelWidth,
     resetPanelWidths,
     togglePanelSidebar,
     setPanelSidebarWidth,
-    
+
     // State tracking
     markPanelDirty,
     updatePanelData,
     savePanelState,
     setActivePanel,
-    
+
     // Workspace management
     updateWorkspaceMetadata,
     saveWorkspace,
@@ -376,7 +370,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     listWorkspaces,
     deleteWorkspace,
     duplicateWorkspace,
-    
+
     // Bulk operations
     saveAllPanels,
     closeAllPanels
