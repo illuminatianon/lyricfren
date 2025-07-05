@@ -41,7 +41,7 @@ const renderComponent = (componentConfig) => {
   // This will be replaced with actual sidebar widgets
   return {
     MetadataWidget: 'Metadata Editor',
-    TagsWidget: 'Tags Manager', 
+    TagsWidget: 'Tags Manager',
     ExportWidget: 'Export Options',
     HistoryWidget: 'Version History',
     MeterSettingsWidget: 'Meter Settings',
@@ -56,7 +56,7 @@ const renderComponent = (componentConfig) => {
 </script>
 
 <template>
-  <div 
+  <div
     class="panel-sidebar surface-ground border-left-1 border-surface"
     :style="{ width: `${sidebarWidth}px` }"
   >
@@ -71,11 +71,11 @@ const renderComponent = (componentConfig) => {
         v-tooltip="'Close sidebar'"
       />
     </div>
-    
+
     <!-- Sidebar Content -->
     <div class="sidebar-content p-3 overflow-y-auto">
       <!-- Component Placeholders -->
-      <div 
+      <div
         v-for="componentConfig in allComponents"
         :key="componentConfig.component"
         class="sidebar-widget mb-4"
@@ -86,14 +86,14 @@ const renderComponent = (componentConfig) => {
               <h5 class="text-sm font-medium m-0">{{ renderComponent(componentConfig) }}</h5>
             </div>
           </template>
-          
+
           <template #content>
             <div class="px-3 pb-3">
               <!-- Metadata Widget Placeholder -->
               <div v-if="componentConfig.component === 'MetadataWidget'" class="flex flex-column gap-3">
                 <div class="field">
                   <label class="block text-sm font-medium mb-1">Title</label>
-                  <InputText 
+                  <InputText
                     :model-value="panel.data.metadata.title"
                     @update:model-value="handleDataChange('metadata.title', $event)"
                     class="w-full"
@@ -102,7 +102,7 @@ const renderComponent = (componentConfig) => {
                 </div>
                 <div class="field">
                   <label class="block text-sm font-medium mb-1">Description</label>
-                  <Textarea 
+                  <Textarea
                     :model-value="panel.data.metadata.description"
                     @update:model-value="handleDataChange('metadata.description', $event)"
                     class="w-full"
@@ -116,21 +116,21 @@ const renderComponent = (componentConfig) => {
                   </small>
                 </div>
               </div>
-              
+
               <!-- Tags Widget Placeholder -->
               <div v-else-if="componentConfig.component === 'TagsWidget'" class="flex flex-column gap-2">
                 <div class="field">
                   <label class="block text-sm font-medium mb-1">Tags</label>
                   <div class="flex flex-wrap gap-1 mb-2">
-                    <Chip 
-                      v-for="tag in panel.data.tags" 
+                    <Chip
+                      v-for="tag in panel.data.tags"
                       :key="tag"
                       :label="tag"
                       removable
                       @remove="handleDataChange('tags', panel.data.tags.filter(t => t !== tag))"
                     />
                   </div>
-                  <InputText 
+                  <InputText
                     placeholder="Add tag..."
                     class="w-full"
                     size="small"
@@ -143,7 +143,7 @@ const renderComponent = (componentConfig) => {
                   />
                 </div>
               </div>
-              
+
               <!-- Generic Placeholder for other widgets -->
               <div v-else class="text-center py-4">
                 <i class="pi pi-cog text-2xl text-color-secondary mb-2"></i>
@@ -155,7 +155,7 @@ const renderComponent = (componentConfig) => {
           </template>
         </Card>
       </div>
-      
+
       <!-- Empty State -->
       <div v-if="allComponents.length === 0" class="text-center py-6">
         <i class="pi pi-inbox text-3xl text-color-secondary mb-3"></i>
@@ -173,12 +173,14 @@ const renderComponent = (componentConfig) => {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  background: var(--surface-50);
 }
 
 .sidebar-header {
   height: 48px;
-  background: var(--surface-section);
+  background: var(--surface-100);
   flex-shrink: 0;
+  border-bottom: 1px solid var(--surface-200);
 }
 
 .sidebar-content {

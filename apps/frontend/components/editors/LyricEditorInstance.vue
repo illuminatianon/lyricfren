@@ -33,7 +33,7 @@ const debouncedAnalyzeMeter = debounce((text) => {
 // Watch for content changes
 watch(content, (newContent) => {
   emit('content-change', newContent);
-  
+
   // Analyze meter if content exists
   if (newContent.trim()) {
     debouncedAnalyzeMeter(newContent);
@@ -93,7 +93,7 @@ const handleTitleChange = (newTitle) => {
         :auto-resize="false"
       />
     </div>
-    
+
     <!-- Status Bar -->
     <div class="editor-status-bar flex align-items-center justify-content-between px-3 py-2 surface-section border-top-1 border-surface">
       <div class="flex align-items-center gap-4">
@@ -107,16 +107,16 @@ const handleTitleChange = (newTitle) => {
           Syllables: {{ totalSyllables }}
         </span>
       </div>
-      
+
       <div class="flex align-items-center gap-2">
-        <span 
+        <span
           v-if="meterStore.loading"
           class="text-sm text-color-secondary"
         >
           <i class="pi pi-spin pi-spinner mr-1"></i>
           Analyzing...
         </span>
-        <span 
+        <span
           v-else-if="meterStore.error"
           class="text-sm text-red-500"
         >
@@ -129,11 +129,6 @@ const handleTitleChange = (newTitle) => {
 </template>
 
 <style scoped>
-.lyric-editor-instance {
-  height: 100%;
-  background: var(--surface-card);
-}
-
 .editor-content {
   min-height: 0; /* Allow flex child to shrink */
 }

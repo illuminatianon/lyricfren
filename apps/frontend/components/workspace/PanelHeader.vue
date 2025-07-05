@@ -68,7 +68,7 @@ const handleActionClick = (action) => {
 </script>
 
 <template>
-  <div 
+  <div
     class="panel-header flex align-items-center justify-content-between px-3 py-2"
     :class="{ 'draggable': draggable }"
     :draggable="draggable"
@@ -78,14 +78,14 @@ const handleActionClick = (action) => {
     <!-- Left Section: Title and Drag Handle -->
     <div class="flex align-items-center gap-2 flex-1 min-w-0">
       <!-- Drag Handle -->
-      <i 
+      <i
         v-if="draggable"
         class="pi pi-bars drag-handle text-color-secondary cursor-move"
         v-tooltip="'Drag to reorder panel'"
       ></i>
-      
+
       <!-- Title -->
-      <h3 
+      <h3
         class="panel-title text-lg font-medium m-0 text-overflow-ellipsis overflow-hidden white-space-nowrap"
         :class="{ 'dirty': isDirty }"
         :title="title"
@@ -93,23 +93,26 @@ const handleActionClick = (action) => {
         {{ displayTitle }}
       </h3>
     </div>
-    
-    <!-- Right Section: Actions -->
+
+    <!-- Left Section: Panel Actions -->
+    <div class="flex align-items-center gap-2">
+      <!-- Panel Actions Split Button -->
+      <SplitButton
+        :icon="primaryActions[0]?.icon || 'pi pi-save'"
+        :label="primaryActions[0]?.label || 'Save'"
+        :severity="primaryActions[0]?.severity || 'secondary'"
+        :disabled="primaryActions[0]?.disabled || false"
+        size="small"
+        :model="[...primaryActions.slice(1), ...overflowActions].map(action => ({
+          ...action,
+          command: () => handleActionClick(action)
+        }))"
+        @click="handleActionClick(primaryActions[0])"
+      />
+    </div>
+
+    <!-- Right Section: Controls -->
     <div class="flex align-items-center gap-1">
-      <!-- Primary Actions -->
-      <template v-for="action in primaryActions" :key="action.label">
-        <Button
-          :icon="action.icon"
-          :label="action.label"
-          :severity="action.severity || 'secondary'"
-          :disabled="action.disabled"
-          size="small"
-          outlined
-          @click="handleActionClick(action)"
-          v-tooltip="action.tooltip || action.label"
-        />
-      </template>
-      
       <!-- Sidebar Toggle -->
       <Button
         :icon="sidebarOpen ? 'pi pi-angle-right' : 'pi pi-angle-left'"
@@ -119,29 +122,6 @@ const handleActionClick = (action) => {
         @click="handleSidebarToggle"
         v-tooltip="sidebarOpen ? 'Close sidebar' : 'Open sidebar'"
       />
-      
-      <!-- Overflow Menu -->
-      <div class="relative" v-if="overflowActions.length > 0">
-        <Button
-          icon="pi pi-ellipsis-v"
-          severity="secondary"
-          size="small"
-          text
-          @click="showOverflowMenu = !showOverflowMenu"
-          aria-haspopup="true"
-          aria-controls="panel-overflow-menu"
-        />
-        
-        <Menu
-          id="panel-overflow-menu"
-          :model="overflowActions.map(action => ({
-            ...action,
-            command: () => handleActionClick(action)
-          }))"
-          :popup="true"
-          v-model:visible="showOverflowMenu"
-        />
-      </div>
     </div>
   </div>
 </template>
@@ -149,9 +129,10 @@ const handleActionClick = (action) => {
 <style scoped>
 .panel-header {
   height: 48px;
-  background: var(--surface-section);
-  border-bottom: 1px solid var(--surface-border);
+  background: var(--blue-50);
+  border-bottom: 1px solid var(--blue-100);
   flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .panel-header.draggable {
@@ -164,8 +145,9 @@ const handleActionClick = (action) => {
 
 .drag-handle {
   font-size: 0.875rem;
-  opacity: 0.6;
+  opacity: 0.7;
   transition: opacity 0.2s ease;
+  color: var(--blue-600);
 }
 
 .panel-header:hover .drag-handle {
@@ -173,29 +155,57 @@ const handleActionClick = (action) => {
 }
 
 .panel-title {
-  color: var(--text-color);
-  max-width: 200px;
+  color: var(--blue-800);
+  max-width: 300px;
+  font-weight: 600;
 }
 
 .panel-title.dirty {
+  color: var(--orange-600);
+}
+
+.panel-title.dirty::after {
+  content: " •";
   color: var(--orange-500);
+  font-weight: bold;
 }
 
 .panel-header .p-button {
-  height: 28px;
-  min-width: 28px;
+  height: 32px;
+  min-width: 32px;
 }
 
 .panel-header .p-button.p-button-sm {
-  padding: 0.25rem 0.5rem;
+  padding: 0.375rem 0.75rem;
 }
 
 .panel-header .p-button.p-button-text {
-  padding: 0.25rem;
+  padding: 0.375rem;
+  color: var(--blue-700);
+}
+
+.panel-header .p-button.p-button-text:hover {
+  background: var(--blue-100);
 }
 
 /* Ensure buttons don't wrap */
 .panel-header > div:last-child {
   flex-shrink: 0;
+}
+
+/* Split button styling */
+.panel-header :deep(.p-splitbutton) {
+  background: var(--surface-0);
+  border: 1px solid var(--blue-200);
+}
+
+.panel-header :deep(.p-splitbutton .p-button) {
+  background: transparent;
+  border: none;
+  color: var(--blue-700);
+}
+
+.panel-header :deep(.p-splitbutton .p-button:hover) {
+  background: var(--blue-100);
 }
 </style>

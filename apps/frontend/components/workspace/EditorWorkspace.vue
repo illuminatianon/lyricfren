@@ -164,16 +164,7 @@ const handlePanelFocus = (panelId) => {
 };
 
 const handleNewPanel = (type = 'lyric') => {
-  console.log('🔥 handleNewPanel called with type:', type);
-  console.log('🔥 Current panels before:', activePanels.value.length);
-  console.log('🔥 Panel order before:', currentWorkspace.value.layout.panelOrder);
-
-  const panelId = workspaceManager.addPanel(type);
-
-  console.log('🔥 Created panel ID:', panelId);
-  console.log('🔥 Current panels after:', activePanels.value.length);
-  console.log('🔥 Panel order after:', currentWorkspace.value.layout.panelOrder);
-  console.log('🔥 All panels:', Object.keys(currentWorkspace.value.panels));
+  workspaceManager.addPanel(type);
 };
 </script>
 
@@ -281,10 +272,12 @@ const handleNewPanel = (type = 'lyric') => {
 .panel-container {
   min-height: 0; /* Allow flex children to shrink */
   gap: 0;
+  background: var(--surface-50);
+  padding: 8px 0;
 }
 
 .panel-container.no-panels {
-  background: var(--surface-ground);
+  background: var(--surface-50);
 }
 
 .empty-workspace {
@@ -310,27 +303,35 @@ const handleNewPanel = (type = 'lyric') => {
 
 .resize-handle {
   position: absolute;
-  top: 0;
-  right: -2px;
-  width: 4px;
-  height: 100%;
+  top: 50%;
+  right: -6px;
+  width: 12px;
+  height: 60px;
   cursor: col-resize;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.editor-panel-container:hover .resize-handle {
+  opacity: 1;
 }
 
 .resize-handle:hover .resize-handle-line {
-  background: var(--primary-color);
+  background: var(--primary-400);
+  width: 3px;
 }
 
 .resize-handle-line {
   width: 2px;
-  height: 40px;
-  background: var(--surface-border);
-  border-radius: 1px;
-  transition: background 0.2s ease;
+  height: 30px;
+  background: var(--surface-400);
+  border-radius: 2px;
+  transition: all 0.2s ease;
 }
 
 .workspace-status-bar {

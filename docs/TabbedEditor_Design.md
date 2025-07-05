@@ -626,6 +626,19 @@ interface WorkspaceSummary {
    - **Files Updated**: `stores/workspaceManager.js`, `components/workspace/EditorWorkspace.vue`
    - **Status**: ✅ Multiple panels now create and display correctly
 
+2. **New Panel Button Issue** (FIXED): Menu popup wasn't working
+   - **Problem**: Menu popup wasn't showing, preventing editor type selection
+   - **Root Cause**: PrimeVue Menu component popup visibility issues
+   - **Solution**: Replaced Button + Menu with SplitButton component
+   - **Files Updated**: `components/workspace/WorkspaceToolbar.vue`, `main.js`
+   - **Status**: ✅ New panel creation now works with dropdown selection
+
+3. **Panel UI/UX Improvements** (COMPLETED): Modern card-based design
+   - **Changes**: Colored title bars, softer shadows, rounded corners, better spacing
+   - **Features**: Split button for panel actions, subtle resize handles, improved visual hierarchy
+   - **Files Updated**: `BaseEditorPanel.vue`, `PanelHeader.vue`, `PanelSidebar.vue`, `EditorWorkspace.vue`
+   - **Status**: ✅ Clean, modern card-based panel design implemented
+
 ### 🔄 In Progress
 2. **Sidebar Widget System**: Need proper component registry for sidebar widgets
 3. **Panel Focus Management**: Active panel highlighting needs improvement

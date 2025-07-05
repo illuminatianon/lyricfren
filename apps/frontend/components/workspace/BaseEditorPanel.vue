@@ -199,7 +199,7 @@ const getSidebarConfig = () => {
 </script>
 
 <template>
-  <Card 
+  <Card
     ref="panelElement"
     class="editor-panel h-full"
     :class="{
@@ -222,11 +222,11 @@ const getSidebarConfig = () => {
         @drag-end="handleDragEnd"
       />
     </template>
-    
+
     <template #content>
       <div class="panel-body h-full flex">
         <!-- Main Content -->
-        <div 
+        <div
           ref="mainContentElement"
           class="main-content flex-1"
           :class="{ 'with-sidebar': sidebarOpen }"
@@ -239,9 +239,9 @@ const getSidebarConfig = () => {
             @content-change="handleContentChange"
             @metadata-change="handleMetadataChange"
           />
-          
+
           <!-- Fallback for unimplemented editors -->
-          <div 
+          <div
             v-if="!['lyric', 'prompt', 'style'].includes(panel.type)"
             class="fallback-editor h-full flex align-items-center justify-content-center flex-column"
           >
@@ -250,7 +250,7 @@ const getSidebarConfig = () => {
             <p class="text-color-secondary">{{ panel.type }} editor is not yet available</p>
           </div>
         </div>
-        
+
         <!-- Sidebar -->
         <PanelSidebar
           v-if="sidebarOpen"
@@ -267,22 +267,29 @@ const getSidebarConfig = () => {
 <style scoped>
 .editor-panel {
   height: 100%;
-  border-radius: 0;
-  border: none;
-  border-right: 1px solid var(--surface-border);
+  border-radius: 8px;
+  border: 1px solid var(--surface-500);
+  margin: 0 4px;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.editor-panel:first-child {
+  margin-left: 8px;
 }
 
 .editor-panel:last-child {
-  border-right: none;
+  margin-right: 8px;
 }
 
 .editor-panel.active {
-  box-shadow: inset 0 0 0 2px var(--primary-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 2px var(--primary-200);
+  transform: translateY(-1px);
 }
 
 .editor-panel.dirty {
-  border-top: 3px solid var(--orange-500);
+  border-top: 3px solid var(--orange-400);
 }
 
 .editor-panel.sidebar-open {
@@ -290,22 +297,24 @@ const getSidebarConfig = () => {
 }
 
 .panel-body {
-  height: calc(100% - 60px); /* Account for header height */
+  height: calc(100% - 48px); /* Account for header height */
   overflow: hidden;
+  background: white;
 }
 
 .main-content {
   min-width: 0; /* Allow flex child to shrink */
   height: 100%;
   overflow: hidden;
+  background: white;
 }
 
 .main-content.with-sidebar {
-  border-right: 1px solid var(--surface-border);
+  border-right: 1px solid var(--surface-200);
 }
 
 .fallback-editor {
-  background: var(--surface-ground);
+  background: var(--surface-50);
   color: var(--text-color-secondary);
 }
 
@@ -313,21 +322,28 @@ const getSidebarConfig = () => {
 :deep(.p-card) {
   height: 100%;
   box-shadow: none;
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 :deep(.p-card-header) {
   padding: 0;
-  border-bottom: 1px solid var(--surface-border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
 }
 
 :deep(.p-card-content) {
   padding: 0;
-  height: calc(100% - 60px);
+  height: calc(100% - 48px);
+  background: white;
 }
 
 :deep(.p-card-body) {
   height: 100%;
   display: flex;
   flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
 }
 </style>
