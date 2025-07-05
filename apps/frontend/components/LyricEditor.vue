@@ -22,10 +22,17 @@ const emit = defineEmits(['update:modelValue']);
 const meterStore = useMeterStore();
 const editorRef = ref(null);
 
-// Create a debounced version of the meter analysis function
+// Debounced meter analysis (250ms)
 const debouncedAnalyzeMeter = debounce((text) => {
   meterStore.analyzeMeter(text);
-}, 500);
+}, 250);
+
+// Perform analysis immediately if not done recently
+defineExpose({
+  forceAnalyze(text) {
+    meterStore.analyzeMeter(text);
+  }
+});
 
 const syllableGutter = lineNumbers({
   // noinspection JSUnusedLocalSymbols
@@ -45,9 +52,20 @@ const extensions = computed(() => [
 ]);
 
 // Watch for changes to modelValue
+let lastAnalyzeTime = 0;
+
 watch(() => props.modelValue, (newValue) => {
-  // Analyze the meter when the value changes
-  debouncedAnalyzeMeter(newValue);
+  const now = performance.now();
+  // If more than 1s (1000ms) since last analyze, run immediately
+  if (now - lastAnalyzeTime > 1000) {
+    meterStore.analyzeMeter(newValue);
+    lastAnalyzeTime = now;
+  } else {
+    debouncedAnalyzeMeter(newValue);
+    // When the debounced function fires, update lastAnalyzeTime
+    debouncedAnalyzeMeter.flush && debouncedAnalyzeMeter.flush();
+    lastAnalyzeTime = performance.now();
+  }
 
   if (newValue && !newValue.trim()) {
     // If the value is cleared, also clear the meter results
