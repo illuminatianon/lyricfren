@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useSettingsStore } from '../stores/settings';
 
 const props = defineProps({
@@ -21,6 +21,12 @@ const maxTokens = ref(512);
 const topP = ref(1.0);
 const saving = ref(false);
 const successMessage = ref('');
+
+// Dialog visibility computed property
+const dialogVisible = computed({
+  get: () => props.visible,
+  set: (value) => emit('update:visible', value)
+});
 
 // Ensure numeric values are properly handled
 const handleTemperatureChange = (value) => {
@@ -88,91 +94,177 @@ const saveSettings = async () => {
 const closeDialog = () => {
   emit('update:visible', false);
 };
+
+// Watch for dialog visibility changes to load settings
+watch(() => props.visible, (newValue) => {
+  if (newValue) {
+    onDialogShow();
+  }
+});
 </script>
 
 <template>
-  <Dialog v-model:visible="props.visible" modal header="Settings" :style="{ width: '500px' }" :closable="true"
-    @show="onDialogShow" @update:visible="(val) => emit('update:visible', val)">
-    <div class="p-fluid">
-      <div class="mb-4">
-        <h3 class="text-xl mb-3">API Keys</h3>
+  <v-dialog
+    v-model="dialogVisible"
+    max-width="500px"
+    @update:model-value="(val) => emit('update:visible', val)"
+  >
+    <v-card>
+      <v-card-title>Settings</v-card-title>
 
-        <div class="field mb-3">
-          <label for="openai-key" class="block mb-2">OpenAI API Key</label>
-          <InputText id="openai-key" v-model="openaiKey" placeholder="sk-..." class="w-full" type="password" />
-          <small class="block mt-1 text-color-secondary">Current: {{ maskedOpenaiKey || 'Not set' }}</small>
+      <v-card-text>
+        <div class="mb-6">
+          <h3 class="text-h6 mb-3">API Keys</h3>
+
+          <v-text-field
+            id="openai-key"
+            v-model="openaiKey"
+            label="OpenAI API Key"
+            placeholder="sk-..."
+            type="password"
+            variant="outlined"
+            :hint="`Current: ${maskedOpenaiKey || 'Not set'}`"
+            persistent-hint
+            class="mb-3"
+          />
         </div>
-      </div>
 
-      <Divider />
+        <v-divider class="mb-6" />
 
-      <div class="mb-4">
-        <h3 class="text-xl mb-3">Model Parameters</h3>
+        <div class="mb-4">
+          <h3 class="text-h6 mb-3">Model Parameters</h3>
 
-        <div class="field mb-3">
-          <label for="model" class="block mb-2">Model</label>
-          <Dropdown id="model" v-model="model" :options="['gpt-4', 'gpt-3.5-turbo', 'gpt-4-turbo']"
-            placeholder="Select a model" class="w-full" />
-        </div>
+          <v-select
+            id="model"
+            v-model="model"
+            :items="['gpt-4', 'gpt-3.5-turbo', 'gpt-4-turbo']"
+            label="Model"
+            variant="outlined"
+            class="mb-3"
+          />
 
-        <div class="field mb-3">
-          <label for="temperature" class="block mb-2">Temperature</label>
-          <div class="flex align-items-center gap-2">
-            <div class="flex-1">
-              <Slider v-model="temperature" :min="0" :max="2" :step="0.1" @change="handleTemperatureChange" />
+          <div class="mb-3">
+            <label class="text-subtitle-2 mb-2 d-block">Temperature</label>
+            <div class="d-flex align-center ga-3">
+              <v-slider
+                v-model="temperature"
+                :min="0"
+                :max="2"
+                :step="0.1"
+                class="flex-grow-1"
+                @update:model-value="handleTemperatureChange"
+              />
+              <v-text-field
+                v-model="temperature"
+                type="number"
+                :min="0"
+                :max="2"
+                :step="0.1"
+                variant="outlined"
+                density="compact"
+                style="width: 80px"
+                @update:model-value="handleTemperatureChange"
+              />
             </div>
-            <div class="w-4rem">
-              <InputNumber v-model="temperature" :min="0" :max="2" :step="0.1" inputClass="w-full"
-                @update:modelValue="handleTemperatureChange" />
+            <div class="text-caption text-medium-emphasis">
+              Controls randomness (0 = deterministic, 2 = maximum creativity)
             </div>
           </div>
-          <small class="block mt-1 text-color-secondary">Controls randomness (0 = deterministic, 2 = maximum
-            creativity)</small>
-        </div>
 
-        <div class="field mb-3">
-          <label for="max-tokens" class="block mb-2">Max Tokens</label>
-          <div class="flex align-items-center gap-2">
-            <div class="flex-1">
-              <Slider v-model="maxTokens" :min="1" :max="4096" :step="1" @change="handleMaxTokensChange" />
+          <div class="mb-3">
+            <label class="text-subtitle-2 mb-2 d-block">Max Tokens</label>
+            <div class="d-flex align-center ga-3">
+              <v-slider
+                v-model="maxTokens"
+                :min="1"
+                :max="4096"
+                :step="1"
+                class="flex-grow-1"
+                @update:model-value="handleMaxTokensChange"
+              />
+              <v-text-field
+                v-model="maxTokens"
+                type="number"
+                :min="1"
+                :max="4096"
+                :step="1"
+                variant="outlined"
+                density="compact"
+                style="width: 100px"
+                @update:model-value="handleMaxTokensChange"
+              />
             </div>
-            <div class="w-5rem">
-              <InputNumber v-model="maxTokens" :min="1" :max="4096" :step="1" inputClass="w-full"
-                @update:modelValue="handleMaxTokensChange" />
+            <div class="text-caption text-medium-emphasis">
+              Maximum length of generated text
             </div>
           </div>
-          <small class="block mt-1 text-color-secondary">Maximum length of generated text</small>
-        </div>
 
-        <div class="field">
-          <label for="top-p" class="block mb-2">Top P</label>
-          <div class="flex align-items-center gap-2">
-            <div class="flex-1">
-              <Slider v-model="topP" :min="0" :max="1" :step="0.05" @change="handleTopPChange" />
+          <div class="mb-3">
+            <label class="text-subtitle-2 mb-2 d-block">Top P</label>
+            <div class="d-flex align-center ga-3">
+              <v-slider
+                v-model="topP"
+                :min="0"
+                :max="1"
+                :step="0.05"
+                class="flex-grow-1"
+                @update:model-value="handleTopPChange"
+              />
+              <v-text-field
+                v-model="topP"
+                type="number"
+                :min="0"
+                :max="1"
+                :step="0.05"
+                variant="outlined"
+                density="compact"
+                style="width: 80px"
+                @update:model-value="handleTopPChange"
+              />
             </div>
-            <div class="w-4rem">
-              <InputNumber v-model="topP" :min="0" :max="1" :step="0.05" inputClass="w-full"
-                @update:modelValue="handleTopPChange" />
+            <div class="text-caption text-medium-emphasis">
+              Controls diversity via nucleus sampling
             </div>
           </div>
-          <small class="block mt-1 text-color-secondary">Controls diversity via nucleus sampling</small>
         </div>
-      </div>
 
-      <div v-if="successMessage" class="my-3 p-3 bg-green-100 text-green-800 border-round">
-        {{ successMessage }}
-      </div>
+        <v-alert
+          v-if="successMessage"
+          type="success"
+          variant="tonal"
+          class="mb-3"
+        >
+          {{ successMessage }}
+        </v-alert>
 
-      <div v-if="settingsStore.error" class="my-3 p-3 bg-red-100 text-red-800 border-round">
-        {{ settingsStore.error }}
-      </div>
-    </div>
+        <v-alert
+          v-if="settingsStore.error"
+          type="error"
+          variant="tonal"
+          class="mb-3"
+        >
+          {{ settingsStore.error }}
+        </v-alert>
+      </v-card-text>
 
-    <template #footer>
-      <Button label="Cancel" icon="pi pi-times" text @click="closeDialog" />
-      <Button label="Save" icon="pi pi-check" @click="saveSettings" :loading="saving" />
-    </template>
-  </Dialog>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          variant="text"
+          @click="closeDialog"
+        >
+          Cancel
+        </v-btn>
+        <v-btn
+          color="primary"
+          :loading="saving"
+          @click="saveSettings"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>

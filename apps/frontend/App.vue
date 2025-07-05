@@ -20,21 +20,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-column">
-    <AppHeader class="app-header" />
-    <div class="flex-1 flex">
-      <AppSidebar />
-      <div
-        class="flex-1 transition-all transition-duration-300"
-        :class="{ 'md:pl-0': !uiStore.sidebarVisible || uiStore.isMobile }"
-      >
-        <main class="p-4 flex-1 flex flex-column">
-          <router-view class="flex-1" />
-        </main>
+  <v-app>
+    <AppHeader />
+    <v-main>
+      <div class="d-flex">
+        <AppSidebar />
+        <div class="flex-grow-1">
+          <div class="pa-4">
+            <router-view />
+          </div>
+        </div>
       </div>
-    </div>
+    </v-main>
     <AppFooter />
-  </div>
+  </v-app>
 </template>
 
 <style>

@@ -199,9 +199,9 @@ const getSidebarConfig = () => {
 </script>
 
 <template>
-  <Card
+  <v-card
     ref="panelElement"
-    class="editor-panel h-full"
+    class="editor-panel h-100"
     :class="{
       'active': isActive,
       'dirty': isDirty,
@@ -209,26 +209,24 @@ const getSidebarConfig = () => {
     }"
     @click="handleFocus"
   >
-    <template #header>
-      <PanelHeader
-        :title="panel.data.metadata.title"
-        :is-dirty="isDirty"
-        :primary-actions="primaryActions"
-        :overflow-actions="overflowActions"
-        :sidebar-open="sidebarOpen"
-        :draggable="true"
-        @sidebar-toggle="handleSidebarToggle"
-        @drag-start="handleDragStart"
-        @drag-end="handleDragEnd"
-      />
-    </template>
+    <PanelHeader
+      :title="panel.data.metadata.title"
+      :is-dirty="isDirty"
+      :primary-actions="primaryActions"
+      :overflow-actions="overflowActions"
+      :sidebar-open="sidebarOpen"
+      :draggable="true"
+      @sidebar-toggle="handleSidebarToggle"
+      @drag-start="handleDragStart"
+      @drag-end="handleDragEnd"
+    />
 
-    <template #content>
-      <div class="panel-body h-full flex">
+    <v-card-text class="pa-0 h-100">
+      <div class="panel-body h-100 d-flex">
         <!-- Main Content -->
         <div
           ref="mainContentElement"
-          class="main-content flex-1"
+          class="main-content flex-grow-1"
           :class="{ 'with-sidebar': sidebarOpen }"
         >
           <!-- Dynamic Editor Component -->
@@ -243,11 +241,11 @@ const getSidebarConfig = () => {
           <!-- Fallback for unimplemented editors -->
           <div
             v-if="!['lyric', 'prompt', 'style'].includes(panel.type)"
-            class="fallback-editor h-full flex align-items-center justify-content-center flex-column"
+            class="fallback-editor h-100 d-flex align-center justify-center flex-column"
           >
-            <i class="pi pi-exclamation-triangle text-4xl text-color-secondary mb-3"></i>
-            <h4 class="text-color-secondary mb-2">Editor Not Implemented</h4>
-            <p class="text-color-secondary">{{ panel.type }} editor is not yet available</p>
+            <v-icon icon="mdi-alert-circle" size="64" color="medium-emphasis" class="mb-3" />
+            <h4 class="text-medium-emphasis mb-2">Editor Not Implemented</h4>
+            <p class="text-medium-emphasis">{{ panel.type }} editor is not yet available</p>
           </div>
         </div>
 
@@ -260,8 +258,8 @@ const getSidebarConfig = () => {
           @data-change="(path, value) => workspaceManager.updatePanelData(panel.id, { [path]: value })"
         />
       </div>
-    </template>
-  </Card>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style scoped>

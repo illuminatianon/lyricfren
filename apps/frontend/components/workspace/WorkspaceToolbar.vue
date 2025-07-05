@@ -21,9 +21,9 @@ const dirtyCount = computed(() => workspaceManager.dirtyPanels.length);
 
 // Panel type options
 const panelTypes = [
-  { label: 'Lyric Editor', value: 'lyric', icon: 'pi pi-file-edit' },
-  { label: 'Prompt Editor', value: 'prompt', icon: 'pi pi-comment' },
-  { label: 'Style Editor', value: 'style', icon: 'pi pi-palette' }
+  { label: 'Lyric Editor', value: 'lyric', icon: 'mdi-file-document-edit' },
+  { label: 'Prompt Editor', value: 'prompt', icon: 'mdi-comment-text' },
+  { label: 'Style Editor', value: 'style', icon: 'mdi-palette' }
 ];
 
 // Actions
@@ -83,116 +83,143 @@ const handleImportWorkspace = () => {
 </script>
 
 <template>
-  <div class="workspace-toolbar flex align-items-center justify-content-between px-3 py-2 surface-section border-bottom-1 border-surface">
+  <div class="workspace-toolbar d-flex align-center justify-space-between px-3 py-2 bg-surface border-b">
     <!-- Left Section: Panel Actions -->
-    <div class="flex align-items-center gap-2">
+    <div class="d-flex align-center ga-2">
       <!-- New Panel Button -->
-      <SplitButton
-        icon="pi pi-plus"
-        label="New"
-        size="small"
-        :model="panelTypes.map(type => ({
-          label: type.label,
-          icon: type.icon,
-          command: () => handleNewPanel(type.value)
-        }))"
-        @click="handleNewPanel('lyric')"
-      />
+      <v-btn-group variant="outlined" size="small">
+        <v-btn
+          prepend-icon="mdi-plus"
+          @click="handleNewPanel('lyric')"
+        >
+          New
+        </v-btn>
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-btn
+              icon="mdi-chevron-down"
+              v-bind="props"
+            />
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="type in panelTypes"
+              :key="type.value"
+              @click="handleNewPanel(type.value)"
+            >
+              <template v-slot:prepend>
+                <v-icon :icon="type.icon" />
+              </template>
+              <v-list-item-title>{{ type.label }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-btn-group>
 
       <!-- Layout Actions -->
-      <Button
-        icon="pi pi-refresh"
-        label="Reset Layout"
+      <v-btn
+        prepend-icon="mdi-refresh"
         size="small"
-        severity="secondary"
+        variant="outlined"
         @click="handleResetLayout"
-        v-tooltip="'Reset all panel widths to auto-size'"
-      />
+      >
+        <v-tooltip activator="parent" location="bottom">
+          Reset all panel widths to auto-size
+        </v-tooltip>
+        Reset Layout
+      </v-btn>
 
-      <Divider layout="vertical" />
+      <v-divider vertical class="mx-2" />
 
       <!-- Save Actions -->
-      <Button
-        icon="pi pi-save"
-        :label="hasDirtyPanels ? `Save All (${dirtyCount})` : 'Save All'"
+      <v-btn
+        prepend-icon="mdi-content-save"
         size="small"
-        :severity="hasDirtyPanels ? 'warning' : 'secondary'"
+        :color="hasDirtyPanels ? 'warning' : 'default'"
+        :variant="hasDirtyPanels ? 'elevated' : 'outlined'"
         :disabled="!hasDirtyPanels"
         @click="handleSaveAll"
-      />
+      >
+        {{ hasDirtyPanels ? `Save All (${dirtyCount})` : 'Save All' }}
+      </v-btn>
 
-      <Button
-        icon="pi pi-times"
-        label="Close All"
+      <v-btn
+        prepend-icon="mdi-close"
         size="small"
-        severity="danger"
-        outlined
+        color="error"
+        variant="outlined"
         @click="handleCloseAll"
-      />
+      >
+        Close All
+      </v-btn>
     </div>
 
     <!-- Center Section: Workspace Name -->
-    <div class="flex align-items-center gap-2">
-      <i class="pi pi-folder text-color-secondary"></i>
-      <span class="font-medium">{{ currentWorkspace.name }}</span>
-      <Badge
+    <div class="d-flex align-center ga-2">
+      <v-icon icon="mdi-folder" color="medium-emphasis" />
+      <span class="font-weight-medium">{{ currentWorkspace.name }}</span>
+      <v-badge
         v-if="hasDirtyPanels"
-        :value="dirtyCount"
-        severity="warning"
-        size="small"
+        :content="dirtyCount"
+        color="warning"
+        inline
       />
     </div>
 
     <!-- Right Section: Workspace Actions -->
-    <div class="flex align-items-center gap-2">
+    <div class="d-flex align-center ga-2">
       <!-- Workspace Menu -->
-      <div class="relative">
-        <Button
-          icon="pi pi-ellipsis-v"
-          size="small"
-          severity="secondary"
-          outlined
-          @click="showWorkspaceMenu = !showWorkspaceMenu"
-          aria-haspopup="true"
-          aria-controls="workspace-menu"
-        />
+      <v-menu>
+        <template v-slot:activator="{ props }">
+          <v-btn
+            icon="mdi-dots-vertical"
+            size="small"
+            variant="outlined"
+            v-bind="props"
+          />
+        </template>
 
-        <Menu
-          id="workspace-menu"
-          ref="workspaceMenu"
-          :model="[
-            {
-              label: 'Save Workspace',
-              icon: 'pi pi-save',
-              command: handleSaveWorkspace
-            },
-            {
-              label: 'Load Workspace',
-              icon: 'pi pi-folder-open',
-              command: handleLoadWorkspace
-            },
-            { separator: true },
-            {
-              label: 'Export Workspace',
-              icon: 'pi pi-download',
-              command: handleExportWorkspace
-            },
-            {
-              label: 'Import Workspace',
-              icon: 'pi pi-upload',
-              command: handleImportWorkspace
-            },
-            { separator: true },
-            {
-              label: 'Workspace Settings',
-              icon: 'pi pi-cog',
-              command: () => console.log('Workspace settings')
-            }
-          ]"
-          :popup="true"
-          v-model:visible="showWorkspaceMenu"
-        />
-      </div>
+        <v-list>
+          <v-list-item @click="handleSaveWorkspace">
+            <template v-slot:prepend>
+              <v-icon icon="mdi-content-save" />
+            </template>
+            <v-list-item-title>Save Workspace</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="handleLoadWorkspace">
+            <template v-slot:prepend>
+              <v-icon icon="mdi-folder-open" />
+            </template>
+            <v-list-item-title>Load Workspace</v-list-item-title>
+          </v-list-item>
+
+          <v-divider />
+
+          <v-list-item @click="handleExportWorkspace">
+            <template v-slot:prepend>
+              <v-icon icon="mdi-download" />
+            </template>
+            <v-list-item-title>Export Workspace</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item @click="handleImportWorkspace">
+            <template v-slot:prepend>
+              <v-icon icon="mdi-upload" />
+            </template>
+            <v-list-item-title>Import Workspace</v-list-item-title>
+          </v-list-item>
+
+          <v-divider />
+
+          <v-list-item @click="() => console.log('Workspace settings')">
+            <template v-slot:prepend>
+              <v-icon icon="mdi-cog" />
+            </template>
+            <v-list-item-title>Workspace Settings</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
   </div>
 </template>
