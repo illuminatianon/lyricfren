@@ -28,7 +28,7 @@ onMounted(() => {
         class="flex-1 transition-all transition-duration-300"
         :class="{ 'md:pl-0': !uiStore.sidebarVisible || uiStore.isMobile }"
       >
-        <main class="p-3 md:p-4 lg:p-5 flex-1 flex flex-column">
+        <main class="p-4 flex-1 flex flex-column">
           <router-view class="flex-1" />
         </main>
       </div>

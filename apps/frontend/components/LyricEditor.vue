@@ -83,8 +83,8 @@ watch(() => meterStore.lineCounts.value, () => {
 .lyric-editor {
   width: 100%;
   height: 100%;
-  border: 1px solid var(--surface-border);
-  border-radius: 4px;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
 }
 
