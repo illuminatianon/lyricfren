@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.opencode/
 
 #yarn cruft
 **/yarn.lock
@@ -31,3 +32,4 @@ dist-ssr
 repomix-frontend.xml
 repomix-backend.xml
 repomix-output.xml
+
