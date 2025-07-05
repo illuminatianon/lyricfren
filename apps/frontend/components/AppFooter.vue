@@ -3,7 +3,11 @@
 </script>
 
 <template>
-  <v-footer class="app-footer text-caption" >
+  <v-footer
+    class="app-footer text-caption"
+    height="48"
+    app
+  >
     <div class="w-100 d-flex justify-space-between align-center px-4">
       <div>© 2024 LyricFren</div>
       <div class="d-flex align-center">

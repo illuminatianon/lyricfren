@@ -12,6 +12,7 @@ const uiStore = useUIStore();
     :permanent="!uiStore.isMobile"
     width="256"
     color="surface"
+    app
   >
     <SidebarNavigation />
   </v-navigation-drawer>
