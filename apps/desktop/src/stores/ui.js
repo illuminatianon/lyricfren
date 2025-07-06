@@ -1,55 +1,33 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 export const useUIStore = defineStore('ui', () => {
-  // State
+  // State - sidebar is always visible in desktop app
   const sidebarVisible = ref(true);
-  const windowWidth = ref(window.innerWidth);
 
-  // Computed
-  const isMobile = computed(() => windowWidth.value < 768);
-
-  // Actions
+  // Actions - keeping minimal interface for compatibility
   const toggleSidebar = () => {
-    sidebarVisible.value = !sidebarVisible.value;
-    console.log('Sidebar toggled:', sidebarVisible.value);
-  };
-
-  const closeSidebarOnMobile = () => {
-    if (isMobile.value) {
-      sidebarVisible.value = false;
-    }
+    // In desktop app, sidebar is always visible, but keeping for compatibility
+    console.log('Sidebar toggle requested (desktop app - always visible)');
   };
 
   const closeSidebar = () => {
-    sidebarVisible.value = false;
-    console.log('Sidebar closed:', sidebarVisible.value);
+    // In desktop app, sidebar is always visible, but keeping for compatibility
+    console.log('Sidebar close requested (desktop app - always visible)');
   };
 
   const initializeUI = () => {
-    // Set initial sidebar visibility based on screen size
-    sidebarVisible.value = !isMobile.value;
-
-    // Update window width on resize
-    const handleResize = () => {
-      windowWidth.value = window.innerWidth;
-    };
-
-    // Add resize listener
-    window.addEventListener('resize', handleResize);
+    // Desktop app initialization - sidebar always visible
+    sidebarVisible.value = true;
+    console.log('Desktop UI initialized');
   };
 
   return {
     // State
     sidebarVisible,
-    windowWidth,
-
-    // Computed
-    isMobile,
 
     // Actions
     toggleSidebar,
-    closeSidebarOnMobile,
     closeSidebar,
     initializeUI,
   };
