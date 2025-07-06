@@ -121,12 +121,19 @@ watch(() => props.isActive, (isActive) => {
 const handleTitleChange = (newTitle) => {
   emit('metadata-change', 'title', newTitle);
 };
+
+// Handle editor click to ensure focus
+const handleEditorClick = () => {
+  if (editorRef.value) {
+    editorRef.value.focus();
+  }
+};
 </script>
 
 <template>
   <div class="lyric-editor-instance h-100 d-flex flex-column">
-    <!-- Editor Content -->
-    <div class="editor-content flex-grow-1">
+    <!-- Editor Content - takes full space -->
+    <div class="editor-content flex-grow-1 pa-0">
       <CodeMirror
         ref="editorRef"
         :model-value="content"
@@ -136,6 +143,7 @@ const handleTitleChange = (newTitle) => {
         basic
         wrap
         class="editor-container h-100"
+        @click="handleEditorClick"
       />
     </div>
 
@@ -174,15 +182,21 @@ const handleTitleChange = (newTitle) => {
 </template>
 
 <style scoped>
+.lyric-editor-instance {
+
+}
+
 .editor-content {
   min-height: 0; /* Allow flex child to shrink */
   overflow: hidden;
+
 }
 
 .editor-container {
   height: 100%;
   min-height: 300px;
   overflow: auto;
+
 }
 
 .editor-status-bar {
@@ -194,12 +208,33 @@ const handleTitleChange = (newTitle) => {
 
 <style>
 /* CodeMirror styling - needs to be global */
+.lyric-editor-instance :deep(.cm-editor) {
+  height: 100%;
+  background: transparent !important;
+}
+
+.lyric-editor-instance :deep(.cm-scroller) {
+  height: 100%;
+  background: transparent !important;
+}
+
+.lyric-editor-instance :deep(.cm-content) {
+  background: transparent !important;
+  padding: 16px;
+  min-height: 100%;
+}
+
+.lyric-editor-instance :deep(.cm-focused) {
+  outline: none !important;
+}
+
 .lyric-editor-instance :deep(.cm-lineNumbers) {
   width: 38px;
-  background: rgb(var(--v-theme-surface));
+  background: pink;
   border-right: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
   color: rgb(var(--v-theme-on-surface-variant));
   text-align: center;
+  padding-top: 16px;
 }
 
 /* only cells that actually contain a number */
@@ -208,12 +243,8 @@ const handleTitleChange = (newTitle) => {
   color: rgb(var(--v-theme-primary));
 }
 
-/* Ensure CodeMirror editor fills the container */
-.lyric-editor-instance :deep(.cm-editor) {
-  height: 100%;
-}
-
-.lyric-editor-instance :deep(.cm-scroller) {
-  height: 100%;
+/* Remove any default backgrounds */
+.lyric-editor-instance :deep(.cm-wrap) {
+  //background: transparent !important;
 }
 </style>

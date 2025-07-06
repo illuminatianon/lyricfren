@@ -131,7 +131,9 @@ const handleDragEnd = (event) => {
 watch(() => props.isActive, (isActive) => {
   if (isActive && mainContentElement.value) {
     // Focus the main content when panel becomes active
-    const focusableElement = mainContentElement.value.querySelector('input, textarea, [contenteditable], [tabindex]:not([tabindex="-1"])');
+    // Look for CodeMirror editor first, then other focusable elements
+    const codeMirrorElement = mainContentElement.value.querySelector('.cm-editor');
+    const focusableElement = codeMirrorElement || mainContentElement.value.querySelector('input, textarea, [contenteditable], [tabindex]:not([tabindex="-1"])');
     if (focusableElement) {
       focusableElement.focus();
     }
@@ -207,7 +209,6 @@ const getSidebarConfig = () => {
       'dirty': isDirty,
       'sidebar-open': sidebarOpen
     }"
-    @click="handleFocus"
   >
     <PanelHeader
       :title="panel.data.metadata.title"
@@ -228,6 +229,7 @@ const getSidebarConfig = () => {
           ref="mainContentElement"
           class="main-content flex-grow-1"
           :class="{ 'with-sidebar': sidebarOpen }"
+          @click="handleFocus"
         >
           <!-- Dynamic Editor Component -->
           <component
@@ -297,14 +299,12 @@ const getSidebarConfig = () => {
 .panel-body {
   height: calc(100% - 48px); /* Account for header height */
   overflow: hidden;
-  background: white;
 }
 
 .main-content {
   min-width: 0; /* Allow flex child to shrink */
   height: 100%;
   overflow: hidden;
-  background: white;
 }
 
 .main-content.with-sidebar {
