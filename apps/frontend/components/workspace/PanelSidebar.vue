@@ -57,22 +57,19 @@ const renderComponent = (componentConfig) => {
 
 <template>
   <div
-    class="panel-sidebar surface-ground border-left-1 border-surface"
+    class="panel-sidebar"
     :style="{ width: `${sidebarWidth}px` }"
   >
     <!-- Sidebar Header -->
-    <div class="sidebar-header d-flex align-center justify-space-between px-3 py-2 border-b">
+    <div class="sidebar-header d-flex align-center justify-space-between px-3 py-2">
       <h4 class="text-h6 font-weight-medium ma-0">Panel Tools</h4>
       <v-btn
-        icon="mdi-close"
         size="small"
         variant="text"
         @click="handleClose"
       >
-        <v-tooltip
-          activator="parent"
-          location="bottom"
-        >
+        <v-icon>mdi-close</v-icon>
+        <v-tooltip activator="parent" location="bottom">
           Close sidebar
         </v-tooltip>
       </v-btn>
@@ -192,14 +189,15 @@ const renderComponent = (componentConfig) => {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: var(--surface-50);
+  background: rgb(var(--v-theme-surface));
+  border-left: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 
 .sidebar-header {
   height: 48px;
-  background: var(--surface-100);
+  background: rgb(var(--v-theme-surface-variant));
   flex-shrink: 0;
-  border-bottom: 1px solid var(--surface-200);
+  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 
 .sidebar-content {

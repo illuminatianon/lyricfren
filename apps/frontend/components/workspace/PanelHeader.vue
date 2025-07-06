@@ -39,7 +39,7 @@ const showOverflowMenu = ref(false);
 
 // Computed properties
 const displayTitle = computed(() => {
-  return props.isDirty ? `${props.title} •` : props.title;
+  return props.title;
 });
 
 // Action handlers
@@ -77,24 +77,19 @@ const handleActionClick = (action) => {
     density="compact"
     flat
   >
-    <!-- Drag Handle -->
-    <v-icon
-      v-if="draggable"
-      icon="mdi-drag-horizontal"
-      color="medium-emphasis"
-      class="drag-handle cursor-move mr-2"
-    >
-      <v-tooltip
-        activator="parent"
-        location="bottom"
-      >
-        Drag to reorder panel
-      </v-tooltip>
-    </v-icon>
+    <template #prepend>
+      <v-btn
+        variant="text"
+        size="small"
+        class="drag-handle"
+        icon="mdi-drag-horizontal-variant"
+      />
+    </template>
 
     <!-- Title -->
     <v-toolbar-title
       class="panel-title text-truncate"
+
       :class="{ 'dirty': isDirty }"
       :title="title"
     >
@@ -103,64 +98,73 @@ const handleActionClick = (action) => {
 
     <v-spacer />
 
-    <!-- Panel Actions -->
-    <v-btn-group
-      v-if="primaryActions.length > 0"
-      variant="outlined"
-      size="small"
-      class="mr-2"
-    >
-      <v-btn
-        :prepend-icon="primaryActions[0]?.icon || 'mdi-content-save'"
-        :color="primaryActions[0]?.severity === 'warning' ? 'warning' : 'default'"
-        :disabled="primaryActions[0]?.disabled || false"
-        @click="handleActionClick(primaryActions[0])"
-      >
-        {{ primaryActions[ 0 ]?.label || 'Save' }}
-      </v-btn>
-      <v-menu v-if="[...primaryActions.slice(1), ...overflowActions].length > 0">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            icon="chevron-down"
-            v-bind="props"
-          />
-        </template>
-        <v-list>
-          <v-list-item
-            v-for="action in [...primaryActions.slice(1), ...overflowActions]"
-            :key="action.label"
-            @click="handleActionClick(action)"
-          >
-            <template v-slot:prepend>
-              <v-icon :icon="action.icon" />
-            </template>
-            <v-list-item-title>{{ action.label }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-btn-group>
+    <v-toolbar-items>
+      <!-- Panel Actions -->
+      <template v-if="primaryActions.length > 0">
+        <!-- Primary Save Button -->
+        <v-btn
+          :prepend-icon="primaryActions[0]?.icon || 'mdi-content-save'"
+          :color="primaryActions[0]?.severity === 'warning' ? 'warning' : 'default'"
+          :disabled="primaryActions[0]?.disabled || false"
+          variant="outlined"
+          size="small"
+          class="mr-1"
+          @click="handleActionClick(primaryActions[0])"
+        >
+          {{ primaryActions[ 0 ]?.label || 'Save' }}
+        </v-btn>
 
-    <!-- Sidebar Toggle -->
-    <v-btn
-      :icon="sidebarOpen ? 'mdi-chevron-right' : 'mdi-chevron-left'"
-      variant="text"
-      size="small"
-      @click="handleSidebarToggle"
-    >
-      <v-tooltip
-        activator="parent"
-        location="bottom"
+        <!-- More Actions Menu -->
+        <v-menu v-if="[...primaryActions.slice(1), ...overflowActions].length > 0">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              size="small"
+              variant="outlined"
+              class="mr-2"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="action in [...primaryActions.slice(1), ...overflowActions]"
+              :key="action.label"
+              @click="handleActionClick(action)"
+            >
+              <template v-slot:prepend>
+                <v-icon :icon="action.icon" />
+              </template>
+              <v-list-item-title>{{ action.label }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </template>
+
+      <!-- Sidebar Toggle -->
+      <v-btn
+
+        size="small"
+        @click="handleSidebarToggle"
       >
-        {{ sidebarOpen ? 'Close sidebar' : 'Open sidebar' }}
-      </v-tooltip>
-    </v-btn>
+        <v-icon :icon="sidebarOpen ? 'mdi-chevron-left' : 'mdi-chevron-right'" />
+        <v-tooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ sidebarOpen ? 'Close sidebar' : 'Open sidebar' }}
+        </v-tooltip>
+      </v-btn>
+
+    </v-toolbar-items>
+
   </v-toolbar>
 </template>
 
 <style scoped>
 .panel-header {
-  height: 48px;
-  background: rgb(var(--v-theme-surface-variant));
+  height: 48px !important;
+  background: rgb(var(--v-theme-surface-variant)) !important;
   border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -204,19 +208,6 @@ const handleActionClick = (action) => {
 .panel-header .p-button {
   height: 32px;
   min-width: 32px;
-}
-
-.panel-header .p-button.p-button-sm {
-  padding: 0.375rem 0.75rem;
-}
-
-.panel-header .p-button.p-button-text {
-  padding: 0.375rem;
-  color: rgb(var(--v-theme-primary));
-}
-
-.panel-header .p-button.p-button-text:hover {
-  background: rgba(var(--v-theme-primary), 0.1);
 }
 
 /* Ensure buttons don't wrap */
