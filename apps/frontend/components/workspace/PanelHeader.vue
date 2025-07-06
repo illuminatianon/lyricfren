@@ -89,11 +89,12 @@ const handleActionClick = (action) => {
     <!-- Title -->
     <v-toolbar-title
       class="panel-title text-truncate"
-
-      :class="{ 'dirty': isDirty }"
       :title="title"
     >
-      {{ displayTitle }}
+      <span :class="{ 'text-warning': isDirty }">
+        {{ displayTitle }}
+        <span v-if="isDirty" class="text-warning font-weight-bold ml-1">•</span>
+      </span>
     </v-toolbar-title>
 
     <v-spacer />
@@ -195,15 +196,7 @@ const handleActionClick = (action) => {
   font-weight: 600;
 }
 
-.panel-title.dirty {
-  color: rgb(var(--v-theme-warning));
-}
 
-.panel-title.dirty::after {
-  content: " •";
-  color: rgb(var(--v-theme-warning));
-  font-weight: bold;
-}
 
 .panel-header .p-button {
   height: 32px;
