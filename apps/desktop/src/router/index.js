@@ -2,9 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import SettingsView from '../views/SettingsView.vue';
 import WorkspaceView from '../views/WorkspaceView.vue';
-import SongsView from '../views/SongsView.vue';
-import StylesView from '../views/StylesView.vue';
-import { useUIStore } from '../stores/ui';
 
 const routes = [
   {
@@ -39,18 +36,6 @@ const router = createRouter({
   routes,
 });
 
-// Use the UI store to close the sidebar on navigation
-
-// Add a global navigation guard to close the sidebar on every navigation
-router.beforeEach((_to, _from, next) => {
-  // Get the UI store
-  const uiStore = useUIStore();
-
-  // Close the sidebar
-  uiStore.closeSidebar();
-
-  // Continue with navigation
-  next();
-});
+// Desktop app - sidebar always visible, no need for navigation guards
 
 export default router;

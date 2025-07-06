@@ -67,9 +67,21 @@ const handleImportWorkspace = () => {
     app
   >
     <div class="d-flex justify-space-between align-center w-100 px-4">
-      <!-- Left Section: Logo -->
+      <!-- Left Section: Workspace Name -->
       <div class="d-flex align-center">
-        <div class="text-h5 font-weight-bold">LyricFren</div>
+        <v-icon
+          icon="mdi-folder"
+          color="medium-emphasis"
+          class="mr-2"
+        />
+        <div class="text-h5 font-weight-bold">{{ currentWorkspace.name }}</div>
+        <v-badge
+          v-if="hasDirtyPanels"
+          :content="dirtyCount"
+          color="warning"
+          inline
+          class="ml-2"
+        />
       </div>
 
       <!-- Center Section: Workspace Controls (only show on workspace route) -->
@@ -137,25 +149,7 @@ const handleImportWorkspace = () => {
           Close All
         </v-btn>
 
-        <v-divider
-          vertical
-          class="mx-2"
-        />
 
-        <!-- Workspace Name -->
-        <div class="d-flex align-center ga-2">
-          <v-icon
-            icon="mdi-folder"
-            color="medium-emphasis"
-          />
-          <span class="font-weight-medium">{{ currentWorkspace.name }}</span>
-          <v-badge
-            v-if="hasDirtyPanels"
-            :content="dirtyCount"
-            color="warning"
-            inline
-          />
-        </div>
       </div>
 
       <!-- Right Section: Workspace Menu -->
