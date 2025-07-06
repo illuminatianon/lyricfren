@@ -36,14 +36,14 @@ const sidebarOpen = computed(() => props.panel.sidebarOpen);
 // Panel actions
 const primaryActions = computed(() => [
   {
-    icon: 'pi pi-save',
+    icon: 'mdi-content-save',
     label: 'Save',
     severity: isDirty.value ? 'warning' : 'secondary',
     disabled: !isDirty.value,
     command: handleSave,
   },
   {
-    icon: 'pi pi-copy',
+    icon: 'mdi-content-copy',
     label: 'Duplicate',
     severity: 'secondary',
     command: handleDuplicate,
@@ -53,18 +53,18 @@ const primaryActions = computed(() => [
 const overflowActions = computed(() => [
   {
     label: 'Export',
-    icon: 'pi pi-download',
+    icon: 'mdi-download',
     command: handleExport,
   },
   {
     label: 'Panel Settings',
-    icon: 'pi pi-cog',
+    icon: 'mdi-cog',
     command: handleSettings,
   },
   { separator: true },
   {
     label: 'Close Panel',
-    icon: 'pi pi-times',
+    icon: 'mdi-close',
     command: handleClose,
   },
 ]);

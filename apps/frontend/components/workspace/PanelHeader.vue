@@ -68,100 +68,93 @@ const handleActionClick = (action) => {
 </script>
 
 <template>
-  <v-card-title
-    class="panel-header d-flex align-center justify-space-between px-3 py-2"
+  <v-toolbar
+    class="panel-header"
     :class="{ 'draggable': draggable }"
     :draggable="draggable"
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
+    density="compact"
+    flat
   >
-    <!-- Left Section: Title and Drag Handle -->
-    <div
-      class="d-flex align-center ga-2 flex-grow-1"
-      style="min-width: 0"
+    <!-- Drag Handle -->
+    <v-icon
+      v-if="draggable"
+      icon="mdi-drag-horizontal"
+      color="medium-emphasis"
+      class="drag-handle cursor-move mr-2"
     >
-      <!-- Drag Handle -->
-      <v-icon
-        v-if="draggable"
-        icon="mdi-drag-horizontal"
-        color="medium-emphasis"
-        class="drag-handle cursor-move"
+      <v-tooltip
+        activator="parent"
+        location="bottom"
       >
-        <v-tooltip
-          activator="parent"
-          location="bottom"
-        >
-          Drag to reorder panel
-        </v-tooltip>
-      </v-icon>
+        Drag to reorder panel
+      </v-tooltip>
+    </v-icon>
 
-      <!-- Title -->
-      <h3
-        class="panel-title text-h6 font-weight-medium ma-0 text-truncate"
-        :class="{ 'dirty': isDirty }"
-        :title="title"
-      >
-        {{ displayTitle }}
-      </h3>
-    </div>
+    <!-- Title -->
+    <v-toolbar-title
+      class="panel-title text-truncate"
+      :class="{ 'dirty': isDirty }"
+      :title="title"
+    >
+      {{ displayTitle }}
+    </v-toolbar-title>
 
-    <!-- Center Section: Panel Actions -->
-    <div class="d-flex align-center ga-2">
-      <!-- Panel Actions Split Button -->
-      <v-btn-group
-        v-if="primaryActions.length > 0"
-        variant="outlined"
-        size="small"
-      >
-        <v-btn
-          :prepend-icon="primaryActions[0]?.icon || 'mdi-content-save'"
-          :color="primaryActions[0]?.severity === 'warning' ? 'warning' : 'default'"
-          :disabled="primaryActions[0]?.disabled || false"
-          @click="handleActionClick(primaryActions[0])"
-        >
-          {{ primaryActions[ 0 ]?.label || 'Save' }}
-        </v-btn>
-        <v-menu v-if="[...primaryActions.slice(1), ...overflowActions].length > 0">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              icon="mdi-chevron-down"
-              v-bind="props"
-            />
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="action in [...primaryActions.slice(1), ...overflowActions]"
-              :key="action.label"
-              @click="handleActionClick(action)"
-            >
-              <template v-slot:prepend>
-                <v-icon :icon="action.icon" />
-              </template>
-              <v-list-item-title>{{ action.label }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-btn-group>
-    </div>
+    <v-spacer />
 
-    <!-- Right Section: Controls -->
-    <div class="d-flex align-center ga-1">
-      <!-- Sidebar Toggle -->
+    <!-- Panel Actions -->
+    <v-btn-group
+      v-if="primaryActions.length > 0"
+      variant="outlined"
+      size="small"
+      class="mr-2"
+    >
       <v-btn
-        :icon="sidebarOpen ? 'mdi-chevron-right' : 'mdi-chevron-left'"
-        variant="text"
-        size="small"
-        @click="handleSidebarToggle"
+        :prepend-icon="primaryActions[0]?.icon || 'mdi-content-save'"
+        :color="primaryActions[0]?.severity === 'warning' ? 'warning' : 'default'"
+        :disabled="primaryActions[0]?.disabled || false"
+        @click="handleActionClick(primaryActions[0])"
       >
-        <v-tooltip
-          activator="parent"
-          location="bottom"
-        >
-          {{ sidebarOpen ? 'Close sidebar' : 'Open sidebar' }}
-        </v-tooltip>
+        {{ primaryActions[ 0 ]?.label || 'Save' }}
       </v-btn>
-    </div>
-  </v-card-title>
+      <v-menu v-if="[...primaryActions.slice(1), ...overflowActions].length > 0">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            icon="chevron-down"
+            v-bind="props"
+          />
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="action in [...primaryActions.slice(1), ...overflowActions]"
+            :key="action.label"
+            @click="handleActionClick(action)"
+          >
+            <template v-slot:prepend>
+              <v-icon :icon="action.icon" />
+            </template>
+            <v-list-item-title>{{ action.label }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-btn-group>
+
+    <!-- Sidebar Toggle -->
+    <v-btn
+      :icon="sidebarOpen ? 'mdi-chevron-right' : 'mdi-chevron-left'"
+      variant="text"
+      size="small"
+      @click="handleSidebarToggle"
+    >
+      <v-tooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ sidebarOpen ? 'Close sidebar' : 'Open sidebar' }}
+      </v-tooltip>
+    </v-btn>
+  </v-toolbar>
 </template>
 
 <style scoped>
@@ -231,19 +224,5 @@ const handleActionClick = (action) => {
   flex-shrink: 0;
 }
 
-/* Split button styling */
-.panel-header :deep(.p-splitbutton) {
-  background: rgb(var(--v-theme-surface));
-  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-}
 
-.panel-header :deep(.p-splitbutton .p-button) {
-  background: transparent;
-  border: none;
-  color: rgb(var(--v-theme-primary));
-}
-
-.panel-header :deep(.p-splitbutton .p-button:hover) {
-  background: rgba(var(--v-theme-primary), 0.1);
-}
 </style>
