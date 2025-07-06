@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useSettingsStore } from '../stores/settings';
 
 const settingsStore = useSettingsStore();
@@ -30,7 +30,10 @@ const saveSettings = async () => {
           <template #content>
             <form @submit.prevent="saveSettings">
               <div class="mb-4">
-                <label for="openai-key" class="block mb-2">OpenAI API Key</label>
+                <label
+                  for="openai-key"
+                  class="block mb-2"
+                >OpenAI API Key</label>
                 <InputText
                   id="openai-key"
                   v-model="settingsStore.openaiApiKey"
@@ -41,7 +44,10 @@ const saveSettings = async () => {
               </div>
 
               <div class="mb-4">
-                <label for="suno-key" class="block mb-2">Suno API Key (Optional)</label>
+                <label
+                  for="suno-key"
+                  class="block mb-2"
+                >Suno API Key (Optional)</label>
                 <InputText
                   id="suno-key"
                   v-model="settingsStore.sunoApiKey"
@@ -52,8 +58,16 @@ const saveSettings = async () => {
               </div>
 
               <div class="flex justify-content-between align-items-center">
-                <Button type="submit" label="Save Settings" icon="pi pi-save" />
-                <span v-if="message" class="text-sm" :class="{ 'text-green-500': message.includes('success'), 'text-red-500': message.includes('Error') }">
+                <Button
+                  type="submit"
+                  label="Save Settings"
+                  icon="pi pi-save"
+                />
+                <span
+                  v-if="message"
+                  class="text-sm"
+                  :class="{ 'text-green-500': message.includes('success'), 'text-red-500': message.includes('Error') }"
+                >
                   {{ message }}
                 </span>
               </div>

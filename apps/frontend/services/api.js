@@ -2,7 +2,7 @@
  * API service for making requests to the backend
  */
 class ApiService {
-  constructor() {
+  constructor () {
     this.baseUrl = 'http://localhost:3000/api';
   }
 
@@ -11,7 +11,7 @@ class ApiService {
    * @param {string} endpoint - API endpoint
    * @returns {string} Full URL
    */
-  getUrl(endpoint) {
+  getUrl (endpoint) {
     return `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
   }
 
@@ -20,7 +20,7 @@ class ApiService {
    * @param {string} endpoint - API endpoint
    * @returns {Promise<any>} Response data
    */
-  async get(endpoint) {
+  async get (endpoint) {
     const response = await fetch(this.getUrl(endpoint));
 
     if (!response.ok) {
@@ -37,13 +37,13 @@ class ApiService {
    * @param {Object} data - Request data
    * @returns {Promise<any>} Response data
    */
-  async post(endpoint, data) {
+  async post (endpoint, data) {
     const response = await fetch(this.getUrl(endpoint), {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {
@@ -60,13 +60,13 @@ class ApiService {
    * @param {Object} data - Request data
    * @returns {Promise<any>} Response data
    */
-  async put(endpoint, data) {
+  async put (endpoint, data) {
     const response = await fetch(this.getUrl(endpoint), {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {
@@ -82,9 +82,9 @@ class ApiService {
    * @param {string} endpoint - API endpoint
    * @returns {Promise<any>} Response data
    */
-  async delete(endpoint) {
+  async delete (endpoint) {
     const response = await fetch(this.getUrl(endpoint), {
-      method: 'DELETE'
+      method: 'DELETE',
     });
 
     if (!response.ok) {

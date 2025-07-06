@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useWorkspaceManager } from '../../stores/workspaceManager.js';
 import PanelHeader from './PanelHeader.vue';
 import PanelSidebar from './PanelSidebar.vue';
@@ -7,19 +7,19 @@ import PanelSidebar from './PanelSidebar.vue';
 const props = defineProps({
   panel: {
     type: Object,
-    required: true
+    required: true,
   },
   isActive: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const emit = defineEmits([
   'close',
   'focus',
   'drag-start',
-  'drag-end'
+  'drag-end',
 ]);
 
 const workspaceManager = useWorkspaceManager();
@@ -40,33 +40,33 @@ const primaryActions = computed(() => [
     label: 'Save',
     severity: isDirty.value ? 'warning' : 'secondary',
     disabled: !isDirty.value,
-    command: handleSave
+    command: handleSave,
   },
   {
     icon: 'pi pi-copy',
     label: 'Duplicate',
     severity: 'secondary',
-    command: handleDuplicate
-  }
+    command: handleDuplicate,
+  },
 ]);
 
 const overflowActions = computed(() => [
   {
     label: 'Export',
     icon: 'pi pi-download',
-    command: handleExport
+    command: handleExport,
   },
   {
     label: 'Panel Settings',
     icon: 'pi pi-cog',
-    command: handleSettings
+    command: handleSettings,
   },
   { separator: true },
   {
     label: 'Close Panel',
     icon: 'pi pi-times',
-    command: handleClose
-  }
+    command: handleClose,
+  },
 ]);
 
 // Action handlers
@@ -114,7 +114,7 @@ const handleContentChange = (newContent) => {
 };
 
 const handleMetadataChange = (field, value) => {
-  const metadata = { ...panelData.value.metadata, [field]: value };
+  const metadata = { ...panelData.value.metadata, [ field ]: value };
   workspaceManager.updatePanelData(props.panel.id, { metadata });
 };
 
@@ -162,37 +162,37 @@ const getSidebarConfig = () => {
         standard: [
           { component: 'MetadataWidget', order: 1 },
           { component: 'TagsWidget', order: 2 },
-          { component: 'ExportWidget', order: 4 }
+          { component: 'ExportWidget', order: 4 },
         ],
         custom: [
           { component: 'MeterSettingsWidget', order: 3 },
-          { component: 'LLMAssistantWidget', order: 5 }
-        ]
+          { component: 'LLMAssistantWidget', order: 5 },
+        ],
       };
     case 'prompt':
       return {
         standard: [
           { component: 'MetadataWidget', order: 1 },
           { component: 'TagsWidget', order: 2 },
-          { component: 'HistoryWidget', order: 6 }
+          { component: 'HistoryWidget', order: 6 },
         ],
         custom: [
           { component: 'StyleSelectorWidget', order: 3 },
           { component: 'TemplateLibraryWidget', order: 4 },
-          { component: 'GenerationSettingsWidget', order: 5 }
-        ]
+          { component: 'GenerationSettingsWidget', order: 5 },
+        ],
       };
     case 'style':
       return {
         standard: [
           { component: 'MetadataWidget', order: 1 },
           { component: 'TagsWidget', order: 2 },
-          { component: 'ExportWidget', order: 5 }
+          { component: 'ExportWidget', order: 5 },
         ],
         custom: [
           { component: 'StyleTestingWidget', order: 3 },
-          { component: 'ExampleLibraryWidget', order: 4 }
-        ]
+          { component: 'ExampleLibraryWidget', order: 4 },
+        ],
       };
     default:
       return { standard: [], custom: [] };
@@ -245,7 +245,12 @@ const getSidebarConfig = () => {
             v-if="!['lyric', 'prompt', 'style'].includes(panel.type)"
             class="fallback-editor h-100 d-flex align-center justify-center flex-column"
           >
-            <v-icon icon="mdi-alert-circle" size="64" color="medium-emphasis" class="mb-3" />
+            <v-icon
+              icon="mdi-alert-circle"
+              size="64"
+              color="medium-emphasis"
+              class="mb-3"
+            />
             <h4 class="text-medium-emphasis mb-2">Editor Not Implemented</h4>
             <p class="text-medium-emphasis">{{ panel.type }} editor is not yet available</p>
           </div>

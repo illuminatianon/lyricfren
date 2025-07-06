@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useWorkspaceManager } from '../../stores/workspaceManager.js';
 import BaseEditorPanel from './BaseEditorPanel.vue';
 import WorkspaceToolbar from './WorkspaceToolbar.vue';
@@ -13,20 +13,20 @@ const currentWorkspace = computed(() => workspaceManager.currentWorkspace);
 
 // Panel width calculations
 const getPanelStyle = (panel) => {
-  const manualWidth = currentWorkspace.value.layout.panelWidths[panel.id];
+  const manualWidth = currentWorkspace.value.layout.panelWidths[ panel.id ];
 
   if (manualWidth) {
     return {
       width: `${manualWidth}px`,
       flexShrink: 0,
-      flexGrow: 0
+      flexGrow: 0,
     };
   }
 
   // Auto-sizing with flexbox
   return {
     flex: 1,
-    minWidth: '300px'
+    minWidth: '300px',
   };
 };
 
@@ -89,8 +89,8 @@ const startResize = (event, panelId) => {
   resizingPanel.value = panelId;
   resizeStartX.value = event.clientX;
 
-  const panel = currentWorkspace.value.panels[panelId];
-  const currentWidth = currentWorkspace.value.layout.panelWidths[panelId];
+  const panel = currentWorkspace.value.panels[ panelId ];
+  const currentWidth = currentWorkspace.value.layout.panelWidths[ panelId ];
 
   if (currentWidth) {
     resizeStartWidth.value = currentWidth;
@@ -182,7 +182,7 @@ onMounted(() => {
   if (activePanels.value.length === 0) {
     workspaceManager.addPanel('lyric', {
       title: 'New Lyric',
-      content: ''
+      content: '',
     });
   }
 });
@@ -237,7 +237,12 @@ const handleNewPanel = (type = 'lyric') => {
         v-if="activePanels.length === 0"
         class="empty-workspace d-flex align-center justify-center flex-column w-100"
       >
-        <v-icon icon="mdi-file-document-outline" size="96" color="medium-emphasis" class="mb-4" />
+        <v-icon
+          icon="mdi-file-document-outline"
+          size="96"
+          color="medium-emphasis"
+          class="mb-4"
+        />
         <h3 class="text-medium-emphasis mb-2">No panels open</h3>
         <p class="text-medium-emphasis mb-4">Create a new panel to get started</p>
         <v-btn

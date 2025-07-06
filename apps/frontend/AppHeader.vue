@@ -24,7 +24,10 @@ const toggleSidebar = () => {
 
       <!-- Right side actions -->
       <div>
-        <Button label="Settings" size="small" />
+        <Button
+          label="Settings"
+          size="small"
+        />
       </div>
     </div>
   </header>

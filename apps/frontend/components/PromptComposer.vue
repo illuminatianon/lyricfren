@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 // import { OpenAI } from 'openai';
 import api from '../services/api.js';
 
@@ -19,7 +19,7 @@ const fetchStyles = async () => {
     const data = await api.get('/styles');
     styles.value = data;
     if (data.length > 0) {
-      selectedStyle.value = data[0].id;
+      selectedStyle.value = data[ 0 ].id;
     }
   } catch (err) {
     console.error('Error fetching styles:', err);

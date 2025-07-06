@@ -4,8 +4,8 @@ import { ref, watch } from 'vue';
 const props = defineProps({
   result: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 });
 
 const formattedResult = ref('');
@@ -38,7 +38,12 @@ watch(() => props.result, (newResult) => {
       class="empty-state pa-8 text-center"
       variant="outlined"
     >
-      <v-icon icon="mdi-file-document-outline" size="64" color="medium-emphasis" class="mb-2" />
+      <v-icon
+        icon="mdi-file-document-outline"
+        size="64"
+        color="medium-emphasis"
+        class="mb-2"
+      />
       <p class="text-medium-emphasis">Generated content will appear here</p>
     </v-card>
   </div>

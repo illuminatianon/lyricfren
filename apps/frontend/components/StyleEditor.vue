@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import api from '../services/api.js';
 
 const styles = ref([]);
@@ -15,8 +15,8 @@ const fetchStyles = async () => {
     const data = await api.get('/styles');
     styles.value = data;
     if (data.length > 0) {
-      selectedStyle.value = data[0].id;
-      systemPrompt.value = data[0].systemPrompt;
+      selectedStyle.value = data[ 0 ].id;
+      systemPrompt.value = data[ 0 ].systemPrompt;
     }
   } catch (error) {
     console.error('Error fetching styles:', error);
@@ -47,7 +47,7 @@ const saveStyle = async () => {
 
     await api.put(`/styles/${selectedStyle.value}`, {
       name: style.name,
-      systemPrompt: systemPrompt.value
+      systemPrompt: systemPrompt.value,
     });
 
     message.value = 'Style saved successfully';
@@ -69,7 +69,7 @@ const createNewStyle = async () => {
   try {
     await api.post('/styles', {
       name,
-      systemPrompt: 'You are a helpful assistant that writes song lyrics.'
+      systemPrompt: 'You are a helpful assistant that writes song lyrics.',
     });
 
     message.value = 'New style created';
@@ -117,7 +117,10 @@ onMounted(() => {
   <div>
     <h3 class="text-h5 font-weight-bold mb-4 text-primary">Style Editor</h3>
 
-    <div v-if="loading" class="text-center py-4">
+    <div
+      v-if="loading"
+      class="text-center py-4"
+    >
       <v-progress-circular indeterminate />
       <p class="mt-2">Loading...</p>
     </div>
@@ -134,8 +137,15 @@ onMounted(() => {
           class="flex-grow-1"
           @update:model-value="handleStyleChange"
         />
-        <v-btn icon="mdi-plus" @click="createNewStyle" />
-        <v-btn icon="mdi-delete" color="error" @click="deleteStyle" />
+        <v-btn
+          icon="mdi-plus"
+          @click="createNewStyle"
+        />
+        <v-btn
+          icon="mdi-delete"
+          color="error"
+          @click="deleteStyle"
+        />
       </div>
 
       <div class="mb-4">

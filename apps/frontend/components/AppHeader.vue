@@ -12,7 +12,11 @@ const openSettings = () => {
 </script>
 
 <template>
-  <v-app-bar elevation="1" color="surface" app>
+  <v-app-bar
+    elevation="1"
+    color="surface"
+    app
+  >
     <div class="d-flex justify-space-between align-center w-100 px-4">
       <div class="d-flex align-center">
         <!-- Hamburger menu button -->

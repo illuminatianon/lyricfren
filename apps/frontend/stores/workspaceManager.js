@@ -17,7 +17,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
       panelWidths: {},
       globalSidebarWidth: 300,
       workspaceWidth: 0,
-      resetToAuto: true
+      resetToAuto: true,
     },
 
     panels: {},
@@ -25,14 +25,14 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     ui: {
       activePanel: null,
       workspaceToolbarVisible: true,
-      statusBarVisible: false
-    }
+      statusBarVisible: false,
+    },
   });
 
   // Computed properties
   const activePanels = computed(() => {
     return currentWorkspace.layout.panelOrder.map(id =>
-      currentWorkspace.panels[id]
+      currentWorkspace.panels[ id ],
     ).filter(Boolean);
   });
 
@@ -45,7 +45,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   // Panel management
   const addPanel = (type, data = {}) => {
     const panelId = generateId();
-    currentWorkspace.panels[panelId] = {
+    currentWorkspace.panels[ panelId ] = {
       id: panelId,
       type,
       title: data.title || `New ${type}`,
@@ -58,13 +58,13 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
           description: '',
           created: new Date(),
           modified: new Date(),
-          author: null
+          author: null,
         },
         tags: [],
         history: [],
         content: data.content || '',
         settings: data.settings || {},
-        ...data
+        ...data,
       },
       isDirty: false,
       lastSaved: null,
@@ -73,8 +73,8 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
       sidebarConfig: {
         activeTab: null,
         collapsedSections: [],
-        componentStates: {}
-      }
+        componentStates: {},
+      },
     };
     currentWorkspace.layout.panelOrder.push(panelId);
     currentWorkspace.ui.activePanel = panelId;
@@ -84,7 +84,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const removePanel = async (panelId) => {
-    const panel = currentWorkspace.panels[panelId];
+    const panel = currentWorkspace.panels[ panelId ];
     if (!panel) return false;
 
     // Check for unsaved changes
@@ -94,19 +94,19 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     }
 
     // Remove from panels and order
-    delete currentWorkspace.panels[panelId];
+    delete currentWorkspace.panels[ panelId ];
     const orderIndex = currentWorkspace.layout.panelOrder.indexOf(panelId);
     if (orderIndex > -1) {
       currentWorkspace.layout.panelOrder.splice(orderIndex, 1);
     }
 
     // Remove width override
-    delete currentWorkspace.layout.panelWidths[panelId];
+    delete currentWorkspace.layout.panelWidths[ panelId ];
 
     // Update active panel
     if (currentWorkspace.ui.activePanel === panelId) {
       const remainingPanels = currentWorkspace.layout.panelOrder;
-      currentWorkspace.ui.activePanel = remainingPanels.length > 0 ? remainingPanels[0] : null;
+      currentWorkspace.ui.activePanel = remainingPanels.length > 0 ? remainingPanels[ 0 ] : null;
     }
 
     updateWorkspaceModified();
@@ -119,11 +119,11 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const duplicatePanel = (panelId) => {
-    const originalPanel = currentWorkspace.panels[panelId];
+    const originalPanel = currentWorkspace.panels[ panelId ];
     if (!originalPanel) return null;
 
     const newPanelId = generateId();
-    currentWorkspace.panels[newPanelId] = {
+    currentWorkspace.panels[ newPanelId ] = {
       ...JSON.parse(JSON.stringify(originalPanel)), // Deep clone
       id: newPanelId,
       title: `${originalPanel.title} (Copy)`,
@@ -133,11 +133,11 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
           ...originalPanel.data.metadata,
           title: `${originalPanel.data.metadata.title} (Copy)`,
           created: new Date(),
-          modified: new Date()
-        }
+          modified: new Date(),
+        },
       },
       isDirty: true,
-      lastSaved: null
+      lastSaved: null,
     };
 
     // Insert after original panel
@@ -151,9 +151,9 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   // Layout management
   const setPanelWidth = (panelId, width) => {
     if (width === null || width === undefined) {
-      delete currentWorkspace.layout.panelWidths[panelId];
+      delete currentWorkspace.layout.panelWidths[ panelId ];
     } else {
-      currentWorkspace.layout.panelWidths[panelId] = width;
+      currentWorkspace.layout.panelWidths[ panelId ] = width;
     }
     currentWorkspace.layout.resetToAuto = false;
     updateWorkspaceModified();
@@ -166,7 +166,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const togglePanelSidebar = (panelId) => {
-    const panel = currentWorkspace.panels[panelId];
+    const panel = currentWorkspace.panels[ panelId ];
     if (panel) {
       panel.sidebarOpen = !panel.sidebarOpen;
       updateWorkspaceModified();
@@ -174,7 +174,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const setPanelSidebarWidth = (panelId, width) => {
-    const panel = currentWorkspace.panels[panelId];
+    const panel = currentWorkspace.panels[ panelId ];
     if (panel) {
       panel.sidebarWidth = width;
       updateWorkspaceModified();
@@ -183,7 +183,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
 
   // State tracking
   const markPanelDirty = (panelId, isDirty = true) => {
-    const panel = currentWorkspace.panels[panelId];
+    const panel = currentWorkspace.panels[ panelId ];
     if (panel) {
       panel.isDirty = isDirty;
       if (isDirty) {
@@ -194,7 +194,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const updatePanelData = (panelId, data) => {
-    const panel = currentWorkspace.panels[panelId];
+    const panel = currentWorkspace.panels[ panelId ];
     if (panel) {
       Object.assign(panel.data, data);
       markPanelDirty(panelId, true);
@@ -202,7 +202,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const savePanelState = async (panelId) => {
-    const panel = currentWorkspace.panels[panelId];
+    const panel = currentWorkspace.panels[ panelId ];
     if (panel) {
       // TODO: Implement actual saving logic
       console.log('STUB: Saving panel state', panelId);
@@ -213,7 +213,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const setActivePanel = (panelId) => {
-    if (currentWorkspace.panels[panelId]) {
+    if (currentWorkspace.panels[ panelId ]) {
       currentWorkspace.ui.activePanel = panelId;
     }
   };
@@ -264,8 +264,8 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
         exportedAt: new Date(),
         exportedBy: null,
         lyricFrenVersion: '1.0.0',
-        includesContent: true
-      }
+        includesContent: true,
+      },
     };
   };
 
@@ -277,7 +277,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
       Object.assign(currentWorkspace, {
         ...workspaceData.workspace,
         id: generateId(), // Generate new ID for imported workspace
-        modified: new Date()
+        modified: new Date(),
       });
     }
   };
@@ -293,8 +293,8 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
         name: currentWorkspace.name,
         description: currentWorkspace.description,
         modified: currentWorkspace.modified,
-        panelCount: Object.keys(currentWorkspace.panels).length
-      }
+        panelCount: Object.keys(currentWorkspace.panels).length,
+      },
     ];
   };
 
@@ -373,6 +373,6 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
 
     // Bulk operations
     saveAllPanels,
-    closeAllPanels
+    closeAllPanels,
   };
 });

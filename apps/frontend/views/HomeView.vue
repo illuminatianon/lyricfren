@@ -23,9 +23,18 @@ const openSettings = () => {
             </p>
             <div class="flex justify-content-center">
               <router-link to="/workspace">
-                <Button label="Open Workspace" icon="pi pi-pencil" class="mr-2" />
+                <Button
+                  label="Open Workspace"
+                  icon="pi pi-pencil"
+                  class="mr-2"
+                />
               </router-link>
-              <Button label="Settings" icon="pi pi-cog" severity="secondary" @click="openSettings" />
+              <Button
+                label="Settings"
+                icon="pi pi-cog"
+                severity="secondary"
+                @click="openSettings"
+              />
             </div>
           </template>
         </Card>

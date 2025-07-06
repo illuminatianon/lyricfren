@@ -50,6 +50,6 @@ export const useMeterStore = defineStore('meter', () => {
 
     // Actions
     analyzeMeter,
-    analyzeLineMetrics
+    analyzeLineMetrics,
   };
 });

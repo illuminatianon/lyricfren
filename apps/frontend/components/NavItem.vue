@@ -4,16 +4,16 @@ import { useUIStore } from '../stores/ui';
 const props = defineProps({
   to: {
     type: String,
-    required: true
+    required: true,
   },
   label: {
     type: String,
-    required: true
+    required: true,
   },
   icon: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 });
 
 const uiStore = useUIStore();

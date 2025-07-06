@@ -1,12 +1,12 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useSettingsStore } from '../stores/settings';
 
 const props = defineProps({
   visible: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const emit = defineEmits(['update:visible']);
@@ -25,7 +25,7 @@ const successMessage = ref('');
 // Dialog visibility computed property
 const dialogVisible = computed({
   get: () => props.visible,
-  set: (value) => emit('update:visible', value)
+  set: (value) => emit('update:visible', value),
 });
 
 // Ensure numeric values are properly handled
@@ -72,7 +72,7 @@ const saveSettings = async () => {
       model: model.value,
       temperature: Number(temperature.value),
       maxTokens: Number(maxTokens.value),
-      topP: Number(topP.value)
+      topP: Number(topP.value),
     };
 
     // Save to backend

@@ -1,20 +1,20 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   panel: {
     type: Object,
-    required: true
+    required: true,
   },
   config: {
     type: Object,
-    default: () => ({ standard: [], custom: [] })
-  }
+    default: () => ({ standard: [], custom: [] }),
+  },
 });
 
 const emit = defineEmits([
   'close',
-  'data-change'
+  'data-change',
 ]);
 
 // Component state
@@ -50,8 +50,8 @@ const renderComponent = (componentConfig) => {
     TemplateLibraryWidget: 'Template Library',
     GenerationSettingsWidget: 'Generation Settings',
     StyleTestingWidget: 'Style Testing',
-    ExampleLibraryWidget: 'Example Library'
-  }[componentConfig.component] || 'Unknown Widget';
+    ExampleLibraryWidget: 'Example Library',
+  }[ componentConfig.component ] || 'Unknown Widget';
 };
 </script>
 
@@ -69,7 +69,10 @@ const renderComponent = (componentConfig) => {
         variant="text"
         @click="handleClose"
       >
-        <v-tooltip activator="parent" location="bottom">
+        <v-tooltip
+          activator="parent"
+          location="bottom"
+        >
           Close sidebar
         </v-tooltip>
       </v-btn>
@@ -90,7 +93,10 @@ const renderComponent = (componentConfig) => {
 
           <v-card-text class="px-3 pb-3">
             <!-- Metadata Widget Placeholder -->
-            <div v-if="componentConfig.component === 'MetadataWidget'" class="d-flex flex-column ga-3">
+            <div
+              v-if="componentConfig.component === 'MetadataWidget'"
+              class="d-flex flex-column ga-3"
+            >
               <v-text-field
                 label="Title"
                 :model-value="panel.data.metadata.title"
@@ -111,48 +117,67 @@ const renderComponent = (componentConfig) => {
               </div>
             </div>
 
-              <!-- Tags Widget Placeholder -->
-              <div v-else-if="componentConfig.component === 'TagsWidget'" class="d-flex flex-column ga-2">
-                <div>
-                  <label class="text-subtitle-2 font-weight-medium mb-1 d-block">Tags</label>
-                  <div class="d-flex flex-wrap ga-1 mb-2">
-                    <v-chip
-                      v-for="tag in panel.data.tags"
-                      :key="tag"
-                      :text="tag"
-                      closable
-                      size="small"
-                      @click:close="handleDataChange('tags', panel.data.tags.filter(t => t !== tag))"
-                    />
-                  </div>
-                  <v-text-field
-                    placeholder="Add tag..."
-                    variant="outlined"
-                    density="compact"
-                    @keyup.enter="(e) => {
+            <!-- Tags Widget Placeholder -->
+            <div
+              v-else-if="componentConfig.component === 'TagsWidget'"
+              class="d-flex flex-column ga-2"
+            >
+              <div>
+                <label class="text-subtitle-2 font-weight-medium mb-1 d-block">Tags</label>
+                <div class="d-flex flex-wrap ga-1 mb-2">
+                  <v-chip
+                    v-for="tag in panel.data.tags"
+                    :key="tag"
+                    :text="tag"
+                    closable
+                    size="small"
+                    @click:close="handleDataChange('tags', panel.data.tags.filter(t => t !== tag))"
+                  />
+                </div>
+                <v-text-field
+                  placeholder="Add tag..."
+                  variant="outlined"
+                  density="compact"
+                  @keyup.enter="(e) => {
                       if (e.target.value.trim()) {
                         handleDataChange('tags', [...panel.data.tags, e.target.value.trim()]);
                         e.target.value = '';
                       }
                     }"
-                  />
-                </div>
+                />
               </div>
+            </div>
 
-              <!-- Generic Placeholder for other widgets -->
-              <div v-else class="text-center py-4">
-                <v-icon icon="mdi-cog" size="32" color="medium-emphasis" class="mb-2" />
-                <p class="text-caption text-medium-emphasis ma-0">
-                  {{ renderComponent(componentConfig) }} widget not yet implemented
-                </p>
-              </div>
+            <!-- Generic Placeholder for other widgets -->
+            <div
+              v-else
+              class="text-center py-4"
+            >
+              <v-icon
+                icon="mdi-cog"
+                size="32"
+                color="medium-emphasis"
+                class="mb-2"
+              />
+              <p class="text-caption text-medium-emphasis ma-0">
+                {{ renderComponent(componentConfig) }} widget not yet implemented
+              </p>
+            </div>
           </v-card-text>
         </v-card>
       </div>
 
       <!-- Empty State -->
-      <div v-if="allComponents.length === 0" class="text-center py-6">
-        <v-icon icon="mdi-inbox" size="48" color="medium-emphasis" class="mb-3" />
+      <div
+        v-if="allComponents.length === 0"
+        class="text-center py-6"
+      >
+        <v-icon
+          icon="mdi-inbox"
+          size="48"
+          color="medium-emphasis"
+          class="mb-3"
+        />
         <p class="text-medium-emphasis ma-0">No sidebar tools configured</p>
       </div>
     </div>

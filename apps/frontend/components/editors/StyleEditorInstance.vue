@@ -4,17 +4,17 @@ import { ref, watch } from 'vue';
 const props = defineProps({
   panelData: {
     type: Object,
-    required: true
+    required: true,
   },
   isActive: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const emit = defineEmits([
   'content-change',
-  'metadata-change'
+  'metadata-change',
 ]);
 
 // Local content state
@@ -39,7 +39,7 @@ watch(() => props.panelData.content, (newContent) => {
       <i class="pi pi-palette text-6xl text-color-secondary mb-4"></i>
       <h3 class="text-color-secondary mb-2">Style Editor</h3>
       <p class="text-color-secondary mb-4">This editor will be implemented soon</p>
-      
+
       <!-- Temporary textarea for testing -->
       <div class="w-full max-w-md">
         <Textarea

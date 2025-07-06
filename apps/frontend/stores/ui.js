@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useUIStore = defineStore('ui', () => {
   // State
@@ -51,6 +51,6 @@ export const useUIStore = defineStore('ui', () => {
     toggleSidebar,
     closeSidebarOnMobile,
     closeSidebar,
-    initializeUI
+    initializeUI,
   };
 });

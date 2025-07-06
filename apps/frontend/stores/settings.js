@@ -9,7 +9,7 @@ export const useSettingsStore = defineStore('settings', () => {
     model: 'gpt-4',
     temperature: 0.7,
     maxTokens: 512,
-    topP: 1.0
+    topP: 1.0,
   });
   const loading = ref(false);
   const error = ref('');
@@ -27,7 +27,7 @@ export const useSettingsStore = defineStore('settings', () => {
       if (data.defaultModelParams) {
         defaultModelParams.value = {
           ...defaultModelParams.value,
-          ...data.defaultModelParams
+          ...data.defaultModelParams,
         };
       }
     } catch (err) {
@@ -45,7 +45,7 @@ export const useSettingsStore = defineStore('settings', () => {
     try {
       await api.put('/config', {
         openaiApiKey: openaiApiKey.value,
-        defaultModelParams: defaultModelParams.value
+        defaultModelParams: defaultModelParams.value,
       });
     } catch (err) {
       console.error('Error saving config:', err);
@@ -64,6 +64,6 @@ export const useSettingsStore = defineStore('settings', () => {
 
     // Actions
     fetchConfig,
-    saveConfig
+    saveConfig,
   };
 });

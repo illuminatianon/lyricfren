@@ -1,12 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useWorkspaceManager } from '../../stores/workspaceManager.js';
 
 const emit = defineEmits([
   'new-panel',
   'reset-layout',
   'save-all',
-  'close-all'
+  'close-all',
 ]);
 
 const workspaceManager = useWorkspaceManager();
@@ -23,7 +23,7 @@ const dirtyCount = computed(() => workspaceManager.dirtyPanels.length);
 const panelTypes = [
   { label: 'Lyric Editor', value: 'lyric', icon: 'mdi-file-document-edit' },
   { label: 'Prompt Editor', value: 'prompt', icon: 'mdi-comment-text' },
-  { label: 'Style Editor', value: 'style', icon: 'mdi-palette' }
+  { label: 'Style Editor', value: 'style', icon: 'mdi-palette' },
 ];
 
 // Actions
@@ -87,7 +87,10 @@ const handleImportWorkspace = () => {
     <!-- Left Section: Panel Actions -->
     <div class="d-flex align-center ga-2">
       <!-- New Panel Button -->
-      <v-btn-group variant="outlined" size="small">
+      <v-btn-group
+        variant="outlined"
+        size="small"
+      >
         <v-btn
           prepend-icon="mdi-plus"
           @click="handleNewPanel('lyric')"
@@ -123,13 +126,19 @@ const handleImportWorkspace = () => {
         variant="outlined"
         @click="handleResetLayout"
       >
-        <v-tooltip activator="parent" location="bottom">
+        <v-tooltip
+          activator="parent"
+          location="bottom"
+        >
           Reset all panel widths to auto-size
         </v-tooltip>
         Reset Layout
       </v-btn>
 
-      <v-divider vertical class="mx-2" />
+      <v-divider
+        vertical
+        class="mx-2"
+      />
 
       <!-- Save Actions -->
       <v-btn
@@ -156,7 +165,10 @@ const handleImportWorkspace = () => {
 
     <!-- Center Section: Workspace Name -->
     <div class="d-flex align-center ga-2">
-      <v-icon icon="mdi-folder" color="medium-emphasis" />
+      <v-icon
+        icon="mdi-folder"
+        color="medium-emphasis"
+      />
       <span class="font-weight-medium">{{ currentWorkspace.name }}</span>
       <v-badge
         v-if="hasDirtyPanels"

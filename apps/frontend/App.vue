@@ -1,10 +1,10 @@
 <script setup>
 import { onMounted } from 'vue';
-import AppHeader from "./components/AppHeader.vue";
-import AppSidebar from "./components/AppSidebar.vue";
-import AppFooter from "./components/AppFooter.vue";
-import { useSettingsStore } from "./stores/settings";
-import { useUIStore } from "./stores/ui";
+import AppHeader from './components/AppHeader.vue';
+import AppSidebar from './components/AppSidebar.vue';
+import AppFooter from './components/AppFooter.vue';
+import { useSettingsStore } from './stores/settings';
+import { useUIStore } from './stores/ui';
 
 const settingsStore = useSettingsStore();
 const uiStore = useUIStore();

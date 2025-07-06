@@ -1,19 +1,22 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import router from './router/index.js'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
+import router from './router/index.js';
 
 // Import Vuetify styles
-import 'vuetify/styles'
-import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles';
+import '@mdi/font/css/materialdesignicons.css';
 
 // Import our custom styles
-import './style.css'
-import App from './App.vue'
-
+import './style.css';
+import App from './App.vue';
+// Import editor components for dynamic loading
+import LyricEditorInstance from './components/editors/LyricEditorInstance.vue';
+import PromptEditorInstance from './components/editors/PromptEditorInstance.vue';
+import StyleEditorInstance from './components/editors/StyleEditorInstance.vue';
 
 // Create Vuetify instance
 const vuetify = createVuetify({
@@ -65,25 +68,20 @@ const vuetify = createVuetify({
       },
     },
   },
-})
+});
 
 // Create app instance
-const app = createApp(App)
-
-// Import editor components for dynamic loading
-import LyricEditorInstance from './components/editors/LyricEditorInstance.vue'
-import PromptEditorInstance from './components/editors/PromptEditorInstance.vue'
-import StyleEditorInstance from './components/editors/StyleEditorInstance.vue'
+const app = createApp(App);
 
 // Register editor components globally
-app.component('LyricEditorInstance', LyricEditorInstance)
-app.component('PromptEditorInstance', PromptEditorInstance)
-app.component('StyleEditorInstance', StyleEditorInstance)
+app.component('LyricEditorInstance', LyricEditorInstance);
+app.component('PromptEditorInstance', PromptEditorInstance);
+app.component('StyleEditorInstance', StyleEditorInstance);
 
 // Use plugins
-app.use(createPinia())
-app.use(router)
-app.use(vuetify)
+app.use(createPinia());
+app.use(router);
+app.use(vuetify);
 
 // Mount app
-app.mount('#app')
+app.mount('#app');

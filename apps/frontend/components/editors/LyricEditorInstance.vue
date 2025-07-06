@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useMeterStore } from '../../stores/meter.js';
 import debounce from 'lodash.debounce';
 import CodeMirror from 'vue-codemirror6';
@@ -10,17 +10,17 @@ import { defaultKeymap } from '@codemirror/commands';
 const props = defineProps({
   panelData: {
     type: Object,
-    required: true
+    required: true,
   },
   isActive: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const emit = defineEmits([
   'content-change',
-  'metadata-change'
+  'metadata-change',
 ]);
 
 const meterStore = useMeterStore();
@@ -36,26 +36,26 @@ const debouncedAnalyzeMeter = debounce((text) => {
 
 // Perform analysis immediately if not done recently
 defineExpose({
-  forceAnalyze(text) {
+  forceAnalyze (text) {
     meterStore.analyzeMeter(text);
-  }
+  },
 });
 
 const syllableGutter = lineNumbers({
   // noinspection JSUnusedLocalSymbols
   formatNumber: (lineNo, state) => {
     const idx = lineNo - 1;
-    const info = meterStore.lineCounts[idx];
+    const info = meterStore.lineCounts[ idx ];
     // Return empty string for lines with no count or count of 0
-    return info && info[1] > 0 ? String(info[1]) : '';
-  }
+    return info && info[ 1 ] > 0 ? String(info[ 1 ]) : '';
+  },
 });
 
 // CodeMirror extensions
 const extensions = computed(() => [
   oneDark,
   syllableGutter,
-  keymap.of(defaultKeymap)
+  keymap.of(defaultKeymap),
 ]);
 
 // Watch for content changes with advanced meter analysis
@@ -167,14 +167,23 @@ const handleEditorClick = () => {
           v-if="meterStore.loading"
           class="text-caption text-medium-emphasis"
         >
-          <v-progress-circular indeterminate size="16" width="2" class="mr-1" />
+          <v-progress-circular
+            indeterminate
+            size="16"
+            width="2"
+            class="mr-1"
+          />
           Analyzing...
         </span>
         <span
           v-else-if="meterStore.error"
           class="text-caption text-error"
         >
-          <v-icon icon="mdi-alert-circle" size="16" class="mr-1" />
+          <v-icon
+            icon="mdi-alert-circle"
+            size="16"
+            class="mr-1"
+          />
           {{ meterStore.error }}
         </span>
       </div>
@@ -199,6 +208,7 @@ const handleEditorClick = () => {
   overflow: auto;
   background: transparent;
 }
+
 .editor-status-bar {
   height: 32px;
   flex-shrink: 0;
