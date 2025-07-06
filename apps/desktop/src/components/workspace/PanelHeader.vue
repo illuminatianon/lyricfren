@@ -85,12 +85,11 @@ const handleActionClick = (action) => {
   >
     <template #prepend>
       <v-btn
-        variant="text"
         size="small"
         class="sidebar-toggle"
-        :icon="sidebarOpen ? 'mdi-close' : 'mdi-menu'"
         @click="handleSidebarToggle"
       >
+        <v-icon :icon="sidebarOpen ? 'mdi-close' : 'mdi-menu'" />
         <v-tooltip
           activator="parent"
           location="bottom"
@@ -107,7 +106,10 @@ const handleActionClick = (action) => {
     >
       <span :class="{ 'text-warning': isDirty }">
         {{ displayTitle }}
-        <span v-if="isDirty" class="text-warning font-weight-bold ml-1">•</span>
+        <span
+          v-if="isDirty"
+          class="text-warning font-weight-bold ml-1"
+        >•</span>
       </span>
     </v-toolbar-title>
 
@@ -210,7 +212,6 @@ const handleActionClick = (action) => {
   max-width: 300px;
   font-weight: 600;
 }
-
 
 
 .panel-header .p-button {
