@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
+import InlineEditor from '../common/InlineEditor.vue';
 
 const props = defineProps({
   title: {
@@ -33,6 +34,7 @@ const emit = defineEmits([
   'close',
   'drag-start',
   'drag-end',
+  'title-change',
 ]);
 
 // Component state
@@ -51,6 +53,10 @@ const handleSidebarToggle = () => {
 const handleClose = () => {
   console.log('PanelHeader: handleClose called');
   emit('close');
+};
+
+const handleTitleChange = (newTitle) => {
+  emit('title-change', newTitle);
 };
 
 const handleDragStart = (event) => {
@@ -100,17 +106,18 @@ const handleActionClick = (action) => {
     </template>
 
     <!-- Title -->
-    <v-toolbar-title
-      class="panel-title text-truncate"
-      :title="title"
-    >
-      <span :class="{ 'text-warning': isDirty }">
-        {{ displayTitle }}
-        <span
-          v-if="isDirty"
-          class="text-warning font-weight-bold ml-1"
-        >•</span>
-      </span>
+    <v-toolbar-title class="panel-title flex-grow-1">
+      <div class="d-flex align-center">
+        <InlineEditor
+          :model-value="title"
+          placeholder="Panel title..."
+          :max-length="50"
+          class="flex-grow-1"
+          :class="{ 'text-warning': isDirty }"
+          @update:model-value="handleTitleChange"
+        />
+        <span v-if="isDirty" class="text-warning font-weight-bold ml-2">•</span>
+      </div>
     </v-toolbar-title>
 
     <v-spacer />

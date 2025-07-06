@@ -124,6 +124,16 @@ const handleSidebarToggle = () => {
   workspaceManager.togglePanelSidebar(props.panel.id);
 };
 
+// Title change handling
+const handleTitleChange = (newTitle) => {
+  workspaceManager.updatePanelData(props.panel.id, {
+    metadata: {
+      ...props.panel.data.metadata,
+      title: newTitle,
+    }
+  });
+};
+
 // Content change handling
 const handleContentChange = (newContent) => {
   workspaceManager.updatePanelData(props.panel.id, { content: newContent });
@@ -241,6 +251,7 @@ const getSidebarConfig = () => {
       @close="handleClose"
       @drag-start="handleDragStart"
       @drag-end="handleDragEnd"
+      @title-change="handleTitleChange"
     />
 
     <v-card-text class="pa-0 h-100">

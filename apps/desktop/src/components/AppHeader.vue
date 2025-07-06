@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useWorkspaceManager } from '../stores/workspaceManager.js';
+import InlineEditor from './common/InlineEditor.vue';
 
 const route = useRoute();
 const workspaceManager = useWorkspaceManager();
@@ -43,6 +44,10 @@ const handleCloseAll = () => {
   workspaceManager.closeAllPanels();
 };
 
+const handleWorkspaceNameChange = (newName) => {
+  workspaceManager.updateWorkspaceMetadata({ name: newName });
+};
+
 // Workspace actions (stubbed for now)
 const handleSaveWorkspace = () => {
   console.log('Save workspace dialog');
@@ -75,7 +80,14 @@ const handleImportWorkspace = () => {
           color="medium-emphasis"
           class="mr-2"
         />
-        <div class="text-h5 font-weight-bold">{{ currentWorkspace.name }}</div>
+        <div class="text-h5 font-weight-bold">
+          <InlineEditor
+            :model-value="currentWorkspace.name"
+            placeholder="Workspace name..."
+            :max-length="50"
+            @update:model-value="handleWorkspaceNameChange"
+          />
+        </div>
         <v-badge
           v-if="hasDirtyPanels"
           :content="dirtyCount"
