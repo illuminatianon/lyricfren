@@ -20,6 +20,7 @@ const panelTypes = [
   { label: 'Lyric Editor', value: 'lyric', icon: 'mdi-file-document-edit' },
   { label: 'Prompt Editor', value: 'prompt', icon: 'mdi-comment-text' },
   { label: 'Style Editor', value: 'style', icon: 'mdi-palette' },
+  { label: 'Settings', value: 'settings', icon: 'mdi-cog' },
 ];
 
 // Workspace actions

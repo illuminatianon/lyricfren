@@ -1,6 +1,9 @@
 <script setup>
-import { ref } from 'vue';
-import SettingsDialog from './SettingsDialog.vue';
+import { useRouter } from 'vue-router';
+import { useWorkspaceManager } from '../stores/workspaceManager.js';
+
+const router = useRouter();
+const workspaceManager = useWorkspaceManager();
 
 // Navigation items data
 const navItems = [
@@ -9,10 +12,17 @@ const navItems = [
   { to: '/styles', label: 'Styles', icon: 'mdi-palette' },
 ];
 
-const settingsDialogVisible = ref(false);
-
 const openSettings = () => {
-  settingsDialogVisible.value = true;
+  // Navigate to workspace if not already there
+  if (router.currentRoute.value.name !== 'workspace') {
+    router.push('/workspace');
+  }
+
+  // Add a settings panel
+  workspaceManager.addPanel('settings', {
+    title: 'Settings',
+    content: '',
+  });
 };
 </script>
 
@@ -55,7 +65,6 @@ const openSettings = () => {
       </v-list-item>
     </v-list>
 
-    <!-- Settings Dialog -->
-    <SettingsDialog v-model:visible="settingsDialogVisible" />
+
   </div>
 </template>

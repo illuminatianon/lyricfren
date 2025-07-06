@@ -165,6 +165,8 @@ const getEditorComponent = () => {
       return 'PromptEditorInstance';
     case 'style':
       return 'StyleEditorInstance';
+    case 'settings':
+      return 'SettingsEditorInstance';
     default:
       return 'div'; // Fallback
   }
@@ -210,6 +212,8 @@ const getSidebarConfig = () => {
           { component: 'ExampleLibraryWidget', order: 4 },
         ],
       };
+    case 'settings':
+      return { standard: [], custom: [] }; // Settings panel doesn't need a sidebar
     default:
       return { standard: [], custom: [] };
   }
@@ -268,7 +272,7 @@ const getSidebarConfig = () => {
 
           <!-- Fallback for unimplemented editors -->
           <div
-            v-if="!['lyric', 'prompt', 'style'].includes(panel.type)"
+            v-if="!['lyric', 'prompt', 'style', 'settings'].includes(panel.type)"
             class="fallback-editor h-100 d-flex align-center justify-center flex-column"
           >
             <v-icon

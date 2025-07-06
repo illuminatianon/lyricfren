@@ -113,7 +113,11 @@ const totalSyllables = computed(() => {
 // Focus management
 watch(() => props.isActive, (isActive) => {
   if (isActive && editorRef.value) {
-    editorRef.value.focus();
+    // Access the CodeMirror editor instance and focus it
+    const cmEditor = editorRef.value.view;
+    if (cmEditor) {
+      cmEditor.focus();
+    }
   }
 });
 
@@ -125,7 +129,10 @@ const handleTitleChange = (newTitle) => {
 // Handle editor click to ensure focus
 const handleEditorClick = () => {
   if (editorRef.value) {
-    editorRef.value.focus();
+    const cmEditor = editorRef.value.view;
+    if (cmEditor) {
+      cmEditor.focus();
+    }
   }
 };
 </script>

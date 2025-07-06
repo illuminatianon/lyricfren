@@ -49,6 +49,7 @@ const handleSidebarToggle = () => {
 };
 
 const handleClose = () => {
+  console.log('PanelHeader: handleClose called');
   emit('close');
 };
 

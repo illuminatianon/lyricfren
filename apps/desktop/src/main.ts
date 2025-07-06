@@ -17,6 +17,7 @@ import App from './App.vue';
 import LyricEditorInstance from './components/editors/LyricEditorInstance.vue';
 import PromptEditorInstance from './components/editors/PromptEditorInstance.vue';
 import StyleEditorInstance from './components/editors/StyleEditorInstance.vue';
+import SettingsEditorInstance from './components/editors/SettingsEditorInstance.vue';
 
 // Create Vuetify instance
 const vuetify = createVuetify({
@@ -77,6 +78,7 @@ const app = createApp(App);
 app.component('LyricEditorInstance', LyricEditorInstance);
 app.component('PromptEditorInstance', PromptEditorInstance);
 app.component('StyleEditorInstance', StyleEditorInstance);
+app.component('SettingsEditorInstance', SettingsEditorInstance);
 
 // Use plugins
 app.use(createPinia());
