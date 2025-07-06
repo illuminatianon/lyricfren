@@ -19,6 +19,16 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   }
 });
 electron.contextBridge.exposeInMainWorld("api", {
+  // Meter service
   processText: (text) => electron.ipcRenderer.invoke("meter:processText", text),
-  countLine: (line) => electron.ipcRenderer.invoke("meter:countLine", line)
+  countLine: (line) => electron.ipcRenderer.invoke("meter:countLine", line),
+  // Config service
+  getConfig: () => electron.ipcRenderer.invoke("config:get"),
+  saveConfig: (config) => electron.ipcRenderer.invoke("config:save", config),
+  // Styles service
+  getAllStyles: () => electron.ipcRenderer.invoke("styles:getAll"),
+  getStyleById: (id) => electron.ipcRenderer.invoke("styles:getById", id),
+  createStyle: (style) => electron.ipcRenderer.invoke("styles:create", style),
+  updateStyle: (id, updates) => electron.ipcRenderer.invoke("styles:update", id, updates),
+  deleteStyle: (id) => electron.ipcRenderer.invoke("styles:delete", id)
 });

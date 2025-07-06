@@ -8,6 +8,20 @@ class ApiElectronService {
     }
   }
 
+  async get (endpoint) {
+    if (endpoint === '/config') {
+      return window.api.getConfig()
+    }
+    if (endpoint === '/styles') {
+      return window.api.getAllStyles()
+    }
+    if (endpoint.startsWith('/styles/')) {
+      const id = endpoint.split('/')[2]
+      return window.api.getStyleById(id)
+    }
+    throw new Error(`Unknown GET endpoint: ${endpoint}`)
+  }
+
   async post (endpoint, data) {
     if (endpoint === '/meter/count') {
       return window.api.processText(data.text)
@@ -15,20 +29,31 @@ class ApiElectronService {
     if (endpoint === '/meter/count-line') {
       return window.api.countLine(data.line)
     }
-    throw new Error(`Unknown endpoint: ${endpoint}`)
-  }
-
-  // Implement other methods as needed, or throw errors for unsupported methods
-  async get (endpoint) {
-    throw new Error('GET requests are not supported in Electron mode')
+    if (endpoint === '/styles') {
+      return window.api.createStyle(data)
+    }
+    throw new Error(`Unknown POST endpoint: ${endpoint}`)
   }
 
   async put (endpoint, data) {
-    throw new Error('PUT requests are not supported in Electron mode')
+    if (endpoint === '/config') {
+      const result = await window.api.saveConfig(data)
+      return { success: result, message: result ? 'Configuration updated successfully' : 'Failed to save configuration' }
+    }
+    if (endpoint.startsWith('/styles/')) {
+      const id = endpoint.split('/')[2]
+      return window.api.updateStyle(id, data)
+    }
+    throw new Error(`Unknown PUT endpoint: ${endpoint}`)
   }
 
   async delete (endpoint) {
-    throw new Error('DELETE requests are not supported in Electron mode')
+    if (endpoint.startsWith('/styles/')) {
+      const id = endpoint.split('/')[2]
+      const result = await window.api.deleteStyle(id)
+      return { success: result, message: result ? 'Style deleted successfully' : 'Style not found' }
+    }
+    throw new Error(`Unknown DELETE endpoint: ${endpoint}`)
   }
 }
 
