@@ -30,6 +30,7 @@ const props = defineProps({
 
 const emit = defineEmits([
   'sidebar-toggle',
+  'close',
   'drag-start',
   'drag-end',
 ]);
@@ -45,6 +46,10 @@ const displayTitle = computed(() => {
 // Action handlers
 const handleSidebarToggle = () => {
   emit('sidebar-toggle');
+};
+
+const handleClose = () => {
+  emit('close');
 };
 
 const handleDragStart = (event) => {
@@ -81,9 +86,17 @@ const handleActionClick = (action) => {
       <v-btn
         variant="text"
         size="small"
-        class="drag-handle"
-        icon="mdi-drag-horizontal-variant"
-      />
+        class="sidebar-toggle"
+        :icon="sidebarOpen ? 'mdi-close' : 'mdi-menu'"
+        @click="handleSidebarToggle"
+      >
+        <v-tooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ sidebarOpen ? 'Close sidebar' : 'Open sidebar' }}
+        </v-tooltip>
+      </v-btn>
     </template>
 
     <!-- Title -->
@@ -142,18 +155,19 @@ const handleActionClick = (action) => {
         </v-menu>
       </template>
 
-      <!-- Sidebar Toggle -->
+      <!-- Close Panel Button -->
       <v-btn
-
         size="small"
-        @click="handleSidebarToggle"
+        variant="text"
+        @click="handleClose"
+        :color="isDirty ? 'warning' : 'default'"
       >
-        <v-icon :icon="sidebarOpen ? 'mdi-chevron-left' : 'mdi-chevron-right'" />
+        <v-icon>mdi-close</v-icon>
         <v-tooltip
           activator="parent"
           location="bottom"
         >
-          {{ sidebarOpen ? 'Close sidebar' : 'Open sidebar' }}
+          {{ isDirty ? 'Close panel (unsaved changes)' : 'Close panel' }}
         </v-tooltip>
       </v-btn>
 
@@ -179,14 +193,14 @@ const handleActionClick = (action) => {
   cursor: grabbing;
 }
 
-.drag-handle {
+.sidebar-toggle {
   font-size: 0.875rem;
   opacity: 0.7;
   transition: opacity 0.2s ease;
   color: rgb(var(--v-theme-primary));
 }
 
-.panel-header:hover .drag-handle {
+.panel-header:hover .sidebar-toggle {
   opacity: 1;
 }
 

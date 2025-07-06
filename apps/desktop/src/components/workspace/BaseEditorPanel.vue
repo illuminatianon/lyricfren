@@ -96,8 +96,24 @@ const handleSettings = () => {
   console.log('Panel settings:', props.panel.id);
 };
 
-const handleClose = () => {
+const handleClose = async () => {
+  // If panel is dirty, show confirmation dialog
+  if (isDirty.value) {
+    const confirmed = await showCloseConfirmation();
+    if (!confirmed) return;
+  }
   emit('close', props.panel.id);
+};
+
+// Close confirmation for dirty panels
+const showCloseConfirmation = () => {
+  return new Promise((resolve) => {
+    // For now, use browser confirm - can be replaced with a proper dialog later
+    const result = confirm(
+      `Panel "${props.panel.data.metadata.title}" has unsaved changes.\n\nAre you sure you want to close it?`
+    );
+    resolve(result);
+  });
 };
 
 const handleFocus = () => {
@@ -218,12 +234,22 @@ const getSidebarConfig = () => {
       :sidebar-open="sidebarOpen"
       :draggable="true"
       @sidebar-toggle="handleSidebarToggle"
+      @close="handleClose"
       @drag-start="handleDragStart"
       @drag-end="handleDragEnd"
     />
 
     <v-card-text class="pa-0 h-100">
       <div class="panel-body h-100 d-flex">
+        <!-- Sidebar (moved to left) -->
+        <PanelSidebar
+          v-if="sidebarOpen"
+          :panel="panel"
+          :config="getSidebarConfig()"
+          @close="handleSidebarToggle"
+          @data-change="(path, value) => workspaceManager.updatePanelData(panel.id, { [path]: value })"
+        />
+
         <!-- Main Content -->
         <div
           ref="mainContentElement"
@@ -255,15 +281,6 @@ const getSidebarConfig = () => {
             <p class="text-medium-emphasis">{{ panel.type }} editor is not yet available</p>
           </div>
         </div>
-
-        <!-- Sidebar -->
-        <PanelSidebar
-          v-if="sidebarOpen"
-          :panel="panel"
-          :config="getSidebarConfig()"
-          @close="handleSidebarToggle"
-          @data-change="(path, value) => workspaceManager.updatePanelData(panel.id, { [path]: value })"
-        />
       </div>
     </v-card-text>
   </v-card>
@@ -314,7 +331,7 @@ const getSidebarConfig = () => {
 }
 
 .main-content.with-sidebar {
-  border-right: 1px solid var(--surface-200);
+  border-left: 1px solid var(--surface-200);
 }
 
 .fallback-editor {
