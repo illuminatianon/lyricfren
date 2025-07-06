@@ -13,14 +13,14 @@
 
 ## Backend
 
-- **Server**: Express.js
+- **Runtime**: Electron Main Process (Node.js)
 - **Database**: LowDB (JSON-based local database)
 - **Configuration**: YAML-based config with environment variable support
 
 ## Development Tools
 
 - **Build Tool**: Vite
-- **Package Manager**: Yarn
+- **Package Manager**: PNPM
 - **Component Auto-Import**: Vuetify auto-import via vite-plugin-vuetify
 
 ## Styling Guidelines
