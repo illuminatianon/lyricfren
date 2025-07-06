@@ -22,7 +22,7 @@ onMounted(() => {
 .workspace-view {
   /* Remove the parent padding and make this full height */
   margin: -1rem;
-  height: calc(100vh - 120px); /* Account for header and footer */
+  height: calc(100vh - 64px); /* Account for header only */
   overflow: hidden;
 }
 </style>

@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import SettingsView from '../views/SettingsView.vue';
 import WorkspaceView from '../views/WorkspaceView.vue';
+import SongsView from '../views/SongsView.vue';
+import StylesView from '../views/StylesView.vue';
 import { useUIStore } from '../stores/ui';
 
 const routes = [

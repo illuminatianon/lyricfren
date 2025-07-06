@@ -2,7 +2,6 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useWorkspaceManager } from '../../stores/workspaceManager.js';
 import BaseEditorPanel from './BaseEditorPanel.vue';
-import WorkspaceToolbar from './WorkspaceToolbar.vue';
 
 const workspaceManager = useWorkspaceManager();
 const workspaceContainer = ref(null);
@@ -210,22 +209,10 @@ const handlePanelClose = (panelId) => {
 const handlePanelFocus = (panelId) => {
   workspaceManager.setActivePanel(panelId);
 };
-
-const handleNewPanel = (type = 'lyric') => {
-  workspaceManager.addPanel(type);
-};
 </script>
 
 <template>
   <div class="editor-workspace h-100 d-flex flex-column">
-    <!-- Workspace Toolbar -->
-    <WorkspaceToolbar
-      @new-panel="handleNewPanel"
-      @reset-layout="workspaceManager.resetPanelWidths"
-      @save-all="workspaceManager.saveAllPanels"
-      @close-all="workspaceManager.closeAllPanels"
-    />
-
     <!-- Panel Container -->
     <div
       ref="workspaceContainer"
@@ -248,7 +235,7 @@ const handleNewPanel = (type = 'lyric') => {
         <v-btn
           prepend-icon="mdi-plus"
           color="primary"
-          @click="handleNewPanel('lyric')"
+          @click="workspaceManager.addPanel('lyric', { title: 'New Lyric', content: '' })"
         >
           New Lyric Editor
         </v-btn>
