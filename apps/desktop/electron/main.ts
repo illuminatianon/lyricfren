@@ -5,6 +5,7 @@ import path from 'node:path'
 import meterService from './services.ts'
 import db from './db.ts'
 import { loadConfig, saveConfig, getSafeConfig } from './config.ts'
+import workspaceService from './services/workspaceService.js'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -112,5 +113,34 @@ app.whenReady().then(() => {
 
   ipcMain.handle('styles:delete', async (event, id) => {
     return db.delete('styles', id)
+  })
+
+  // Workspace handlers
+  ipcMain.handle('workspace:save', async (event, workspaceData) => {
+    return workspaceService.saveWorkspace(workspaceData)
+  })
+
+  ipcMain.handle('workspace:load', async (event, workspaceId) => {
+    return workspaceService.loadWorkspace(workspaceId)
+  })
+
+  ipcMain.handle('workspace:list', async () => {
+    return workspaceService.listWorkspaces()
+  })
+
+  ipcMain.handle('workspace:delete', async (event, workspaceId) => {
+    return workspaceService.deleteWorkspace(workspaceId)
+  })
+
+  ipcMain.handle('workspace:duplicate', async (event, workspaceId, newName) => {
+    return workspaceService.duplicateWorkspace(workspaceId, newName)
+  })
+
+  ipcMain.handle('workspace:exists', async (event, workspaceId) => {
+    return workspaceService.workspaceExists(workspaceId)
+  })
+
+  ipcMain.handle('workspace:getMetadata', async (event, workspaceId) => {
+    return workspaceService.getWorkspaceMetadata(workspaceId)
   })
 })

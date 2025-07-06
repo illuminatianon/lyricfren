@@ -35,4 +35,13 @@ contextBridge.exposeInMainWorld('api', {
   createStyle: (style) => ipcRenderer.invoke('styles:create', style),
   updateStyle: (id, updates) => ipcRenderer.invoke('styles:update', id, updates),
   deleteStyle: (id) => ipcRenderer.invoke('styles:delete', id),
+
+  // Workspace service
+  saveWorkspace: (workspaceData) => ipcRenderer.invoke('workspace:save', workspaceData),
+  loadWorkspace: (workspaceId) => ipcRenderer.invoke('workspace:load', workspaceId),
+  listWorkspaces: () => ipcRenderer.invoke('workspace:list'),
+  deleteWorkspace: (workspaceId) => ipcRenderer.invoke('workspace:delete', workspaceId),
+  duplicateWorkspace: (workspaceId, newName) => ipcRenderer.invoke('workspace:duplicate', workspaceId, newName),
+  workspaceExists: (workspaceId) => ipcRenderer.invoke('workspace:exists', workspaceId),
+  getWorkspaceMetadata: (workspaceId) => ipcRenderer.invoke('workspace:getMetadata', workspaceId),
 })

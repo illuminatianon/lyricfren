@@ -14,6 +14,11 @@ const userDataDir = join(homedir(), '.lyricfren');
 const userConfigPath = join(userDataDir, 'config.yaml');
 const userDataPath = join(userDataDir, 'data');
 
+// Workspace-specific directories
+const workspacesDir = join(userDataDir, 'workspaces');
+const lyricsDir = join(userDataDir, 'lyrics');
+const stylesDir = join(userDataDir, 'styles');
+
 // Ensure user data directories exist
 if (!fs.existsSync(userDataDir)) {
   mkdirSync(userDataDir, { recursive: true });
@@ -21,12 +26,54 @@ if (!fs.existsSync(userDataDir)) {
 if (!fs.existsSync(userDataPath)) {
   mkdirSync(userDataPath, { recursive: true });
 }
+if (!fs.existsSync(workspacesDir)) {
+  mkdirSync(workspacesDir, { recursive: true });
+}
+if (!fs.existsSync(lyricsDir)) {
+  mkdirSync(lyricsDir, { recursive: true });
+}
+if (!fs.existsSync(stylesDir)) {
+  mkdirSync(stylesDir, { recursive: true });
+}
 
 /**
  * Get path to a data file in the user data directory
  */
 export function getUserDataPath (filename: string): string {
   return join(userDataPath, filename);
+}
+
+/**
+ * Get path to a workspace file
+ */
+export function getWorkspacePath (filename: string): string {
+  return join(workspacesDir, filename);
+}
+
+/**
+ * Get path to a lyrics file
+ */
+export function getLyricsPath (filename: string): string {
+  return join(lyricsDir, filename);
+}
+
+/**
+ * Get path to a styles file
+ */
+export function getStylesPath (filename: string): string {
+  return join(stylesDir, filename);
+}
+
+/**
+ * Get all workspace directory paths
+ */
+export function getWorkspaceDirectories () {
+  return {
+    userDataDir,
+    workspacesDir,
+    lyricsDir,
+    stylesDir,
+  };
 }
 
 /**

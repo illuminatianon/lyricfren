@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
 import { generateId } from '../utils/helpers.js';
+import workspaceService from '../services/workspaceService.js';
 
 export const useWorkspaceManager = defineStore('workspaceManager', () => {
   // Current workspace state - using reactive for deep reactivity
@@ -226,34 +227,61 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
 
   const updateWorkspaceModified = () => {
     currentWorkspace.modified = new Date();
+    scheduleAutoSave();
   };
 
-  // Persistence (stubbed for now)
-  const saveWorkspace = async (name) => {
-    if (name) {
-      currentWorkspace.name = name;
+  // Auto-save functionality
+  let autoSaveTimeout = null;
+  const autoSaveDelay = 2000; // 2 seconds
+
+  const scheduleAutoSave = () => {
+    if (autoSaveTimeout) {
+      clearTimeout(autoSaveTimeout);
     }
+    autoSaveTimeout = setTimeout(() => {
+      saveWorkspace();
+    }, autoSaveDelay);
+  };
 
-    // TODO: Replace with actual API call
-    console.log('STUB: Saving workspace', currentWorkspace.name);
+  // Persistence
+  const saveWorkspace = async (name) => {
+    try {
+      if (name) {
+        currentWorkspace.name = name;
+      }
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+      updateWorkspaceModified();
 
-    updateWorkspaceModified();
-    return currentWorkspace.id;
+      // Save to file system
+      const workspaceId = await workspaceService.saveWorkspace(currentWorkspace);
+      console.log('Workspace saved successfully:', currentWorkspace.name);
+
+      return workspaceId;
+    } catch (error) {
+      console.error('Failed to save workspace:', error);
+      throw error;
+    }
   };
 
   const loadWorkspace = async (workspaceId) => {
-    // TODO: Replace with actual API call
-    console.log('STUB: Loading workspace', workspaceId);
+    try {
+      console.log('Loading workspace:', workspaceId);
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+      const workspaceData = await workspaceService.loadWorkspace(workspaceId);
 
-    // For now, just create a new workspace
-    // In real implementation, this would load from backend
-    throw new Error('Workspace loading not yet implemented');
+      if (!workspaceData) {
+        throw new Error(`Workspace ${workspaceId} not found`);
+      }
+
+      // Replace current workspace with loaded data
+      Object.assign(currentWorkspace, workspaceData);
+
+      console.log('Workspace loaded successfully:', currentWorkspace.name);
+      return workspaceData;
+    } catch (error) {
+      console.error('Failed to load workspace:', error);
+      throw error;
+    }
   };
 
   const exportWorkspace = () => {
@@ -283,31 +311,33 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
   };
 
   const listWorkspaces = async () => {
-    // TODO: Replace with actual API call
-    console.log('STUB: Listing workspaces');
-
-    // Return mock data for now
-    return [
-      {
-        id: currentWorkspace.id,
-        name: currentWorkspace.name,
-        description: currentWorkspace.description,
-        modified: currentWorkspace.modified,
-        panelCount: Object.keys(currentWorkspace.panels).length,
-      },
-    ];
+    try {
+      console.log('Listing workspaces');
+      return await workspaceService.listWorkspaces();
+    } catch (error) {
+      console.error('Failed to list workspaces:', error);
+      throw error;
+    }
   };
 
   const deleteWorkspace = async (workspaceId) => {
-    // TODO: Replace with actual API call
-    console.log('STUB: Deleting workspace', workspaceId);
-    throw new Error('Workspace deletion not yet implemented');
+    try {
+      console.log('Deleting workspace:', workspaceId);
+      return await workspaceService.deleteWorkspace(workspaceId);
+    } catch (error) {
+      console.error('Failed to delete workspace:', error);
+      throw error;
+    }
   };
 
   const duplicateWorkspace = async (workspaceId, newName) => {
-    // TODO: Replace with actual API call
-    console.log('STUB: Duplicating workspace', workspaceId, newName);
-    throw new Error('Workspace duplication not yet implemented');
+    try {
+      console.log('Duplicating workspace:', workspaceId, 'as', newName);
+      return await workspaceService.duplicateWorkspace(workspaceId, newName);
+    } catch (error) {
+      console.error('Failed to duplicate workspace:', error);
+      throw error;
+    }
   };
 
   // Bulk operations
@@ -334,6 +364,62 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
 
     updateWorkspaceModified();
     return true;
+  };
+
+  // Workspace creation and initialization
+  const createNewWorkspace = (name = 'Untitled Workspace', description = '') => {
+    Object.assign(currentWorkspace, {
+      id: generateId(),
+      name,
+      description,
+      created: new Date(),
+      modified: new Date(),
+      version: '1.0.0',
+      layout: {
+        panelOrder: [],
+        panelWidths: {},
+        globalSidebarWidth: 300,
+        workspaceWidth: 0,
+        resetToAuto: true,
+      },
+      panels: {},
+      ui: {
+        activePanel: null,
+        workspaceToolbarVisible: true,
+        statusBarVisible: false,
+      },
+    });
+
+    console.log('Created new workspace:', name);
+    return currentWorkspace.id;
+  };
+
+  // Initialize workspace on store creation
+  const initializeWorkspace = async () => {
+    try {
+      // Try to load the most recent workspace
+      const workspaces = await listWorkspaces();
+      if (workspaces.length > 0) {
+        const mostRecent = workspaces[0]; // Already sorted by modified date
+        await loadWorkspace(mostRecent.id);
+        console.log('Loaded most recent workspace:', mostRecent.name);
+      } else {
+        // Create a default workspace if none exist
+        createNewWorkspace();
+        await saveWorkspace();
+        console.log('Created default workspace');
+      }
+    } catch (error) {
+      console.warn('Failed to initialize workspace, creating new one:', error);
+      // Always ensure we have a valid workspace, even if persistence fails
+      createNewWorkspace();
+      // Try to save the new workspace, but don't fail if it doesn't work
+      try {
+        await saveWorkspace();
+      } catch (saveError) {
+        console.warn('Failed to save default workspace:', saveError);
+      }
+    }
   };
 
   return {
@@ -370,6 +456,8 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     listWorkspaces,
     deleteWorkspace,
     duplicateWorkspace,
+    createNewWorkspace,
+    initializeWorkspace,
 
     // Bulk operations
     saveAllPanels,

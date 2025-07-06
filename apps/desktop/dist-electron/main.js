@@ -2700,11 +2700,23 @@ const rootDir = join(__dirname$1, "..");
 const userDataDir = join(homedir(), ".lyricfren");
 const userConfigPath = join(userDataDir, "config.yaml");
 const userDataPath = join(userDataDir, "data");
+const workspacesDir = join(userDataDir, "workspaces");
+const lyricsDir = join(userDataDir, "lyrics");
+const stylesDir = join(userDataDir, "styles");
 if (!fs.existsSync(userDataDir)) {
   mkdirSync(userDataDir, { recursive: true });
 }
 if (!fs.existsSync(userDataPath)) {
   mkdirSync(userDataPath, { recursive: true });
+}
+if (!fs.existsSync(workspacesDir)) {
+  mkdirSync(workspacesDir, { recursive: true });
+}
+if (!fs.existsSync(lyricsDir)) {
+  mkdirSync(lyricsDir, { recursive: true });
+}
+if (!fs.existsSync(stylesDir)) {
+  mkdirSync(stylesDir, { recursive: true });
 }
 function getUserDataPath(filename) {
   return join(userDataPath, filename);
