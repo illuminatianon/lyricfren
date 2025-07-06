@@ -22,8 +22,8 @@ const openSettings = () => {
               LyricFren helps you create amazing lyrics for your music using AI.
             </p>
             <div class="flex justify-content-center">
-              <router-link to="/prompt">
-                <Button label="Create Lyrics" icon="pi pi-pencil" class="mr-2" />
+              <router-link to="/workspace">
+                <Button label="Open Workspace" icon="pi pi-pencil" class="mr-2" />
               </router-link>
               <Button label="Settings" icon="pi pi-cog" severity="secondary" @click="openSettings" />
             </div>

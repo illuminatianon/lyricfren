@@ -4,8 +4,6 @@ import NavItem from './NavItem.vue';
 // Navigation items data
 const navItems = [
   { to: '/workspace', label: 'Workspace', icon: 'mdi-view-dashboard' },
-  { to: '/meter', label: 'Meter', icon: 'mdi-music' },
-  { to: '/prompt', label: 'Prompt', icon: 'mdi-pencil' },
   { to: '/home', label: 'Home', icon: 'mdi-home' }
 ];
 </script>
