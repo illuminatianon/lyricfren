@@ -7,14 +7,14 @@ class MeterService {
    * @param {string} word - The word to estimate syllables for
    * @returns {number} - The estimated number of syllables
    */
-  estimateSyllables(word) {
+  estimateSyllables (word) {
     // Count vowel groups as syllables
     const vowels = ['A', 'E', 'I', 'O', 'U', 'Y'];
     let count = 0;
     let prevIsVowel = false;
 
     for (let i = 0; i < word.length; i++) {
-      const isVowel = vowels.includes(word[i]);
+      const isVowel = vowels.includes(word[ i ]);
       if (isVowel && !prevIsVowel) {
         count++;
       }
@@ -22,7 +22,7 @@ class MeterService {
     }
 
     // Handle silent e at the end
-    if (word.length > 2 && word.endsWith('E') && !vowels.includes(word[word.length - 2])) {
+    if (word.length > 2 && word.endsWith('E') && !vowels.includes(word[ word.length - 2 ])) {
       count = Math.max(1, count - 1);
     }
 
@@ -34,7 +34,7 @@ class MeterService {
    * @param {string} word - The word to count syllables for
    * @returns {number} - The number of syllables
    */
-  countSyllables(word) {
+  countSyllables (word) {
     // Try to get from dictionary
     const dictCount = cmuDictionaryService.getSyllableCount(word);
 
@@ -51,7 +51,7 @@ class MeterService {
    * @param {string} line - The line of text
    * @returns {number} - The total syllable count
    */
-  countLineMetrics(line) {
+  countLineMetrics (line) {
     // Trim the line to handle trailing spaces
     const trimmedLine = line.trim();
 
@@ -95,7 +95,7 @@ class MeterService {
    * @param {string} text - The text to analyze
    * @returns {Array} - Array of [line, syllableCount] pairs
    */
-  processText(text) {
+  processText (text) {
     // Split the text into lines
     const lines = text.split('\n');
     const result = [];

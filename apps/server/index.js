@@ -44,7 +44,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     message: 'LyricFren API is running',
-    dataDir: config.dataDir
+    dataDir: config.dataDir,
   });
 });
 
@@ -67,7 +67,7 @@ if (isDevelopment) {
         'Content-Type': 'text/plain',
       });
       res.end('Proxy error: ' + err.message);
-    }
+    },
   });
 
   // Only proxy non-API requests to the Vite dev server

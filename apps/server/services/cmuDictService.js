@@ -1,10 +1,9 @@
 import fs from 'fs';
-import path from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 class CMUDictionaryService {
-  constructor() {
+  constructor () {
     // Get the current directory
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
@@ -16,7 +15,7 @@ class CMUDictionaryService {
     this.loadDictionary();
   }
 
-  loadDictionary() {
+  loadDictionary () {
     try {
       const dictData = fs.readFileSync(this.cmuDictPath, 'utf8');
       this.cmuDict = JSON.parse(dictData);
@@ -27,13 +26,13 @@ class CMUDictionaryService {
     }
   }
 
-  getSyllableCount(word) {
+  getSyllableCount (word) {
     // Clean the word - remove punctuation except apostrophes and dashes
     const cleanWord = word.replace(/[^\w'-]/g, '').toUpperCase();
 
     // Check if the word is in the CMU dictionary
-    if (this.cmuDict[cleanWord]) {
-      return this.cmuDict[cleanWord];
+    if (this.cmuDict[ cleanWord ]) {
+      return this.cmuDict[ cleanWord ];
     }
 
     // Return null if not found

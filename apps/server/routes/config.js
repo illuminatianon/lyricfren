@@ -1,5 +1,5 @@
 import express from 'express';
-import { loadConfig, saveConfig, getSafeConfig } from '../config.js';
+import { getSafeConfig, loadConfig, saveConfig } from '../config.js';
 
 const router = express.Router();
 
@@ -12,12 +12,12 @@ router.get('/', (req, res) => {
 // Update configuration
 router.put('/', (req, res) => {
   const newConfig = req.body;
-  
+
   // Validate configuration
   if (!newConfig) {
     return res.status(400).json({ error: 'Invalid configuration' });
   }
-  
+
   // Save configuration
   const success = saveConfig(newConfig);
   if (success) {

@@ -1,9 +1,8 @@
-import fs from 'fs';
+import fs, { mkdirSync } from 'fs';
 import yaml from 'js-yaml';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { homedir } from 'os';
-import { mkdirSync } from 'fs';
 
 // Get current directory
 const __filename = fileURLToPath(import.meta.url);
@@ -28,7 +27,7 @@ if (!fs.existsSync(userDataPath)) {
  * @param {string} filename - Name of the file
  * @returns {string} Full path to the file
  */
-export function getUserDataPath(filename) {
+export function getUserDataPath (filename) {
   return join(userDataPath, filename);
 }
 
@@ -36,19 +35,19 @@ export function getUserDataPath(filename) {
  * Load configuration from config.yaml or environment variables
  * @returns {Object} Configuration object
  */
-export function loadConfig() {
+export function loadConfig () {
   let config = {
     openaiApiKey: process.env.LYRICFREN_OPENAI_KEY || '',
     defaultModelParams: {
       model: 'gpt-4',
       temperature: 0.7,
       maxTokens: 512,
-      topP: 1.0
+      topP: 1.0,
     },
     vibeBriefThreshold: 100,
     gitSyncEnabled: false,
     gitRepoPath: '',
-    dataDir: userDataPath
+    dataDir: userDataPath,
   };
 
   // Try to load from project config
@@ -89,7 +88,7 @@ export function loadConfig() {
  * @param {Object} config Configuration object
  * @returns {boolean} Success status
  */
-export function saveConfig(config) {
+export function saveConfig (config) {
   try {
     // Remove sensitive data before saving
     const configToSave = { ...config };
@@ -109,7 +108,7 @@ export function saveConfig(config) {
  * @param {Object} config Full configuration object
  * @returns {Object} Safe configuration object
  */
-export function getSafeConfig(config) {
+export function getSafeConfig (config) {
   const safeConfig = { ...config };
 
   // Mask sensitive data
