@@ -142,6 +142,7 @@ const handleEditorClick = () => {
         :extensions="extensions"
         basic
         wrap
+
         class="editor-container h-100"
         @click="handleEditorClick"
       />
@@ -189,7 +190,6 @@ const handleEditorClick = () => {
 .editor-content {
   min-height: 0; /* Allow flex child to shrink */
   overflow: hidden;
-
 }
 
 .editor-container {
@@ -198,19 +198,14 @@ const handleEditorClick = () => {
   overflow: auto;
 
 }
-
 .editor-status-bar {
   height: 32px;
   flex-shrink: 0;
   font-size: 12px;
 }
-</style>
 
-<style>
-/* CodeMirror styling - needs to be global */
 .lyric-editor-instance :deep(.cm-editor) {
   height: 100%;
-  background: transparent !important;
 }
 
 .lyric-editor-instance :deep(.cm-scroller) {
@@ -219,32 +214,24 @@ const handleEditorClick = () => {
 }
 
 .lyric-editor-instance :deep(.cm-content) {
-  background: transparent !important;
-  padding: 16px;
   min-height: 100%;
 }
 
 .lyric-editor-instance :deep(.cm-focused) {
-  outline: none !important;
+  border-right: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  //outline: none !important;
+}
+
+.lyric-editor-instance :deep(.cm-activeLineGutter) {
+  border-right: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+
 }
 
 .lyric-editor-instance :deep(.cm-lineNumbers) {
-  width: 38px;
-  background: pink;
+  width: 36px;
+  margin-right: -4px;
   border-right: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
   color: rgb(var(--v-theme-on-surface-variant));
-  text-align: center;
-  padding-top: 16px;
-}
-
-/* only cells that actually contain a number */
-.lyric-editor-instance :deep(.cm-lineNumbers span) {
-  font-weight: 600;
-  color: rgb(var(--v-theme-primary));
-}
-
-/* Remove any default backgrounds */
-.lyric-editor-instance :deep(.cm-wrap) {
-  //background: transparent !important;
+  text-align: right;
 }
 </style>
