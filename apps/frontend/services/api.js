@@ -97,6 +97,8 @@ class ApiService {
 }
 
 // Create a singleton instance
-const api = new ApiService();
+import apiElectron from './api-electron.js'
+
+const api = window.api ? apiElectron : new ApiService()
 
 export default api;
