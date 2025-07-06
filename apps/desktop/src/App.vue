@@ -1,30 +1,40 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+<script setup>
+import { onMounted } from 'vue';
+import AppHeader from './components/AppHeader.vue';
+import AppSidebar from './components/AppSidebar.vue';
+import AppFooter from './components/AppFooter.vue';
+import { useSettingsStore } from './stores/settings';
+import { useUIStore } from './stores/ui';
+
+const settingsStore = useSettingsStore();
+const uiStore = useUIStore();
+
+// Initialize UI and load settings on app mount
+onMounted(() => {
+  // Initialize UI (sidebar visibility, window resize listener)
+  uiStore.initializeUI();
+
+  // Load settings
+  settingsStore.fetchConfig();
+});
 </script>
 
 <template>
-  <div>
-    <a href="https://electron-vite.github.io" target="_blank">
-      <img src="/electron-vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <v-app>
+    <AppHeader />
+    <v-main>
+      <div class="d-flex">
+        <AppSidebar />
+        <div class="flex-grow-1">
+          <div class="pa-4">
+            <router-view />
+          </div>
+        </div>
+      </div>
+    </v-main>
+    <AppFooter />
+  </v-app>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style>
 </style>

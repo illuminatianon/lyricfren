@@ -2,11 +2,14 @@ import { defineConfig } from 'vite'
 import path from 'node:path'
 import electron from 'vite-plugin-electron/simple'
 import vue from '@vitejs/plugin-vue'
+import vuetify from 'vite-plugin-vuetify'
+import autoprefixer from 'autoprefixer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    vuetify({ autoImport: true }),
     electron({
       main: {
         // Shortcut of `build.lib.entry`.
@@ -26,4 +29,24 @@ export default defineConfig({
         : {},
     }),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+    // ✏️ force a single copy of CM6 modules
+    dedupe: [
+      '@codemirror/state',
+      '@codemirror/view',
+      '@codemirror/theme-one-dark',
+      '@codemirror/commands',
+    ],
+  },
+  css: {
+    postcss: { plugins: [autoprefixer] },
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
+  server: { port: 5173 },
 })

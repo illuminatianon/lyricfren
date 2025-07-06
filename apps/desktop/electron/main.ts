@@ -3,6 +3,8 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import meterService from './services.ts'
+import db from './db.ts'
+import { loadConfig, saveConfig, getSafeConfig } from './config.ts'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -67,13 +69,48 @@ app.on('activate', () => {
 })
 
 app.whenReady().then(() => {
+  // Initialize database
+  db.initialize()
+
   createWindow()
 
+  // Meter service handlers
   ipcMain.handle('meter:processText', async (event, text) => {
     return meterService.processText(text)
   })
 
   ipcMain.handle('meter:countLine', async (event, line) => {
     return meterService.countLineMetrics(line)
+  })
+
+  // Config handlers
+  ipcMain.handle('config:get', async () => {
+    const config = loadConfig()
+    return getSafeConfig(config)
+  })
+
+  ipcMain.handle('config:save', async (event, newConfig) => {
+    return saveConfig(newConfig)
+  })
+
+  // Styles handlers
+  ipcMain.handle('styles:getAll', async () => {
+    return db.getAll('styles')
+  })
+
+  ipcMain.handle('styles:getById', async (event, id) => {
+    return db.getById('styles', id)
+  })
+
+  ipcMain.handle('styles:create', async (event, style) => {
+    return db.create('styles', style)
+  })
+
+  ipcMain.handle('styles:update', async (event, id, updates) => {
+    return db.update('styles', id, updates)
+  })
+
+  ipcMain.handle('styles:delete', async (event, id) => {
+    return db.delete('styles', id)
   })
 })

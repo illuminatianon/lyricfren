@@ -21,6 +21,18 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 })
 
 contextBridge.exposeInMainWorld('api', {
+  // Meter service
   processText: (text) => ipcRenderer.invoke('meter:processText', text),
   countLine: (line) => ipcRenderer.invoke('meter:countLine', line),
+
+  // Config service
+  getConfig: () => ipcRenderer.invoke('config:get'),
+  saveConfig: (config) => ipcRenderer.invoke('config:save', config),
+
+  // Styles service
+  getAllStyles: () => ipcRenderer.invoke('styles:getAll'),
+  getStyleById: (id) => ipcRenderer.invoke('styles:getById', id),
+  createStyle: (style) => ipcRenderer.invoke('styles:create', style),
+  updateStyle: (id, updates) => ipcRenderer.invoke('styles:update', id, updates),
+  deleteStyle: (id) => ipcRenderer.invoke('styles:delete', id),
 })
