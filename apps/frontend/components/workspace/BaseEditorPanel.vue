@@ -305,6 +305,7 @@ const getSidebarConfig = () => {
   min-width: 0; /* Allow flex child to shrink */
   height: 100%;
   overflow: hidden;
+  background: rgb(var(--v-theme-surface));
 }
 
 .main-content.with-sidebar {

@@ -1,37 +1,37 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   isDirty: {
     type: Boolean,
-    default: false
+    default: false,
   },
   primaryActions: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   overflowActions: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   sidebarOpen: {
     type: Boolean,
-    default: false
+    default: false,
   },
   draggable: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const emit = defineEmits([
   'sidebar-toggle',
   'drag-start',
-  'drag-end'
+  'drag-end',
 ]);
 
 // Component state
@@ -76,7 +76,10 @@ const handleActionClick = (action) => {
     @dragend="handleDragEnd"
   >
     <!-- Left Section: Title and Drag Handle -->
-    <div class="d-flex align-center ga-2 flex-grow-1" style="min-width: 0">
+    <div
+      class="d-flex align-center ga-2 flex-grow-1"
+      style="min-width: 0"
+    >
       <!-- Drag Handle -->
       <v-icon
         v-if="draggable"
@@ -84,7 +87,10 @@ const handleActionClick = (action) => {
         color="medium-emphasis"
         class="drag-handle cursor-move"
       >
-        <v-tooltip activator="parent" location="bottom">
+        <v-tooltip
+          activator="parent"
+          location="bottom"
+        >
           Drag to reorder panel
         </v-tooltip>
       </v-icon>
@@ -102,14 +108,18 @@ const handleActionClick = (action) => {
     <!-- Center Section: Panel Actions -->
     <div class="d-flex align-center ga-2">
       <!-- Panel Actions Split Button -->
-      <v-btn-group v-if="primaryActions.length > 0" variant="outlined" size="small">
+      <v-btn-group
+        v-if="primaryActions.length > 0"
+        variant="outlined"
+        size="small"
+      >
         <v-btn
           :prepend-icon="primaryActions[0]?.icon || 'mdi-content-save'"
           :color="primaryActions[0]?.severity === 'warning' ? 'warning' : 'default'"
           :disabled="primaryActions[0]?.disabled || false"
           @click="handleActionClick(primaryActions[0])"
         >
-          {{ primaryActions[0]?.label || 'Save' }}
+          {{ primaryActions[ 0 ]?.label || 'Save' }}
         </v-btn>
         <v-menu v-if="[...primaryActions.slice(1), ...overflowActions].length > 0">
           <template v-slot:activator="{ props }">
@@ -143,7 +153,10 @@ const handleActionClick = (action) => {
         size="small"
         @click="handleSidebarToggle"
       >
-        <v-tooltip activator="parent" location="bottom">
+        <v-tooltip
+          activator="parent"
+          location="bottom"
+        >
           {{ sidebarOpen ? 'Close sidebar' : 'Open sidebar' }}
         </v-tooltip>
       </v-btn>
@@ -154,8 +167,8 @@ const handleActionClick = (action) => {
 <style scoped>
 .panel-header {
   height: 48px;
-  background: var(--blue-50);
-  border-bottom: 1px solid var(--blue-100);
+  background: rgb(var(--v-theme-surface-variant));
+  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -172,7 +185,7 @@ const handleActionClick = (action) => {
   font-size: 0.875rem;
   opacity: 0.7;
   transition: opacity 0.2s ease;
-  color: var(--blue-600);
+  color: rgb(var(--v-theme-primary));
 }
 
 .panel-header:hover .drag-handle {
@@ -180,18 +193,18 @@ const handleActionClick = (action) => {
 }
 
 .panel-title {
-  color: var(--blue-800);
+  color: rgb(var(--v-theme-on-surface));
   max-width: 300px;
   font-weight: 600;
 }
 
 .panel-title.dirty {
-  color: var(--orange-600);
+  color: rgb(var(--v-theme-warning));
 }
 
 .panel-title.dirty::after {
   content: " •";
-  color: var(--orange-500);
+  color: rgb(var(--v-theme-warning));
   font-weight: bold;
 }
 
@@ -206,11 +219,11 @@ const handleActionClick = (action) => {
 
 .panel-header .p-button.p-button-text {
   padding: 0.375rem;
-  color: var(--blue-700);
+  color: rgb(var(--v-theme-primary));
 }
 
 .panel-header .p-button.p-button-text:hover {
-  background: var(--blue-100);
+  background: rgba(var(--v-theme-primary), 0.1);
 }
 
 /* Ensure buttons don't wrap */
@@ -220,17 +233,17 @@ const handleActionClick = (action) => {
 
 /* Split button styling */
 .panel-header :deep(.p-splitbutton) {
-  background: var(--surface-0);
-  border: 1px solid var(--blue-200);
+  background: rgb(var(--v-theme-surface));
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 
 .panel-header :deep(.p-splitbutton .p-button) {
   background: transparent;
   border: none;
-  color: var(--blue-700);
+  color: rgb(var(--v-theme-primary));
 }
 
 .panel-header :deep(.p-splitbutton .p-button:hover) {
-  background: var(--blue-100);
+  background: rgba(var(--v-theme-primary), 0.1);
 }
 </style>

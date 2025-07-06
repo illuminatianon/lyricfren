@@ -184,19 +184,20 @@ const handleEditorClick = () => {
 
 <style scoped>
 .lyric-editor-instance {
-
+  background: transparent;
 }
 
 .editor-content {
   min-height: 0; /* Allow flex child to shrink */
   overflow: hidden;
+  background: transparent;
 }
 
 .editor-container {
   height: 100%;
   min-height: 300px;
   overflow: auto;
-
+  background: transparent;
 }
 .editor-status-bar {
   height: 32px;
