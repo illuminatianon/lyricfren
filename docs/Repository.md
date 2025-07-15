@@ -12,12 +12,26 @@ This document outlines a proposal for a new repository-based file handling syste
 * Each `Repository` is self-contained within its own folder with a `.git` directory, preventing conflicts between
   repositories.
 
+#### Proposed TypeScript Class
+```typescript
+abstract class Repository {
+  protected id: string;
+  protected path: string;
+  protected metadata: GlobalMetadata;
+
+  constructor(path: string);
+
+  abstract getEntity(revision?: string): Entity;
+  abstract save(entity: Entity): Entity;
+  abstract fork(revision: string): Repository;
+  isDirty(): boolean;
+  // other methods
+}
+```
 #### Content vs Metadata
 
-* **CONTENT**: The primary data that the Repository is responsible for tracking (e.g., for a `SongRepository`, this
-  would be the markdown file containing lyrics).
-* **METADATA**: Both Repository internals (title, slug, ID, etc.) and any additional data associated with the specific
-  Repository type.
+* **CONTENT**: The primary data that the Repository is responsible for tracking (e.g., for a `SongRepository`, this would be the markdown file containing lyrics).
+* **METADATA**: Both Repository internals (title, slug, ID, etc.) and any additional data associated with the specific Repository type.
 
 #### Initial Limitations
 
@@ -61,6 +75,15 @@ A "Fork" is essentially a "Save As" operation for an Entity:
   }
   ```
 
+#### Proposed Interface
+```typescript
+interface ForkMetadata {
+  sourceRepositoryId: string;
+  sourceRevision: string;
+  forkedAt: string; // ISO date string
+}
+```
+
 This design allows users to take any point in a Repository's history and start a new, independent line of development.
 
 #### Git Simplification Strategy
@@ -94,6 +117,19 @@ By limiting git features and filesystem access, the Repository system avoids com
 * **`created`**: The date the repository was created.
 * **`author`**: The user who created the repository.
 
+#### Proposed Interface
+
+```typescript
+interface GlobalMetadata {
+  title: string;
+  slug: string;
+  id: string;
+  description: string;
+  created: Date;
+  author: string;
+}
+```
+
 #### Repository Structure
 
 Each Repository follows a standardized directory structure:
@@ -120,6 +156,19 @@ When a Repository is opened, it must check for uncommitted changes made external
 #### Repository Operations
 
 This section details the standardized operations that the `Repository` will perform.
+
+#### Proposed Enum
+```typescript
+enum RepositoryOperation {
+  REPO_INIT = 'REPO_INIT',
+  SLUG_UPDATE = 'SLUG_UPDATE',
+  CONTENT_UPDATE = 'CONTENT_UPDATE',
+  METADATA_UPDATE = 'METADATA_UPDATE',
+  TAG_CREATE = 'TAG_CREATE',
+  REPO_FORK = 'REPO_FORK',
+  EXTERNAL_CHANGE = 'EXTERNAL_CHANGE',
+}
+```
 
 * **`REPO_INIT`**
   * **Description**: Initializes a new repository.
@@ -196,28 +245,26 @@ A revision is a git commit that captures an Entity's state at a specific point i
 
 When calling `Repository::getEntity('xyz')` or `Repository::getEntity()` for latest, the returned Entity object includes:
 
-```
-Entity {
-  revisionId: string,   // SHA hash identifying the revision this Entity came from
-  repositoryId: string, // ID of the Repository this Entity belongs to
-  timestamp: Date,      // When this version was created
-  content: any,         // The primary CONTENT data (the actual Song, Style, etc.)
-  metadata: object,     // All METADATA including repository metadata
-  
-  // Version info
+```typescript
+interface Entity {
+  revisionId: string;
+  repositoryId: string;
+  timestamp: Date;
+  content: any;
+  metadata: object;
+
   version: {
-    signature: string,  // The revision signature (e.g., "CONTENT_UPDATE")
-    message: string,    // Optional revision message
-    tags: string[]      // Any tags pointing to this revision
-  },
-  
-  // Dirty state tracking
-  isDirty: boolean,     // Whether this Entity has been modified
-  changes: {            // Track what has been modified
-    content: boolean,   // Content was changed
-    metadata: boolean,  // Metadata was changed
-    fields: string[]    // Specific fields that were modified
-  }
+    signature: string;
+    message: string;
+    tags: string[];
+  };
+
+  isDirty: boolean;
+  changes: {
+    content: boolean;
+    metadata: boolean;
+    fields: string[];
+  };
 }
 ```
 
@@ -307,6 +354,15 @@ A "Reference" is a data structure that points to a specific project or a revisio
 * `ref` (optional): A reference to a specific version, which can be:
   * A revision hash (for a "locked" reference).
   * A tag (e.g., `v1.2.3`).
+
+#### Proposed Interface
+```typescript
+interface Reference {
+  type: string;
+  id: string;
+  ref?: string;
+}
+```
 
 If `ref` is not provided, the reference is "unlocked" and points to the latest revision of the project.
 
