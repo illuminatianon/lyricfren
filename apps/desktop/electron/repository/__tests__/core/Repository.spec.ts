@@ -17,11 +17,25 @@ vi.mock('../../utils/git', () => ({
       author: 'Test User',
       date: new Date('2024-01-01T00:00:00Z')
     }]),
-    show: vi.fn(),
+    show: vi.fn().mockImplementation((revision: string, filePath: string) => {
+      if (filePath === 'content.txt') {
+        return Promise.resolve('Modified content');
+      } else if (filePath === 'metadata.json') {
+        return Promise.resolve(JSON.stringify({
+          title: 'Test Repository',
+          slug: 'test-repository',
+          id: 'test-id',
+          description: 'Test description',
+          created: new Date('2024-01-01T00:00:00Z'),
+          author: 'Test User'
+        }));
+      }
+      return Promise.resolve('');
+    }),
     addTag: vi.fn().mockResolvedValue(undefined)
   })),
-  GitError: class GitError extends Error {},
-  RepositoryCorruptError: class RepositoryCorruptError extends Error {}
+  GitError: class GitError extends Error { },
+  RepositoryCorruptError: class RepositoryCorruptError extends Error { }
 }));
 
 // Test implementation of Repository
@@ -128,7 +142,7 @@ describe('Repository', () => {
 
     it('should validate repository ID when saving', async () => {
       const entity = await repository.getLatest();
-      
+
       // Create entity with wrong repository ID
       const wrongEntity: Entity<TestContent, TestMetadata> = {
         ...entity,
@@ -140,7 +154,7 @@ describe('Repository', () => {
 
     it('should save entity and return new clean entity', async () => {
       const entity = await repository.getLatest();
-      
+
       // Modify the entity
       const modifiedEntity: Entity<TestContent, TestMetadata> = {
         ...entity,
@@ -176,6 +190,83 @@ describe('Repository', () => {
     // TODO: Add test for dirty state when Git mock is updated
   });
 
+  describe('Historical retrieval', () => {
+    beforeEach(async () => {
+      await repository.initialize();
+    });
+
+    it('should get entity from specific revision', async () => {
+      const entity = await repository.getByRevision('abc123');
+
+      expect(entity.revisionId).toBe('abc123');
+      expect(entity.repositoryId).toBeDefined();
+      expect(entity.content.text).toBe('Modified content');
+      expect(entity.isDirty).toBe(false);
+    });
+
+    it('should throw error for non-existent revision', async () => {
+      // Mock git.show to throw an error for non-existent revision
+      const mockGit = repository['git'] as any;
+      mockGit.show.mockRejectedValueOnce(new Error('Revision not found'));
+
+      await expect(repository.getByRevision('nonexistent')).rejects.toThrow();
+    });
+  });
+
+  describe('Auto-tagging', () => {
+    beforeEach(async () => {
+      await repository.initialize();
+    });
+
+    it('should create auto-tag on content update', async () => {
+      const entity = await repository.getLatest();
+
+      // Modify content to trigger auto-tagging
+      const modifiedEntity: Entity<TestContent, TestMetadata> = {
+        ...entity,
+        content: {
+          text: 'Content for auto-tag',
+          lines: ['Content for auto-tag']
+        },
+        changes: {
+          content: true,
+          metadata: false,
+          fields: ['content']
+        }
+      };
+
+      await repository.save(modifiedEntity);
+
+      // Verify addTag was called
+      const mockGit = repository['git'] as any;
+      expect(mockGit.addTag).toHaveBeenCalled();
+    });
+
+    it('should not create auto-tag on metadata-only update', async () => {
+      const entity = await repository.getLatest();
+
+      // Modify only metadata
+      const modifiedEntity: Entity<TestContent, TestMetadata> = {
+        ...entity,
+        metadata: {
+          ...entity.metadata,
+          description: 'Updated description'
+        },
+        changes: {
+          content: false,
+          metadata: true,
+          fields: ['metadata']
+        }
+      };
+
+      await repository.save(modifiedEntity);
+
+      // Verify addTag was not called
+      const mockGit = repository['git'] as any;
+      expect(mockGit.addTag).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Forking', () => {
     beforeEach(async () => {
       await repository.initialize();
@@ -183,10 +274,10 @@ describe('Repository', () => {
 
     it('should create fork at specific revision', async () => {
       const forkPath = path.join(tempDir, '..', 'fork-test');
-      
+
       try {
         const forkedRepo = await repository.fork('abc123', forkPath);
-        
+
         expect(forkedRepo).toBeInstanceOf(TestRepository);
         expect(await fs.pathExists(path.join(forkPath, 'metadata.json'))).toBe(true);
         expect(await fs.pathExists(path.join(forkPath, 'content.txt'))).toBe(true);
@@ -198,6 +289,44 @@ describe('Repository', () => {
       } finally {
         await fs.remove(forkPath);
       }
+    });
+  });
+
+  describe('Error handling', () => {
+    beforeEach(async () => {
+      await repository.initialize();
+    });
+
+    it('should handle git operation failures gracefully', async () => {
+      const mockGit = repository['git'] as any;
+      mockGit.commit.mockRejectedValueOnce(new Error('Git commit failed'));
+
+      const entity = await repository.getLatest();
+      const modifiedEntity: Entity<TestContent, TestMetadata> = {
+        ...entity,
+        content: { text: 'New content', lines: ['New content'] },
+        changes: { content: true, metadata: false, fields: ['content'] }
+      };
+
+      await expect(repository.save(modifiedEntity)).rejects.toThrow('Git commit failed');
+    });
+
+    it('should handle corrupted repository metadata', async () => {
+      // Create corrupted metadata file
+      const metadataPath = path.join(tempDir, 'metadata.json');
+      await fs.writeFile(metadataPath, 'invalid json');
+
+      const corruptedRepo = new TestRepository(tempDir);
+      await expect(corruptedRepo.initialize()).rejects.toThrow();
+    });
+
+    it('should handle missing content file', async () => {
+      // Remove content file after initialization
+      await repository.initialize();
+      const contentPath = path.join(tempDir, 'content.txt');
+      await fs.remove(contentPath);
+
+      await expect(repository.getLatest()).rejects.toThrow();
     });
   });
 });
