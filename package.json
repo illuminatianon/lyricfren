@@ -22,6 +22,7 @@
     },
     "onlyBuiltDependencies": [
       "@parcel/watcher",
+      "dugite",
       "electron",
       "esbuild",
       "vue-demi"
