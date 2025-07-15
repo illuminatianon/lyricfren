@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 import * as os from 'os';
 import {
   readJsonFile,
@@ -37,14 +37,14 @@ describe('Filesystem Utilities', () => {
 
     it('should throw error for non-existent JSON file', async () => {
       const filePath = path.join(tempDir, 'nonexistent.json');
-      
+
       await expect(readJsonFile(filePath)).rejects.toThrow('File not found');
     });
 
     it('should throw error for invalid JSON', async () => {
       const filePath = path.join(tempDir, 'invalid.json');
       await fs.writeFile(filePath, 'invalid json content');
-      
+
       await expect(readJsonFile(filePath)).rejects.toThrow('Failed to read JSON file');
     });
   });
@@ -62,7 +62,7 @@ describe('Filesystem Utilities', () => {
 
     it('should throw error for non-existent text file', async () => {
       const filePath = path.join(tempDir, 'nonexistent.txt');
-      
+
       await expect(readTextFile(filePath)).rejects.toThrow('File not found');
     });
   });
@@ -70,16 +70,16 @@ describe('Filesystem Utilities', () => {
   describe('Directory operations', () => {
     it('should ensure directory exists', async () => {
       const dirPath = path.join(tempDir, 'nested', 'directory');
-      
+
       await ensureDirectory(dirPath);
-      
+
       expect(await fs.pathExists(dirPath)).toBe(true);
     });
 
     it('should not fail if directory already exists', async () => {
       const dirPath = path.join(tempDir, 'existing');
       await fs.ensureDir(dirPath);
-      
+
       await expect(ensureDirectory(dirPath)).resolves.not.toThrow();
     });
   });

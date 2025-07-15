@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 import * as os from 'os';
 import { SongRepository, SongContent, SongMetadata } from '../../examples/SongRepository';
 import { Entity } from '../../types';
@@ -172,7 +172,7 @@ The story continues on
     await repository.initialize();
 
     const entity = await repository.getLatest();
-    
+
     // Test song structure parsing
     expect(entity.content.structure).toContain('Verse 1');
     expect(entity.content.structure).toContain('Chorus');
