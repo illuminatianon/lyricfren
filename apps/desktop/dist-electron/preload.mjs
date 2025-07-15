@@ -30,5 +30,13 @@ electron.contextBridge.exposeInMainWorld("api", {
   getStyleById: (id) => electron.ipcRenderer.invoke("styles:getById", id),
   createStyle: (style) => electron.ipcRenderer.invoke("styles:create", style),
   updateStyle: (id, updates) => electron.ipcRenderer.invoke("styles:update", id, updates),
-  deleteStyle: (id) => electron.ipcRenderer.invoke("styles:delete", id)
+  deleteStyle: (id) => electron.ipcRenderer.invoke("styles:delete", id),
+  // Workspace service
+  saveWorkspace: (workspaceData) => electron.ipcRenderer.invoke("workspace:save", workspaceData),
+  loadWorkspace: (workspaceId) => electron.ipcRenderer.invoke("workspace:load", workspaceId),
+  listWorkspaces: () => electron.ipcRenderer.invoke("workspace:list"),
+  deleteWorkspace: (workspaceId) => electron.ipcRenderer.invoke("workspace:delete", workspaceId),
+  duplicateWorkspace: (workspaceId, newName) => electron.ipcRenderer.invoke("workspace:duplicate", workspaceId, newName),
+  workspaceExists: (workspaceId) => electron.ipcRenderer.invoke("workspace:exists", workspaceId),
+  getWorkspaceMetadata: (workspaceId) => electron.ipcRenderer.invoke("workspace:getMetadata", workspaceId)
 });

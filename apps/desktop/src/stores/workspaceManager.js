@@ -198,6 +198,21 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     const panel = currentWorkspace.panels[ panelId ];
     if (panel) {
       Object.assign(panel.data, data);
+
+      // If metadata.title is being updated, also update the panel's title property
+      if (data.metadata && data.metadata.title) {
+        panel.title = data.metadata.title;
+      }
+
+      markPanelDirty(panelId, true);
+    }
+  };
+
+  const updatePanelTitle = (panelId, newTitle) => {
+    const panel = currentWorkspace.panels[ panelId ];
+    if (panel) {
+      panel.title = newTitle;
+      panel.data.metadata.title = newTitle;
       markPanelDirty(panelId, true);
     }
   };
@@ -444,6 +459,7 @@ export const useWorkspaceManager = defineStore('workspaceManager', () => {
     // State tracking
     markPanelDirty,
     updatePanelData,
+    updatePanelTitle,
     savePanelState,
     setActivePanel,
 

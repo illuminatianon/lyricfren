@@ -126,12 +126,7 @@ const handleSidebarToggle = () => {
 
 // Title change handling
 const handleTitleChange = (newTitle) => {
-  workspaceManager.updatePanelData(props.panel.id, {
-    metadata: {
-      ...props.panel.data.metadata,
-      title: newTitle,
-    }
-  });
+  workspaceManager.updatePanelTitle(props.panel.id, newTitle);
 };
 
 // Content change handling

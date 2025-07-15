@@ -2721,6 +2721,9 @@ if (!fs.existsSync(stylesDir)) {
 function getUserDataPath(filename) {
   return join(userDataPath, filename);
 }
+function getWorkspacePath(filename) {
+  return join(workspacesDir, filename);
+}
 function loadConfig() {
   let config = {
     openaiApiKey: process.env.LYRICFREN_OPENAI_KEY || "",
@@ -2936,6 +2939,157 @@ class DbService {
   }
 }
 const db = new DbService();
+class WorkspaceService {
+  /**
+   * Save workspace to YAML file
+   */
+  async saveWorkspace(workspaceData) {
+    try {
+      const filename = `${workspaceData.id}.yaml`;
+      const filePath = getWorkspacePath(filename);
+      const dataToSave = {
+        ...workspaceData,
+        created: workspaceData.created.toISOString(),
+        modified: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      const yamlContent = dump(dataToSave, {
+        indent: 2,
+        lineWidth: 120,
+        noRefs: true
+      });
+      fs.writeFileSync(filePath, yamlContent, "utf8");
+      console.log(`Workspace saved: ${filePath}`);
+      return workspaceData.id;
+    } catch (error) {
+      console.error("Error saving workspace:", error);
+      throw new Error(`Failed to save workspace: ${error.message}`);
+    }
+  }
+  /**
+   * Load workspace from YAML file
+   */
+  async loadWorkspace(workspaceId) {
+    try {
+      const filename = `${workspaceId}.yaml`;
+      const filePath = getWorkspacePath(filename);
+      if (!fs.existsSync(filePath)) {
+        console.warn(`Workspace file not found: ${filePath}`);
+        return null;
+      }
+      const yamlContent = fs.readFileSync(filePath, "utf8");
+      const data = load(yamlContent);
+      return {
+        ...data,
+        created: new Date(data.created),
+        modified: new Date(data.modified)
+      };
+    } catch (error) {
+      console.error("Error loading workspace:", error);
+      throw new Error(`Failed to load workspace: ${error.message}`);
+    }
+  }
+  /**
+   * List all available workspaces
+   */
+  async listWorkspaces() {
+    try {
+      const workspacesDir2 = getWorkspacePath("");
+      if (!fs.existsSync(workspacesDir2)) {
+        return [];
+      }
+      const files = fs.readdirSync(workspacesDir2).filter((file) => file.endsWith(".yaml")).map((file) => file.replace(".yaml", ""));
+      const workspaces = [];
+      for (const workspaceId of files) {
+        try {
+          const workspace = await this.loadWorkspace(workspaceId);
+          if (workspace) {
+            workspaces.push({
+              id: workspace.id,
+              name: workspace.name,
+              modified: workspace.modified,
+              description: workspace.description
+            });
+          }
+        } catch (error) {
+          console.warn(`Failed to load workspace ${workspaceId}:`, error.message);
+        }
+      }
+      return workspaces.sort((a, b) => b.modified.getTime() - a.modified.getTime());
+    } catch (error) {
+      console.error("Error listing workspaces:", error);
+      throw new Error(`Failed to list workspaces: ${error.message}`);
+    }
+  }
+  /**
+   * Delete workspace file
+   */
+  async deleteWorkspace(workspaceId) {
+    try {
+      const filename = `${workspaceId}.yaml`;
+      const filePath = getWorkspacePath(filename);
+      if (!fs.existsSync(filePath)) {
+        console.warn(`Workspace file not found for deletion: ${filePath}`);
+        return false;
+      }
+      fs.unlinkSync(filePath);
+      console.log(`Workspace deleted: ${filePath}`);
+      return true;
+    } catch (error) {
+      console.error("Error deleting workspace:", error);
+      throw new Error(`Failed to delete workspace: ${error.message}`);
+    }
+  }
+  /**
+   * Duplicate workspace with new ID and name
+   */
+  async duplicateWorkspace(workspaceId, newName) {
+    try {
+      const originalWorkspace = await this.loadWorkspace(workspaceId);
+      if (!originalWorkspace) {
+        throw new Error(`Workspace ${workspaceId} not found`);
+      }
+      const newWorkspace = {
+        ...originalWorkspace,
+        id: v4(),
+        name: newName,
+        created: /* @__PURE__ */ new Date(),
+        modified: /* @__PURE__ */ new Date()
+      };
+      await this.saveWorkspace(newWorkspace);
+      return newWorkspace.id;
+    } catch (error) {
+      console.error("Error duplicating workspace:", error);
+      throw new Error(`Failed to duplicate workspace: ${error.message}`);
+    }
+  }
+  /**
+   * Check if workspace exists
+   */
+  async workspaceExists(workspaceId) {
+    const filename = `${workspaceId}.yaml`;
+    const filePath = getWorkspacePath(filename);
+    return fs.existsSync(filePath);
+  }
+  /**
+   * Get workspace metadata without loading full data
+   */
+  async getWorkspaceMetadata(workspaceId) {
+    try {
+      const workspace = await this.loadWorkspace(workspaceId);
+      if (!workspace) return null;
+      return {
+        id: workspace.id,
+        name: workspace.name,
+        modified: workspace.modified,
+        description: workspace.description
+      };
+    } catch (error) {
+      console.error("Error getting workspace metadata:", error);
+      return null;
+    }
+  }
+}
+const workspaceService = new WorkspaceService();
 createRequire(import.meta.url);
 const __dirname = path$1.dirname(fileURLToPath$1(import.meta.url));
 process.env.APP_ROOT = path$1.join(__dirname, "..");
@@ -3001,6 +3155,27 @@ app.whenReady().then(() => {
   });
   ipcMain.handle("styles:delete", async (event, id) => {
     return db.delete("styles", id);
+  });
+  ipcMain.handle("workspace:save", async (event, workspaceData) => {
+    return workspaceService.saveWorkspace(workspaceData);
+  });
+  ipcMain.handle("workspace:load", async (event, workspaceId) => {
+    return workspaceService.loadWorkspace(workspaceId);
+  });
+  ipcMain.handle("workspace:list", async () => {
+    return workspaceService.listWorkspaces();
+  });
+  ipcMain.handle("workspace:delete", async (event, workspaceId) => {
+    return workspaceService.deleteWorkspace(workspaceId);
+  });
+  ipcMain.handle("workspace:duplicate", async (event, workspaceId, newName) => {
+    return workspaceService.duplicateWorkspace(workspaceId, newName);
+  });
+  ipcMain.handle("workspace:exists", async (event, workspaceId) => {
+    return workspaceService.workspaceExists(workspaceId);
+  });
+  ipcMain.handle("workspace:getMetadata", async (event, workspaceId) => {
+    return workspaceService.getWorkspaceMetadata(workspaceId);
   });
 });
 export {
