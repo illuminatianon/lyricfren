@@ -1,4 +1,4 @@
-# LyricFren Tech Stack
+ LyricFren Tech Stack
 
 ## Frontend
 

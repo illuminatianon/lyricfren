@@ -6,7 +6,7 @@ This document outlines the design for the `Prompt` entity and its corresponding 
 
 A `Prompt` is a simple entity whose primary content is a blob of text intended for use with LLMs.
 
-*   **Inheritance**: The `PromptEntity` will likely extend a base `ProjectEntity`.
+*   **Inheritance**: The `PromptEntity` extends the `ProjectEntity`.
 *   **Content**: The `content` property of a `PromptEntity` will be a string.
 
 ```typescript
