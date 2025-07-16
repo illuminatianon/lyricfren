@@ -109,24 +109,16 @@ By limiting git features and filesystem access, the Repository system avoids com
 #### Global Metadata
 
 * The `Repository` is also responsible for managing its own global metadata.
-* **`title`**: The display name of the repository (e.g., "My Super Cool Song Collection").
-* **`slug`**: A mutable, URL-friendly identifier used for the directory and file names (e.g., "
-  my_super_cool_song_collection").
 * **`ID`**: An immutable, unique hash assigned to the repository upon creation.
-* **`description`**: A brief description of the repository.
 * **`created`**: The date the repository was created.
-* **`author`**: The user who created the repository.
 
 #### Proposed Interface
 
 ```typescript
 interface GlobalMetadata {
-  title: string;
   slug: string;
   id: string;
-  description: string;
   created: Date;
-  author: string;
 }
 ```
 
