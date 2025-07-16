@@ -46,8 +46,11 @@ The `ProjectRepository` is a concrete implementation of the base `Repository`. I
     "author": "J. Doe"
   },
   "tools": {
-    "myTool": {
-      "someState": "someValue"
+    "editor": {
+      "text": "The content of the editor"
+    },
+    "conversation": {
+      "history": []
     }
   }
 }
@@ -55,16 +58,33 @@ The `ProjectRepository` is a concrete implementation of the base `Repository`. I
 
 ## Tools
 
-Tools are self-contained, modular components that provide specific functionality to a project.
+Tools are self-contained, modular components that provide specific functionality to a project. They typically define a `Panel` for their UI and manage their own state.
 
 ### Core Concepts
 
 *   **Modularity**: Each tool is independent and can be added or removed from a project.
 *   **State Management**: Tools are responsible for managing their own state. The `ProjectRepository` is only responsible for persisting it.
-*   **Services**: Tools implement services that can be used by the project (e.g., a linter, a compiler, a data visualizer).
+*   **UI**: Tools usually have an associated `Panel` that provides their user interface.
+*   **Services**: Tools implement services that can be used by the project.
+
+### Example: `Prompt` Tools
+
+A `Prompt` project would utilize several tools:
+
+*   **`EditorTool`**:
+    *   **UI**: A `Panel` containing a CodeMirror editor.
+    *   **Functionality**: Provides text editing features.
+    *   **State**: The text content of the editor.
+*   **`ConversationTool`**:
+    *   **UI**: A `Panel` that displays a conversation with an LLM.
+    *   **Functionality**: Drives a conversation with an LLM, using the content from the `EditorTool` as the input.
+    *   **State**: The history of the conversation.
+*   **Built-in Tools**:
+    *   **Metadata Tool**: A `Panel` for viewing and editing the project's metadata (title, description, etc.).
+    *   **History Tool**: A `Panel` for viewing the project's revision history.
 
 ### Tool State Persistence
 
 *   The state of each tool is stored in the `tools` object within the `metadata.json` file.
-*   The key for each tool's state is the tool's unique identifier.
+*   The key for each tool's state is the tool's unique identifier (e.g., "editor", "conversation").
 *   The `ProjectRepository` will serialize the tool's state to JSON when saving the project and deserialize it when loading the project. The tool itself is responsible for resolving its state from the deserialized object.
